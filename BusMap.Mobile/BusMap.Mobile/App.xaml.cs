@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusMap.Mobile.Views;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
