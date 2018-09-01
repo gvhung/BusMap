@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mobile", "Mobile", "{649D20
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{334FD562-3F3D-43A3-92E7-3BFBBBC1A571}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusMap.WebApi", "BusMap.WebApi\BusMap.WebApi.csproj", "{9730EECD-B94C-4C7F-8B02-7114E59755E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusMap.WebApi", "BusMap.WebApi\BusMap.WebApi.csproj", "{9730EECD-B94C-4C7F-8B02-7114E59755E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusMap.Mobile.Android", "BusMap.Mobile\BusMap.Mobile.Android\BusMap.Mobile.Android.csproj", "{C70636FB-51FF-4D33-8961-435F2CBD43D5}"
 EndProject
@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusMap.Mobile.iOS", "BusMap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusMap.Mobile.UWP", "BusMap.Mobile\BusMap.Mobile.UWP\BusMap.Mobile.UWP.csproj", "{DC320AC2-BF78-4448-8D9F-0B51BF605648}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusMap.Mobile", "BusMap.Mobile\BusMap.Mobile\BusMap.Mobile.csproj", "{770FF4B6-C626-4C64-8CBD-EA8D34B737BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusMap.Mobile", "BusMap.Mobile\BusMap.Mobile\BusMap.Mobile.csproj", "{770FF4B6-C626-4C64-8CBD-EA8D34B737BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
