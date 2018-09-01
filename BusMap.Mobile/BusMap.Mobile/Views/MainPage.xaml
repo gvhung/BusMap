@@ -41,7 +41,8 @@
                                    Grid.Column="1"/>
                     </Grid>
 
-                    <Button Text="Search"/>
+                    <Button Text="Search"
+                            Clicked="Button_OnClicked"/>
                     <Button Text="Advanced"/>
                     <Button Text="Nearest stops"
                             Clicked="NearestStopsButton_OnClicked"/>

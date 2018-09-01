@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using BusMap.Mobile.Annotations;
+using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Services;
 using Plugin.Geolocator;
 using Xamarin.Forms.Maps;
@@ -40,6 +41,7 @@ namespace BusMap.Mobile.ViewModels
         {
             var pos = await GetCurrentUserLocation();
             UserPosition = pos;
+            ToastMessage.ShortTime("Position obtained successfully.");
         }
 
         private async Task<Position> GetCurrentUserLocation()
@@ -47,6 +49,7 @@ namespace BusMap.Mobile.ViewModels
             var locator = CrossGeolocator.Current;
             locator.DesiredAccuracy = 20;
 
+            ToastMessage.ShortTime("Getting your localization...");
             var geoPosition =  await locator.GetPositionAsync(timeout: TimeSpan.FromSeconds(5));    //TODO: cancel-token (?)
             return new Position(geoPosition.Latitude, geoPosition.Longitude);
         }

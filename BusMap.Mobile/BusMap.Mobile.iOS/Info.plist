@@ -34,5 +34,9 @@
     <string>BusMap.Mobile</string>
     <key>XSAppIconAssets</key>
     <string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>BusMap wants to use your location for locate nearest stops?</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>BusMap is using your location.</string>
 </dict>
 </plist>

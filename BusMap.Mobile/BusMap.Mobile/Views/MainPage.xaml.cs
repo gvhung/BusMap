@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusMap.Mobile.Helpers;
 using Xamarin.Forms;
 
 namespace BusMap.Mobile.Views
@@ -18,6 +19,12 @@ namespace BusMap.Mobile.Views
         private async void NearestStopsButton_OnClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new NearestStopsMapPage());
+        }
+
+        private void Button_OnClicked(object sender, EventArgs e)
+        {
+            string msg = "test toast";
+            ToastMessage.LongTime(msg);
         }
     }
 }
