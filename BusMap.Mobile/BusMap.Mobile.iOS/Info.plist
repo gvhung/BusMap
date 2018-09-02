@@ -38,5 +38,7 @@
 	<string>BusMap wants to use your location for locate nearest stops?</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>BusMap is using your location.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Can we use your location at all times?</string>
 </dict>
 </plist>
