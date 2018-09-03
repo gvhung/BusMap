@@ -14,8 +14,10 @@
         <StackLayout>
             <customControls:BindableMap
                 x:Name="MyMap"
+                IsShowingUser="True"
                 MapPosition="{Binding UserPosition}"
-                MapPins="{Binding Pins}"/>
+                MapPins="{Binding Pins}"
+                AutomationId="NearestStopsMapPage_Map"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

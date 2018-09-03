@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using BusMap.Mobile.Annotations;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Services;
 using Plugin.Geolocator;
+using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
 namespace BusMap.Mobile.ViewModels
@@ -39,18 +41,29 @@ namespace BusMap.Mobile.ViewModels
 
         private async void SetCurrentUserLocation()
         {
-            var pos = await GetCurrentUserLocation();
-            UserPosition = pos;
-            ToastMessage.ShortTime("Position obtained successfully.");
+            try
+            {
+                var position = await GetCurrentUserLocationAsync();
+                UserPosition = position;
+                ToastMessage.ShortTime("Position obtained successfully.");
+            }
+            catch (Exception)
+            {
+                ToastMessage.LongTime("Unable to get location");
+                await Application.Current.MainPage.Navigation.PopAsync(true);
+            }
         }
 
-        private async Task<Position> GetCurrentUserLocation()
+        private async Task<Position> GetCurrentUserLocationAsync()
         {
             var locator = CrossGeolocator.Current;
             locator.DesiredAccuracy = 20;
-
+            
             ToastMessage.ShortTime("Getting your localization...");
-            var geoPosition =  await locator.GetPositionAsync(timeout: TimeSpan.FromSeconds(5));    //TODO: cancel-token (?)
+
+            var geoPosition =
+                await locator.GetPositionAsync(timeout: TimeSpan.FromSeconds(5)); //TODO: cancel-token (?)
+
             return new Position(geoPosition.Latitude, geoPosition.Longitude);
         }
 

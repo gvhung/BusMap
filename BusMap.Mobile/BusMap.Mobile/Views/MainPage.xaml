@@ -16,7 +16,7 @@
             </ContentPage.Padding>
             <ContentPage.Content>
                 <StackLayout>
-                    <Grid>
+                    <Grid Padding="25,0,25,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -38,14 +38,16 @@
                                    VerticalTextAlignment="Center"
                                    HorizontalTextAlignment="Center"/>
                         <Entry Grid.Row="1"
-                                   Grid.Column="1"/>
+                               Grid.Column="1"/>
                     </Grid>
 
                     <Button Text="Search"
-                            Clicked="Button_OnClicked"/>
+                            Clicked="Button_OnClicked"
+                            AutomationId="SearchButton"/>
                     <Button Text="Advanced"/>
                     <Button Text="Nearest stops"
-                            Clicked="NearestStopsButton_OnClicked"/>
+                            Clicked="NearestStopsButton_OnClicked"
+                            AutomationId="MainPage_NearestStopsButton"/>
                 </StackLayout>
             </ContentPage.Content>
         </ContentPage>
