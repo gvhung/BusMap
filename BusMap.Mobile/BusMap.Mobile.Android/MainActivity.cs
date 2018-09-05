@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
@@ -19,7 +18,10 @@ namespace BusMap.Mobile.Droid
 
             base.OnCreate(savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+
             Xamarin.FormsMaps.Init(this, savedInstanceState);
+            Acr.UserDialogs.UserDialogs.Init(this);
+
             LoadApplication(new App());
         }
     }

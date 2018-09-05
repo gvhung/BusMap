@@ -24,7 +24,7 @@ namespace BusMap.Mobile.Views
         private void Button_OnClicked(object sender, EventArgs e)
         {
             string msg = "test toast";
-            ToastMessage.LongTime(msg);
+            MessagingHelper.Toast(msg, ToastTime.LongTime);
         }
     }
 }

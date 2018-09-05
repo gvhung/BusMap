@@ -17,6 +17,7 @@ namespace BusMap.Mobile.ViewModels
 {
     public class NearestStopsMapPageViewModel : INotifyPropertyChanged
     {
+        private  readonly ILogger _logger = DependencyService.Get<ILogManager>().GetLog();
         private readonly IDataService _dataService = new DataService();
 
         private Position _userPosition;
@@ -41,15 +42,26 @@ namespace BusMap.Mobile.ViewModels
 
         private async void SetCurrentUserLocation()
         {
+            Position startMapPosition = UserPosition;
+
             try
             {
                 var position = await GetCurrentUserLocationAsync();
                 UserPosition = position;
-                ToastMessage.ShortTime("Position obtained successfully.");
+
+                if (startMapPosition != position)
+                {
+                    MessagingHelper.Toast("Position obtained successfully.", ToastTime.LongTime);
+                }
+                else
+                {
+                    MessagingHelper.DisplayAlert("Could not obtain position");
+                    await Application.Current.MainPage.Navigation.PopAsync(true);
+                }
             }
             catch (Exception)
             {
-                ToastMessage.LongTime("Unable to get location");
+                MessagingHelper.Toast("Unable to get location", ToastTime.LongTime);
                 await Application.Current.MainPage.Navigation.PopAsync(true);
             }
         }
@@ -59,10 +71,10 @@ namespace BusMap.Mobile.ViewModels
             var locator = CrossGeolocator.Current;
             locator.DesiredAccuracy = 20;
             
-            ToastMessage.ShortTime("Getting your localization...");
-
+            MessagingHelper.Toast("Getting your localization...", ToastTime.ShortTime);
+            _logger.Info("test");
             var geoPosition =
-                await locator.GetPositionAsync(timeout: TimeSpan.FromSeconds(5)); //TODO: cancel-token (?)
+                await locator.GetPositionAsync(timeout: TimeSpan.FromSeconds(10)); //TODO: cancel-token (?)
 
             return new Position(geoPosition.Latitude, geoPosition.Longitude);
         }
