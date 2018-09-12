@@ -42,8 +42,8 @@ namespace BusMap.Mobile.ViewModels
 
         private async void SetCurrentUserLocation()
         {
-            Position startMapPosition = UserPosition;
 
+            Position startMapPosition = UserPosition;
             try
             {
                 var position = await GetCurrentUserLocationAsync();
@@ -62,7 +62,7 @@ namespace BusMap.Mobile.ViewModels
             catch (Exception)
             {
                 MessagingHelper.Toast("Unable to get location", ToastTime.LongTime);
-                await Application.Current.MainPage.Navigation.PopAsync(true);
+                await Application.Current.MainPage.Navigation.PopToRootAsync();
             }
         }
 
@@ -71,8 +71,8 @@ namespace BusMap.Mobile.ViewModels
             var locator = CrossGeolocator.Current;
             locator.DesiredAccuracy = 20;
             
+
             MessagingHelper.Toast("Getting your localization...", ToastTime.ShortTime);
-            _logger.Info("test");
             var geoPosition =
                 await locator.GetPositionAsync(timeout: TimeSpan.FromSeconds(10)); //TODO: cancel-token (?)
 

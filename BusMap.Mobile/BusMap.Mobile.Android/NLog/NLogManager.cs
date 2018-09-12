@@ -1,16 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using BusMap.Mobile.Droid;
 using BusMap.Mobile.Helpers;
 using NLog;
@@ -19,7 +9,6 @@ using NLog.LayoutRenderers;
 using NLog.LayoutRenderers.Wrappers;
 using NLog.Targets;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using Environment = Android.OS.Environment;
 using ILogger = BusMap.Mobile.Helpers;
 

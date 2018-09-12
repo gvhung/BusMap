@@ -1,9 +1,5 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 
 namespace BusMap.Mobile.Droid
@@ -24,5 +20,6 @@ namespace BusMap.Mobile.Droid
 
             LoadApplication(new App());
         }
+
     }
 }
