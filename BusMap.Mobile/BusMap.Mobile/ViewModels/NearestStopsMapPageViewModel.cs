@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using BusMap.Mobile.Annotations;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Services;
@@ -17,10 +18,12 @@ namespace BusMap.Mobile.ViewModels
 {
     public class NearestStopsMapPageViewModel : INotifyPropertyChanged
     {
-        private  readonly ILogger _logger = DependencyService.Get<ILogManager>().GetLog();
-        private readonly IDataService _dataService = new DataService();
+        private readonly ILogger _logger = DependencyService.Get<ILogManager>().GetLog();
+        private readonly IDataService _dataService = new ApiDataService();
 
         private Position _userPosition;
+        private ObservableCollection<Pin> _pins;
+
         public Position UserPosition
         {
             get => _userPosition;
@@ -31,14 +34,30 @@ namespace BusMap.Mobile.ViewModels
             }
         }
 
-        public ObservableCollection<Pin> Pins { get; set; }
+        public ObservableCollection<Pin> Pins
+        {
+            get => _pins;
+            set
+            {
+                _pins = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public NearestStopsMapPageViewModel()
         {
-            //UserPosition = new Position(50.036124, 22.0035);
             SetCurrentUserLocation();
-            Pins = _dataService.GetPins();
+            GetPins();
+
         }
+
+        private async Task GetPins()
+        {
+            Pins = new ObservableCollection<Pin>();
+            Pins = await _dataService.GetPins();
+        }
+
 
         private async void SetCurrentUserLocation()
         {
@@ -78,6 +97,25 @@ namespace BusMap.Mobile.ViewModels
 
             return new Position(geoPosition.Latitude, geoPosition.Longitude);
         }
+
+
+        #region TestPurposes only
+        public ICommand GetPinsCommand => new Command(async () =>
+        {
+            await GetPins();
+        });
+
+        public ICommand CheckPinsCommand => new Command(() =>
+        {
+            var msg = $"Count: {Pins.Count}\n";
+            foreach (var pin in Pins)
+            {
+                msg += $"{pin.Label}, {pin.Address}, {pin.Position.Latitude}, {pin.Position.Longitude};";
+            }
+            MessagingHelper.DisplayAlert(msg);
+        });
+        #endregion
+
 
 
         public event PropertyChangedEventHandler PropertyChanged;

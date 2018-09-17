@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms.Maps;
 
 namespace BusMap.Mobile.Services
 {
-    public class DataService : IDataService
+    public class DataService
 
     {
-        public ObservableCollection<Pin> GetPins()
+        public async Task<ObservableCollection<Pin>> GetPins()
         {
-            return new ObservableCollection<Pin>
+            var list =  new ObservableCollection<Pin>
             {
 
                 new Pin
@@ -44,6 +45,8 @@ namespace BusMap.Mobile.Services
                 }
 
             };
+            await Task.Delay(2000);
+            return list;
         }
     }
 }

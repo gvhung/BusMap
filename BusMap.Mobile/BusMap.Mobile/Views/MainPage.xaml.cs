@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using BusMap.Mobile.Helpers;
+using BusMap.Mobile.Models;
+using BusMap.Mobile.Services;
 using Plugin.Geolocator;
 using Xamarin.Forms;
 
@@ -11,6 +14,7 @@ namespace BusMap.Mobile.Views
     public partial class MainPage : MasterDetailPage
     {
         private readonly ILogger _logger = DependencyService.Get<ILogManager>().GetLog();
+        private ApiDataService _dataService = new ApiDataService();
 
         public MainPage()
         {
@@ -38,11 +42,21 @@ namespace BusMap.Mobile.Views
             await Navigation.PushAsync(new NearestStopsMapPage());
         }
 
-        private void Button_OnClicked(object sender, EventArgs e)
+        private async void Button_OnClicked(object sender, EventArgs e)
         {
-            string msg = "test toast";
-            MessagingHelper.Toast(msg, ToastTime.LongTime);
-            _logger.Info("Test toast showed.");
+            await Await();
+        }
+
+        private async Task Await()
+        {
+            var pin = new Pin()
+            {
+                Latitude = 1,
+                Longitude = 2,
+                Address = "Address",
+                Label = "Testing"
+            };
+            await _dataService.PostPins(pin);
         }
     }
 }
