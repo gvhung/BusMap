@@ -6,13 +6,15 @@ using Xamarin.Forms.Maps;
 
 namespace BusMap.Mobile.Models
 {
-    public class Pin 
+    public class BusStop 
     {
         public int Id { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string Address { get; set; }
         public string Label { get; set; }
+        public Route Route { get; set; }
+
         //[Obsolete("Don't use this", true)]
         //public new Position Position { get; set; }
 

@@ -8,7 +8,7 @@ namespace BusMap.Mobile.Helpers
 {
     public static class MyExtensionMethods
     {
-        public static ObservableCollection<Xamarin.Forms.Maps.Pin> ConvertToMapPins(this IEnumerable<Pin> list)
+        public static ObservableCollection<Xamarin.Forms.Maps.Pin> ConvertToMapPins(this IEnumerable<BusStop> list)
         {
             var result = new ObservableCollection<Xamarin.Forms.Maps.Pin>();
             foreach (var item in list)
@@ -18,5 +18,19 @@ namespace BusMap.Mobile.Helpers
 
             return result;
         }
+
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> collection)
+        {
+            var observableCollection = new ObservableCollection<T>();
+
+            foreach (var item in collection)
+            {
+                observableCollection.Add(item);
+            }
+
+            return observableCollection;
+        }
+
+
     }
 }

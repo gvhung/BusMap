@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using BusMap.Mobile.Helpers;
+using BusMap.Mobile.Models;
 using Newtonsoft.Json;
 using Xamarin.Forms.Maps;
 
@@ -19,23 +20,28 @@ namespace BusMap.Mobile.Services
             HttpClient httpClient = new HttpClient();
 
             var json = await httpClient.GetStringAsync(Uri);
-            var pins = JsonConvert.DeserializeObject<List<Models.Pin>>(json);
+            var busStops = JsonConvert.DeserializeObject<List<BusStop>>(json);
 
-            ObservableCollection<Pin> result = pins.ConvertToMapPins();
+            ObservableCollection<Pin> result = busStops.ConvertToMapPins();
 
             return result;
         }
 
-        public async Task PostPins(Models.Pin pin)
+        public async Task PostPins(BusStop busStop)
         {
             var httpClient = new HttpClient();
-            var json = JsonConvert.SerializeObject(pin);
+            var json = JsonConvert.SerializeObject(busStop);
             StringContent content = new StringContent(json);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
             var result = await httpClient.PostAsync(Uri, content);
             if (result.IsSuccessStatusCode)
                 MessagingHelper.Toast("Posted successfully", ToastTime.LongTime);
+        }
+
+        public Task<ObservableCollection<Pin>> GetPinsForRoute(int routeId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

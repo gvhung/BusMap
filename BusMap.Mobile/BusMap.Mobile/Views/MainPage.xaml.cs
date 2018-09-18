@@ -14,7 +14,7 @@ namespace BusMap.Mobile.Views
     public partial class MainPage : MasterDetailPage
     {
         private readonly ILogger _logger = DependencyService.Get<ILogManager>().GetLog();
-        private ApiDataService _dataService = new ApiDataService();
+        private IDataService _dataService = new StaticCodeDataService();
 
         public MainPage()
         {
@@ -49,14 +49,14 @@ namespace BusMap.Mobile.Views
 
         private async Task Await()
         {
-            var pin = new Pin()
+            var stop = new BusStop()
             {
                 Latitude = 1,
                 Longitude = 2,
                 Address = "Address",
                 Label = "Testing"
             };
-            await _dataService.PostPins(pin);
+            await _dataService.PostPins(stop);
         }
     }
 }
