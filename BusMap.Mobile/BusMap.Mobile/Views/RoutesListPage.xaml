@@ -15,22 +15,26 @@
                       HasUnevenRows="True"
                       IsPullToRefreshEnabled="True"
                       RefreshCommand="{Binding RefreshCommand}"
-                      IsRefreshing="{Binding IsRefreshing}"
-                      x:Name="ListView"
-                      ItemTapped="ListView_OnItemTapped">
+                      IsRefreshing="{Binding IsRefreshing}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Vertical"
-                                         Padding="12"
-                                         x:Name="StackLayout">
+                                         Padding="12">
                                 <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
                                        FontSize="Medium"/>
                                 <Label Text="{Binding Name, StringFormat='Route name: {0}'}"
                                        FontSize="Small"/>
+                                <Label Text="{Binding BusStops.Count, StringFormat='Number of stops: {0}'}"
+                                       TextColor="Blue">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding LabelCommand}"></TapGestureRecognizer>
+                                    </Label.GestureRecognizers>
+                                </Label>
                                 <Label Text="{Binding BusStopsString}"
                                        FontSize="Small"
-                                       IsVisible="{Binding BusStopsStringIsVisible}"/>
+                                       IsVisible="{Binding BusStopsStringIsVisible}"
+                                       />
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

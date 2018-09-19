@@ -62,11 +62,6 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        public void HideOrShowRouteString(Route route)
-        {
-            route.BusStopsStringIsVisible = !route.BusStopsStringIsVisible;
-        }
-
 
 
 

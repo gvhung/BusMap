@@ -42,8 +42,11 @@ namespace BusMap.Mobile.Models
             return stringBuilder.ToString();
         }
 
+        public ICommand LabelCommand => new Command(async () =>
+        {
+            BusStopsStringIsVisible = !BusStopsStringIsVisible;
+        });
 
-        
 
 
 
