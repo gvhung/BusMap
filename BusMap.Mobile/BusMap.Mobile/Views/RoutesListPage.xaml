@@ -15,17 +15,22 @@
                       HasUnevenRows="True"
                       IsPullToRefreshEnabled="True"
                       RefreshCommand="{Binding RefreshCommand}"
-                      IsRefreshing="{Binding IsRefreshing}">
+                      IsRefreshing="{Binding IsRefreshing}"
+                      x:Name="ListView"
+                      ItemTapped="ListView_OnItemTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Vertical"
-                                             Padding="12">
+                                         Padding="12"
+                                         x:Name="StackLayout">
                                 <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
                                        FontSize="Medium"/>
                                 <Label Text="{Binding Name, StringFormat='Route name: {0}'}"
                                        FontSize="Small"/>
-                                <Label Text="{Binding BusStopsString}"/>
+                                <Label Text="{Binding BusStopsString}"
+                                       FontSize="Small"
+                                       IsVisible="{Binding BusStopsStringIsVisible}"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

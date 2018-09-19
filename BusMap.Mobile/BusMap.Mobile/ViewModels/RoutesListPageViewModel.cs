@@ -62,6 +62,16 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
+        public void HideOrShowRouteString(Route route)
+        {
+            route.BusStopsStringIsVisible = !route.BusStopsStringIsVisible;
+        }
+
+
+
+
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -69,5 +79,6 @@ namespace BusMap.Mobile.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
     }
 }

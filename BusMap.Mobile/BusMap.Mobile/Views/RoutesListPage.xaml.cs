@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusMap.Mobile.Models;
 using BusMap.Mobile.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -18,5 +19,13 @@ namespace BusMap.Mobile.Views
 		    ((RoutesListPageViewModel) this.BindingContext).StartPoint = from;
 		    ((RoutesListPageViewModel)this.BindingContext).DestinationPoint = to;
         }
+
+
+	    private void ListView_OnItemTapped(object sender, ItemTappedEventArgs e)
+	    {
+	        var viewModel = BindingContext as RoutesListPageViewModel;
+	        var route = e.Item as Route;
+	        viewModel.HideOrShowRouteString(route);
+	    }
 	}
 }
