@@ -60,18 +60,42 @@ namespace BusMap.Mobile.Services
                 new Carrier()
                 {
                     Name = "Nowex transport",
-                    Id = 1,
-                    Routes = new List<Route>(_routes.Where(x => x.Id == 1))
+                    Id = 1
+                    //Routes = new List<Route>(_routes.Where(x => x.Id == 1))
+                },
+                new Carrier
+                {
+                    Name = "Kudlik",
+                    Id = 2
+                },
+                new Carrier
+                {
+                    Name = "Kolos usługi transportowe Wiesław Kut",
+                    Id = 3
                 }
             };
             _routes = new List<Route>
             {
                 new Route
                 {
-                    Pins = _busStops,
+                    BusStops = _busStops,
                     Id = 1,
                     Name = "Gorlice - Rzeszów",
                     Carrier = _carriers.First(x => x.Name.Equals("Nowex transport"))
+                },
+                new Route
+                {
+                    BusStops = _busStops.Take(2).ToList(),
+                    Id = 2,
+                    Name = "Strzyżów - Rzeszów",
+                    Carrier = _carriers[1]
+                },
+                new Route
+                {
+                    BusStops = _busStops.Skip(2).ToList(),
+                    Id = 3,
+                    Name = "Frysztak - Rzeszów p. Strzyżów",
+                    Carrier = _carriers[2]
                 }
             };
         }
@@ -96,6 +120,12 @@ namespace BusMap.Mobile.Services
             return _busStops.Where(x => x.Route.Id == routeId)
                 .ToObservableCollection()
                 .ConvertToMapPins();
+        }
+
+        public async Task<List<Route>> GetRoutes()
+        {
+            await Task.Delay(500);
+            return _routes;
         }
     }
 }

@@ -26,25 +26,29 @@
                             <ColumnDefinition Width="8*"/>
                         </Grid.ColumnDefinitions>
                         <Label Text="From:"
-                                   Grid.Row="0"
-                                   Grid.Column="0"
-                                   VerticalTextAlignment="Center"
-                                   HorizontalTextAlignment="Center"/>
-                        <Entry Grid.Row="0"
-                                   Grid.Column="1"/>
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center"/>
+                        <Entry x:Name="FromEntry"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               />
                         <Label Text="To:"
-                                   Grid.Row="1"
-                                   Grid.Column="0"
-                                   VerticalTextAlignment="Center"
-                                   HorizontalTextAlignment="Center"/>
-                        <Entry Grid.Row="1"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center"/>
+                        <Entry x:Name="ToEntry"
+                               Grid.Row="1"
                                Grid.Column="1"/>
                     </Grid>
 
                     <Button Text="Search"
-                            Clicked="Button_OnClicked"
+                            Clicked="SearchButton_OnClicked"
                             AutomationId="SearchButton"/>
-                    <Button Text="Advanced"/>
+                    <Button Text="Advanced"
+                            Clicked="AdvancedButton_OnClicked"/>
                     <Button Text="Nearest stops"
                             Clicked="NearestStopsButton_OnClicked"
                             AutomationId="MainPage_NearestStopsButton"/>

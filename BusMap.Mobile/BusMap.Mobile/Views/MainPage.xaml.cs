@@ -14,7 +14,6 @@ namespace BusMap.Mobile.Views
     public partial class MainPage : MasterDetailPage
     {
         private readonly ILogger _logger = DependencyService.Get<ILogManager>().GetLog();
-        private IDataService _dataService = new StaticCodeDataService();
 
         public MainPage()
         {
@@ -42,21 +41,14 @@ namespace BusMap.Mobile.Views
             await Navigation.PushAsync(new NearestStopsMapPage());
         }
 
-        private async void Button_OnClicked(object sender, EventArgs e)
+        private async void SearchButton_OnClicked(object sender, EventArgs e)
         {
-            await Await();
+            await Navigation.PushAsync(new RoutesListPage(FromEntry.Text, ToEntry.Text));
         }
 
-        private async Task Await()
+        private void AdvancedButton_OnClicked(object sender, EventArgs e)
         {
-            var stop = new BusStop()
-            {
-                Latitude = 1,
-                Longitude = 2,
-                Address = "Address",
-                Label = "Testing"
-            };
-            await _dataService.PostPins(stop);
+            MessagingHelper.Toast("test", ToastTime.LongTime);
         }
     }
 }

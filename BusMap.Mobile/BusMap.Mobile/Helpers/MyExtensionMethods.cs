@@ -31,6 +31,17 @@ namespace BusMap.Mobile.Helpers
             return observableCollection;
         }
 
+        public static string BusStopsToString(this IEnumerable<BusStop> list)
+        {
+            var stringBuilder = new StringBuilder();
+            foreach (var item in list)
+            {
+                stringBuilder.Append(item.Label);
+            }
+
+            return stringBuilder.ToString();
+        }
+
 
     }
 }

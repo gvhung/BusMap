@@ -43,5 +43,10 @@ namespace BusMap.Mobile.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<Route>> GetRoutes()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
