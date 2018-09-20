@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Annotations;
 using BusMap.Mobile.Helpers;
+using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using Plugin.Geolocator;
 using Xamarin.Forms;
@@ -50,14 +51,27 @@ namespace BusMap.Mobile.ViewModels
             _dataService = dataService;
             SetCurrentUserLocation();
             GetPins();
-
         }
+
+        //public NearestStopsMapPageViewModel(IDataService dataService, int routeId)
+        //{
+        //    _dataService = dataService;
+        //    GetPins(routeId);
+        //}
+
 
         private async Task GetPins()
         {
             Pins = new ObservableCollection<Pin>();
             Pins = await _dataService.GetPins();
         }
+
+        //private async Task GetPins(int routeId)
+        //{
+            
+        //    var pins = await _dataService.GetPinsForRoute(routeId);
+        //    Pins = pins;
+        //}
 
 
         private async void SetCurrentUserLocation()

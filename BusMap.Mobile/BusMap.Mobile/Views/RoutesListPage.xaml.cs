@@ -20,5 +20,13 @@ namespace BusMap.Mobile.Views
 		    ((RoutesListPageViewModel)this.BindingContext).DestinationPoint = to;
         }
 
+	    private void Button_OnClicked(object sender, EventArgs e)
+	    {
+	        Button button = sender as Button;
+            StackLayout listViewItem = button.Parent as StackLayout;
+	        var route = listViewItem.BindingContext as Route;
+
+	        Navigation.PushAsync(new BusStopsMap(route));
+	    }
 	}
 }

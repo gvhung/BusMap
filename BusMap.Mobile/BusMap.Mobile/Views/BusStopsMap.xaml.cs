@@ -12,18 +12,14 @@ using Xamarin.Forms.Xaml;
 namespace BusMap.Mobile.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class NearestStopsMapPage : ContentPage
+	public partial class BusStopsMap : ContentPage
 	{
-		public NearestStopsMapPage ()
-		{
-			InitializeComponent ();
-		}
 
-	    public NearestStopsMapPage(Route route)
+	    public BusStopsMap(BusStopsMapViewModel viewModel)
 	    {
+	        BindingContext = viewModel;
             InitializeComponent();
-	        ((NearestStopsMapPageViewModel)this.BindingContext).Pins = route.BusStops.ConvertToMapPins();
-            
-        }
+	    }
+
 	}
 }

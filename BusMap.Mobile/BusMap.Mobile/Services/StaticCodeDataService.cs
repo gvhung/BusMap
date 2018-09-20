@@ -127,5 +127,11 @@ namespace BusMap.Mobile.Services
             await Task.Delay(500);
             return _routes;
         }
+
+        public async Task<Route> GetRoute(int routeId)
+        {
+            await Task.Delay(500);
+            return _routes.Find(x => x.Id == routeId);
+        }
     }
 }

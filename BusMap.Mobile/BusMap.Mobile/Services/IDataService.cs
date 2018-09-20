@@ -15,6 +15,7 @@ namespace BusMap.Mobile.Services
 
         Task<ObservableCollection<Pin>> GetPinsForRoute(int routeId);
         Task<List<Route>> GetRoutes();
+        Task<Route> GetRoute(int routeId);
 
     }
 }

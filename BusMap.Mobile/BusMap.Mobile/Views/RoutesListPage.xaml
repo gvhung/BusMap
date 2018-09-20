@@ -23,6 +23,8 @@
                                        FontSize="Medium"/>
                                 <Label Text="{Binding Name, StringFormat='Route name: {0}'}"
                                        FontSize="Small"/>
+                                <Button Text="See on map"
+                                        Clicked="Button_OnClicked"/>
                                 <Label Text="{Binding BusStops.Count, StringFormat='Number of stops: {0}'}"
                                        TextColor="Blue">
                                     <Label.GestureRecognizers>
