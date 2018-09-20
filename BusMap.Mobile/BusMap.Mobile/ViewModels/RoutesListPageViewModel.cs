@@ -14,7 +14,7 @@ namespace BusMap.Mobile.ViewModels
 {
     public class RoutesListPageViewModel : INotifyPropertyChanged
     {
-        private readonly IDataService _dataService = new StaticCodeDataService();
+        private IDataService _dataService;
         private List<Route> _routes;
         private bool _isRefreshing;
 
@@ -42,8 +42,9 @@ namespace BusMap.Mobile.ViewModels
             } 
         }
 
-        public RoutesListPageViewModel()
+        public RoutesListPageViewModel(IDataService dataService)
         {
+            _dataService = dataService;
             GetRoutes();
         }
 

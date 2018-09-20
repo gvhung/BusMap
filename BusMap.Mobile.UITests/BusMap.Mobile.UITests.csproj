@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="NavigationTests.cs" />
     <Compile Include="NearestStopsMapPageTests.cs" />
+    <Compile Include="RoutesListPageTests.cs" />
     <Compile Include="TestAbstractClass.cs" />
     <Compile Include="MainPageTests.cs" />
     <Compile Include="AppInitializer.cs" />

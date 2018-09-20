@@ -3,11 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
              x:Class="BusMap.Mobile.Views.RoutesListPage"
-             Title="{Binding StartDestinationTitle}">
+             Title="{Binding StartDestinationTitle}"
+             BindingContext="{Binding RoutesListPageViewModel, Source={StaticResource Locator}}">
     
-    <ContentPage.BindingContext>
-        <viewModels:RoutesListPageViewModel/>
-    </ContentPage.BindingContext>
     
     <ContentPage.Content>
         <StackLayout>
@@ -33,8 +31,7 @@
                                 </Label>
                                 <Label Text="{Binding BusStopsString}"
                                        FontSize="Small"
-                                       IsVisible="{Binding BusStopsStringIsVisible}"
-                                       />
+                                       IsVisible="{Binding BusStopsStringIsVisible}"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

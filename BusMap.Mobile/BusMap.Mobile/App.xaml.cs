@@ -1,5 +1,9 @@
 ﻿using BusMap.Mobile.Views;
 using System;
+using BusMap.Mobile.Services;
+using CommonServiceLocator;
+using Unity;
+using Unity.ServiceLocation;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,6 +15,7 @@ namespace BusMap.Mobile
         public App()
         {
             InitializeComponent();
+            UnityIoC();
 
             MainPage = new NavigationPage(new MainPage());
         }
@@ -29,5 +34,14 @@ namespace BusMap.Mobile
         {
             // Handle when your app resumes
         }
+
+        private void UnityIoC()
+        {
+            var unityContainer = new UnityContainer();
+            unityContainer.RegisterType<IDataService, StaticCodeDataService>();
+
+            ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(unityContainer));
+        }
+
     }
 }

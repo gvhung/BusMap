@@ -4,11 +4,9 @@
              xmlns:customControls="clr-namespace:BusMap.Mobile.CustomControls;assembly=BusMap.Mobile"
              xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
              x:Class="BusMap.Mobile.Views.NearestStopsMapPage"
+             BindingContext="{Binding NearestStopsMapPageViewModel, Source={StaticResource Locator}}"
              Title="Nearest stops">
 
-    <ContentPage.BindingContext>
-        <viewModels:NearestStopsMapPageViewModel/>
-    </ContentPage.BindingContext>
 
     <ContentPage.Content>
         <StackLayout>

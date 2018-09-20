@@ -33,7 +33,7 @@
                         <Entry x:Name="FromEntry"
                                Grid.Row="0"
                                Grid.Column="1"
-                               />
+                               AutomationId="MainPage_FromEntry"/>
                         <Label Text="To:"
                                Grid.Row="1"
                                Grid.Column="0"
@@ -41,7 +41,8 @@
                                HorizontalTextAlignment="Center"/>
                         <Entry x:Name="ToEntry"
                                Grid.Row="1"
-                               Grid.Column="1"/>
+                               Grid.Column="1"
+                               AutomationId="MainPage_ToEntry"/>
                     </Grid>
 
                     <Button Text="Search"

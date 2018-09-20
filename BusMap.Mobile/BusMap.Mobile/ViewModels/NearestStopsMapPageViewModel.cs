@@ -19,7 +19,7 @@ namespace BusMap.Mobile.ViewModels
     public class NearestStopsMapPageViewModel : INotifyPropertyChanged
     {
         private readonly ILogger _logger = DependencyService.Get<ILogManager>().GetLog();
-        private readonly IDataService _dataService = new StaticCodeDataService();
+        private IDataService _dataService;
 
         private Position _userPosition;
         private ObservableCollection<Pin> _pins;
@@ -45,8 +45,9 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        public NearestStopsMapPageViewModel()
+        public NearestStopsMapPageViewModel(IDataService dataService)
         {
+            _dataService = dataService;
             SetCurrentUserLocation();
             GetPins();
 
