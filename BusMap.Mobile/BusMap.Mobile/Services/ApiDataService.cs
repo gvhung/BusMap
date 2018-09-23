@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -50,6 +51,11 @@ namespace BusMap.Mobile.Services
         }
 
         public Task<Route> GetRoute(int routeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate)
         {
             throw new NotImplementedException();
         }

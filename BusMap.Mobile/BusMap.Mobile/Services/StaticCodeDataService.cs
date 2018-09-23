@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using BusMap.Mobile.Helpers;
@@ -132,6 +133,11 @@ namespace BusMap.Mobile.Services
         {
             await Task.Delay(500);
             return _routes.Find(x => x.Id == routeId);
+        }
+
+        public Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate)
+        {
+            throw new NotImplementedException();
         }
     }
 }

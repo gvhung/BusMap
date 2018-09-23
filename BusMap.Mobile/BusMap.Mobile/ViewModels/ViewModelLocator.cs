@@ -10,8 +10,11 @@ namespace BusMap.Mobile.ViewModels
         public NearestStopsMapPageViewModel NearestStopsMapPageViewModel
             => ServiceLocator.Current.GetInstance<NearestStopsMapPageViewModel>();
 
-        public RoutesListPageViewModel RoutesListPageViewModel
-            => ServiceLocator.Current.GetInstance<RoutesListPageViewModel>();
+        //public RoutesListPageViewModel RoutesListPageViewModel
+        //    => ServiceLocator.Current.GetInstance<RoutesListPageViewModel>();
+
+        public MainPageViewModel MainPageViewModel
+            => ServiceLocator.Current.GetInstance<MainPageViewModel>();
 
     }
 }

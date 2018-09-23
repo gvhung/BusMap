@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,11 +43,23 @@ namespace BusMap.Mobile.ViewModels
             } 
         }
 
-        public RoutesListPageViewModel(IDataService dataService)
+        //public RoutesListPageViewModel(IDataService dataService)
+        //{
+        //    _dataService = dataService;
+        //    GetRoutes();
+        //}
+
+        public RoutesListPageViewModel(IDataService dataService, IEnumerable<Route> routes, string from, string to)
         {
             _dataService = dataService;
-            GetRoutes();
+            Routes = routes.ToList();
+            StartPoint = from;
+            DestinationPoint = to;
         }
+
+        //public RoutesListPageViewModel()
+        //{
+        //}
 
 
 

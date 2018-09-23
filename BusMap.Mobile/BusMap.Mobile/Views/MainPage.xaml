@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:BusMap.Mobile"
              xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
-             x:Class="BusMap.Mobile.Views.MainPage">
+             x:Class="BusMap.Mobile.Views.MainPage"
+             BindingContext="{Binding MainPageViewModel, Source={StaticResource Locator}}">
 
     <MasterDetailPage.Detail>
         <ContentPage Title="DetailPage">
@@ -33,7 +34,8 @@
                         <Entry x:Name="FromEntry"
                                Grid.Row="0"
                                Grid.Column="1"
-                               AutomationId="MainPage_FromEntry"/>
+                               AutomationId="MainPage_FromEntry"
+                               Text="{Binding StartBusStopName}"/>
                         <Label Text="To:"
                                Grid.Row="1"
                                Grid.Column="0"
@@ -42,11 +44,12 @@
                         <Entry x:Name="ToEntry"
                                Grid.Row="1"
                                Grid.Column="1"
-                               AutomationId="MainPage_ToEntry"/>
+                               AutomationId="MainPage_ToEntry"
+                               Text="{Binding DestinationBusStopName}"/>
                     </Grid>
 
                     <Button Text="Search"
-                            Clicked="SearchButton_OnClicked"
+                            Command="{Binding Command}"
                             AutomationId="SearchButton"/>
                     <Button Text="Advanced"
                             Clicked="AdvancedButton_OnClicked"/>

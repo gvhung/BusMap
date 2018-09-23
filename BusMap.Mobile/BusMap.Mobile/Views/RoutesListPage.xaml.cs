@@ -20,13 +20,18 @@ namespace BusMap.Mobile.Views
 		    ((RoutesListPageViewModel)this.BindingContext).DestinationPoint = to;
         }
 
+	    public RoutesListPage(RoutesListPageViewModel viewModel)
+	    {
+            BindingContext = viewModel;
+            InitializeComponent();
+        }
+
 	    private void Button_OnClicked(object sender, EventArgs e)
 	    {
 	        Button button = sender as Button;
-            StackLayout listViewItem = button.Parent as StackLayout;
-	        var route = listViewItem.BindingContext as Route;
-
-	        Navigation.PushAsync(new BusStopsMap(route));
+            Grid gridItem = button.Parent as Grid;
+	        var route = gridItem.BindingContext as Route;
+	        Navigation.PushAsync(new BusStopsMap(new BusStopsMapViewModel(route)));
 	    }
 	}
 }

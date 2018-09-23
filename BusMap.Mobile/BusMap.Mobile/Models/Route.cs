@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
@@ -17,8 +18,12 @@ namespace BusMap.Mobile.Models
         public string Name { get; set; }
         public Carrier Carrier { get; set; }
         public ICollection<BusStop> BusStops { get; set; }
+        public BusStop StartingBusStop => BusStops.First();
+        public BusStop DestinationBusStop => BusStops.Last();
 
-        public string BusStopsString => BusStopsToString();
+
+
+        public string BusStopsString => ToString();
 
         public bool BusStopsStringIsVisible
         {
@@ -31,12 +36,14 @@ namespace BusMap.Mobile.Models
         }
 
 
-        private string BusStopsToString()
+        public override string ToString()
         {
             var stringBuilder = new StringBuilder();
             foreach (var stop in BusStops)
             {
-                stringBuilder.Append($"{stop.Label}, {stop.Address}\n");
+                stringBuilder.Append(string.IsNullOrEmpty(stop.Label)
+                    ? $"{stop.Address}\n"
+                    : $"{stop.Address}, {stop.Label}\n");
             }
 
             return stringBuilder.ToString();

@@ -13,6 +13,8 @@ namespace BusMap.Mobile.Models
         public double Longitude { get; set; }
         public string Address { get; set; }
         public string Label { get; set; }
+
+
         public Route Route { get; set; }
 
         //[Obsolete("Don't use this", true)]
@@ -20,6 +22,9 @@ namespace BusMap.Mobile.Models
 
         public Xamarin.Forms.Maps.Pin ConvertToFormsMapsPin()
         {
+            if (string.IsNullOrEmpty(Label))    //Todo: Change after map renderer customization
+                Label = " ";
+
             var result = new Xamarin.Forms.Maps.Pin()
             {
                 Id = Id,

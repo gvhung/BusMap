@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
              x:Class="BusMap.Mobile.Views.RoutesListPage"
-             Title="{Binding StartDestinationTitle}"
-             BindingContext="{Binding RoutesListPageViewModel, Source={StaticResource Locator}}">
-    
-    
+             Title="{Binding StartDestinationTitle}">
+    <!--BindingContext="{Binding RoutesListPageViewModel, Source={StaticResource Locator}}--> 
+
+
     <ContentPage.Content>
         <StackLayout>
             <ListView ItemsSource="{Binding Routes}"
@@ -17,24 +17,37 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Vertical"
-                                         Padding="12">
-                                <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
-                                       FontSize="Medium"/>
-                                <Label Text="{Binding Name, StringFormat='Route name: {0}'}"
-                                       FontSize="Small"/>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Row="0"
+                                                 Grid.Column="0">
+                                    <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
+                                               FontSize="Medium"/>
+                                    <Label Text="{Binding Name, StringFormat='Route name: {0}'}"
+                                               FontSize="Small"/>
+                                    <Label Text="{Binding BusStops.Count, StringFormat='Number of stops: {0}'}"
+                                               TextColor="Blue">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding LabelCommand}"></TapGestureRecognizer>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Label Text="{Binding BusStopsString}"
+                                               FontSize="Small"
+                                               IsVisible="{Binding BusStopsStringIsVisible}"/>
+                                </StackLayout>
                                 <Button Text="See on map"
-                                        Clicked="Button_OnClicked"/>
-                                <Label Text="{Binding BusStops.Count, StringFormat='Number of stops: {0}'}"
-                                       TextColor="Blue">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding LabelCommand}"></TapGestureRecognizer>
-                                    </Label.GestureRecognizers>
-                                </Label>
-                                <Label Text="{Binding BusStopsString}"
-                                       FontSize="Small"
-                                       IsVisible="{Binding BusStopsStringIsVisible}"/>
-                            </StackLayout>
+                                            FontSize="Small"
+                                            Clicked="Button_OnClicked"
+                                            VerticalOptions="CenterAndExpand"
+                                            Grid.Row="0"
+                                            Grid.Column="1"/>
+                            </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>

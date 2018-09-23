@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using BusMap.Mobile.Models;
@@ -16,6 +17,6 @@ namespace BusMap.Mobile.Services
         Task<ObservableCollection<Pin>> GetPinsForRoute(int routeId);
         Task<List<Route>> GetRoutes();
         Task<Route> GetRoute(int routeId);
-
+        Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate);
     }
 }
