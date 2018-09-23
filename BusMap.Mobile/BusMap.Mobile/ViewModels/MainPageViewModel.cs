@@ -18,7 +18,8 @@ namespace BusMap.Mobile.ViewModels
 
         private string _startBusStopName;
         private string _destinationBusStopName;
-        
+        private bool _isBusy;
+
 
         public string StartBusStopName
         {
@@ -40,6 +41,16 @@ namespace BusMap.Mobile.ViewModels
             }
         }
 
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                _isBusy = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public MainPageViewModel(IDataService dataService)
         {
@@ -49,12 +60,14 @@ namespace BusMap.Mobile.ViewModels
 
         public ICommand Command => new Command(async () =>
         {
+            IsBusy = true;
             var allRoutes = await _dataService.GetRoutes();
 
             //var routes = await _dataService?.FindRoute(x => x.StartingBusStop.Address.ToLowerInvariant().
             //    Trim().Equals(StartBusStopName.ToLowerInvariant().Trim()));
 
             var viewModel = new RoutesListPageViewModel(_dataService, allRoutes, StartBusStopName, DestinationBusStopName);
+            IsBusy = false;
             await Application.Current.MainPage.Navigation.PushAsync(new RoutesListPage(viewModel));
         });
 

@@ -47,7 +47,14 @@
                                AutomationId="MainPage_ToEntry"
                                Text="{Binding DestinationBusStopName}"/>
                     </Grid>
-
+                    <ActivityIndicator x:Name="ActivityIndicator"
+                                       IsRunning="{Binding IsBusy}"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       Color="DodgerBlue"/>
+                    <Label Text="Downloading results"
+                           HorizontalOptions="Center"
+                           IsVisible="{Binding IsBusy}"/>
                     <Button Text="Search"
                             Command="{Binding Command}"
                             AutomationId="SearchButton"/>
