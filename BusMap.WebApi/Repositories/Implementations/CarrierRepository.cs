@@ -20,13 +20,10 @@ namespace BusMap.WebApi.Repositories.Implementations
 
 
         public Carrier GetCarrier(int id)
-            => _context.Carriers
-                .Include(x => x.Routes)
-                .First(x => x.Id == id);
+            => _context.Carriers.FirstOrDefault(x => x.Id == id);
 
         public IEnumerable<Carrier> GetAllCarriers()
-            => _context.Carriers
-                .Include(x => x.Routes);
+            => _context.Carriers;
 
         public void AddCarrier(Carrier carrier)
         {
@@ -40,10 +37,9 @@ namespace BusMap.WebApi.Repositories.Implementations
             _context.SaveChanges();
         }
 
-        public void RemoveCarrier(int id)
+        public void RemoveCarrier(Carrier carrier)
         {
-            var carrierToRemove = GetCarrier(id);
-            _context.Carriers.Remove(carrierToRemove);
+            _context.Carriers.Remove(carrier);
             _context.SaveChanges();
         }
     }

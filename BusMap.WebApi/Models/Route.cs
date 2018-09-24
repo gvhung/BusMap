@@ -18,7 +18,6 @@ namespace BusMap.WebApi.Models
 
         public Carrier Carrier { get; set; }
 
-        [Required]
         public ICollection<BusStop> BusStops { get; set; }
 
         

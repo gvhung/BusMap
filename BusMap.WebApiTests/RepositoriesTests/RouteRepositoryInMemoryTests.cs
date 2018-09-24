@@ -59,8 +59,12 @@ namespace BusMap.WebApiTests.RepositoriesTests
         }
 
         [Test]
-        public void GetRoute_WhenIdNotExists_ThrowingException()
-            => Assert.Throws<InvalidOperationException>(() => busStopRepository.GetBusStop(190));
+        public void GetRoute_WhenIdNotExists_ReturnsNull()
+        {
+            var route = routeRepository.GetRoute(190);
+
+            Assert.IsNull(route);
+        }
 
         [Test]
         public void GetAllRoutes_ReturningAllRoutes()
@@ -186,7 +190,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         {
             var nOfRoutesBefore = context.Routes.ToList().Count;
             var routeToRemove = routeRepository.GetRoute(2);
-            routeRepository.RemoveRoute(routeToRemove.Id);
+            routeRepository.RemoveRoute(routeToRemove);
             var nOfRoutesAfter = context.Routes.ToList().Count;
 
             Assert.AreEqual(nOfRoutesBefore - 1, nOfRoutesAfter);
@@ -195,14 +199,20 @@ namespace BusMap.WebApiTests.RepositoriesTests
 
         [Test]
         public void RemoveRoute_WhenRouteUnderIdDontExists_ThrowingException()
-            => Assert.Throws<InvalidOperationException>(() =>
-                routeRepository.RemoveRoute(1290));
+        {
+            var routeToRemove = routeRepository.GetRoute(1290);
+
+            Assert.Throws<ArgumentNullException>(() =>
+                routeRepository.RemoveRoute(routeToRemove));
+        }
+
 
         [Test]
         public void RemoveRoute_WhenRouteUnderIdExists_AlsoRemovingBusStops()
         {
             var nOfBusStopsBefore = context.BusStops.ToList().Count;
-            routeRepository.RemoveRoute(1);
+            var routeToRemove = routeRepository.GetRoute(1);
+            routeRepository.RemoveRoute(routeToRemove);
             var nOfBusStopsAfter = context.BusStops.ToList().Count;
 
             Assert.AreEqual(nOfBusStopsBefore - 3, nOfBusStopsAfter);
@@ -212,7 +222,8 @@ namespace BusMap.WebApiTests.RepositoriesTests
         public void RemoveRoute_WhenRouteUnderIdExists_DontRemovingCarrier()
         {
             var nOfCarriersBefore = context.Carriers.ToList().Count;
-            routeRepository.RemoveRoute(1);
+            var routeToRemove = routeRepository.GetRoute(1);
+            routeRepository.RemoveRoute(routeToRemove);
             var nOfCarriersAfter = context.Carriers.ToList().Count;
 
             Assert.AreEqual(nOfCarriersBefore, nOfCarriersAfter);

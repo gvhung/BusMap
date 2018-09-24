@@ -12,6 +12,6 @@ namespace BusMap.WebApi.Repositories.Abstract
         IEnumerable<Carrier> GetAllCarriers();
         void AddCarrier(Carrier carrier);
         void AddCArrierRange(IEnumerable<Carrier> carriers);
-        void RemoveCarrier(int id);
+        void RemoveCarrier(Carrier carrier);
     }
 }

@@ -33,6 +33,8 @@ namespace BusMap.WebApi
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(@"Data Source=DESKTOP-6TBR12R\SQLEXPRESS;Database=BusMap;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
             services.AddScoped<IBusStopRepository, BusStopRepository>();
+            services.AddScoped<IRouteRepository, RouteRepository>();
+            services.AddScoped<ICarrierRepository, CarrierRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

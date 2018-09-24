@@ -12,6 +12,6 @@ namespace BusMap.WebApi.Repositories.Abstract
         IEnumerable<Route> GetAllRoutes();
         void AddRoute(Route route);
         void AddRouteRange(IEnumerable<Route> routes);
-        void RemoveRoute(int id);
+        void RemoveRoute(Route route);
     }
 }

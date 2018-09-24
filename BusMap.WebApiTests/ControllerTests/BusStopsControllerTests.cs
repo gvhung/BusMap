@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BusMap.WebApi.Controllers;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.Models;
@@ -14,8 +15,8 @@ namespace BusMap.WebApiTests
     [TestFixture]
     public class BusStopsControllerTests
     {
-        private  BusStopsController _busStopsController;
-        //private  IBusStopRepository _busStopRepository;
+        private BusStopsController _busStopsController;
+        private BusStopsController _busStopsControllerEmpty;
 
         [SetUp]
         public void Setup()
@@ -28,6 +29,14 @@ namespace BusMap.WebApiTests
                 .Options;
             var context = new DatabaseContext(options);
             var repository = new BusStopRepository(context);
+
+            var optionsEmpty = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+            var emptyContext = new DatabaseContext(optionsEmpty);
+            var emptyRepository = new BusStopRepository(emptyContext);
+
 
             var routeForTest = new Route
             {
@@ -72,12 +81,13 @@ namespace BusMap.WebApiTests
             });
 
             _busStopsController = new BusStopsController(repository);
+            _busStopsControllerEmpty = new BusStopsController(emptyRepository);
         }
 
-        #region GetAll
 
+        #region GetAll
         [Test]
-        public void GetAll_WhenCalled_ReturnsOkResult()
+        public void GetAll_WhenBusStopsExists_ReturnsOkResult()
         {
             var okResult = _busStopsController.GetAll();
 
@@ -86,16 +96,17 @@ namespace BusMap.WebApiTests
         }
 
         [Test]
-        public void GetAll_WhenCalled_ReturnsListOfPinsObjectType()
+        public void GetAll_WhenBusStopsExists_ReturnsListOfPins()
         {
             var result = _busStopsController.GetAll() as OkObjectResult;
-            var resultStops = result.Value as List<BusStop>;
+            var resultStops = result?.Value as List<BusStop>;
 
             Assert.IsInstanceOf<List<BusStop>>(resultStops);
+            Assert.IsTrue(resultStops.Count == 3);
         }
 
         [Test]
-        public void GetAll_WhenCalled_ReturningAllPins()
+        public void GetAll_WhenBusStopsExists_ReturningUniquePins()
         {
             IActionResult actionResult = _busStopsController.GetAll();
             OkObjectResult result = actionResult as OkObjectResult;
@@ -117,6 +128,40 @@ namespace BusMap.WebApiTests
             }
         }
 
+        [Test]
+        public void GetAll_WhenBusStopsDontExist_ReturnsNotFound()
+        {
+            var result = _busStopsControllerEmpty.GetAll();
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public void GetBusStop_WhenBusStopUnderIdExist_ReturnOkObjectResult()
+        {
+            var result = _busStopsController.GetBusStop(2);
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [Test]
+        public void GetBusStop_WhenBusStopUnderIdExist_ReturnBusStop()
+        {
+            var okResult = _busStopsController.GetBusStop(2) as OkObjectResult;
+            var result = okResult?.Value as BusStop;
+
+            Assert.IsInstanceOf<BusStop>(result);
+            Assert.AreEqual("TestLabel2", result.Label);
+        }
+
+        [Test]
+        public void GetBusStop_WhenBusStopUnderIdDontExist_ReturnsNotFound()
+        {
+            var result = _busStopsController.GetBusStop(1920);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
         #endregion
 
         #region PostBusStop
@@ -126,13 +171,14 @@ namespace BusMap.WebApiTests
         {
             var busStop = new BusStop()
             {
+                Id = 24,
                 Label = "AdditionTest",
                 Address = "Test",
                 Longitude = 23,
                 Latitude = -20
             };
 
-            var result = _busStopsController.PostPin(busStop);
+            var result = _busStopsController.PostBusStop(busStop);
 
             Assert.IsInstanceOf<CreatedAtActionResult>(result);
         }
@@ -142,13 +188,14 @@ namespace BusMap.WebApiTests
         {
             var pin = new BusStop()
             {
+                Id = 23,
                 Label = "AdditionTest",
                 Address = "Test",
                 Longitude = 23,
                 Latitude = -20
             };
 
-            var result = _busStopsController.PostPin(pin) as CreatedAtActionResult;
+            var result = _busStopsController.PostBusStop(pin) as CreatedAtActionResult;
             var resultBusStop = result.Value as BusStop;
 
             Assert.IsInstanceOf<BusStop>(resultBusStop);
@@ -158,30 +205,52 @@ namespace BusMap.WebApiTests
 
 
 
-        //TODO: Add case with null Label after dbUpdate
-
-        #endregion
-
-
+        //TODO: Add case with null Label after dbUpdate. Invalid post
 
         [Test]
-        public void PostPinAndGetPins_ValidObjectPassed_ReturnsBiggerBy1Collection()
+        public void PostBusStopAndGetBusStop_ValidObjectPassed_ReturnsBiggerBy1Collection()
         {
             var pin = new BusStop()
             {
+                Id = 23,
                 Label = "AdditionTest",
                 Address = "Test",
                 Longitude = 23,
                 Latitude = -20
             };
 
-            _busStopsController.PostPin(pin);
+            _busStopsController.PostBusStop(pin);
             var okResult = _busStopsController.GetAll() as OkObjectResult;
             var resultBusStop = okResult?.Value as List<BusStop>;
 
             Assert.IsInstanceOf<List<BusStop>>(resultBusStop);
             Assert.AreEqual(4, resultBusStop?.Count);
         }
+
+        #endregion
+
+        #region DeleteBusStop
+
+        [Test]
+        public void DeleteBusStop_WhenBusStopUnderIdExist_ReturnsOkResult()
+        {
+            var result = _busStopsController.DeleteBusStop(3);
+
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+
+        [Test]
+        public void DeleteBusStop_WhenBusStopUnderIdDontExist_ReturnsNotFound()
+        {
+            var result = _busStopsController.DeleteBusStop(1980);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+        
+
+        #endregion
+
+
 
 
     }

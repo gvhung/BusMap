@@ -12,6 +12,6 @@ namespace BusMap.WebApi.Repositories.Abstract
         IEnumerable<BusStop> GetAllBusStops();
         void AddBusStop(BusStop busStop);
         void AddBusStopsRange(IEnumerable<BusStop> busStops);
-        void RemoveBusStop(int id);
+        void RemoveBusStop(BusStop busStop);
     }
 }

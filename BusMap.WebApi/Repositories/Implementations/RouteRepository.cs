@@ -20,15 +20,10 @@ namespace BusMap.WebApi.Repositories.Implementations
 
 
         public Route GetRoute(int id)
-            => _context.Routes
-                .Include(x => x.BusStops)
-                .Include(x => x.Carrier)
-                .First(x => x.Id == id);
+            => _context.Routes.FirstOrDefault(x => x.Id == id);
 
         public IEnumerable<Route> GetAllRoutes()
-            => _context.Routes
-                .Include(x => x.BusStops)
-                .Include(x => x.Carrier);
+            => _context.Routes;
 
         public void AddRoute(Route route)
         {
@@ -42,10 +37,9 @@ namespace BusMap.WebApi.Repositories.Implementations
             _context.SaveChanges();
         }
 
-        public void RemoveRoute(int id)
+        public void RemoveRoute(Route route)
         {
-            var routeToRemove = _context.Routes.First(x => x.Id == id);
-            _context.Routes.Remove(routeToRemove);
+            _context.Routes.Remove(route);
             _context.SaveChanges();
         }
     }

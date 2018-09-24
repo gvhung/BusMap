@@ -26,7 +26,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         }
 
         [Test]
-        public void GetCarrier_IncludeRoutes_IsPossibleToGetRoute()
+        public void GetCarrier_GettingRoutesWhenHaveSome_IsPossibleToGetRoute()
         {
             var result = carrierRepository.GetCarrier(1);
             var resultRoutes = result.Routes.ToList();
@@ -37,19 +37,16 @@ namespace BusMap.WebApiTests.RepositoriesTests
         }
 
         [Test]
-        public void GetCarrier_IncludeRoutes_ReturnsEmptyCollection()
-        {
-            var result = carrierRepository.GetCarrier(2);
-            var resultRoutes = result.Routes;
-
-            Assert.IsEmpty(resultRoutes);
-            Assert.IsEmpty(resultRoutes.ToList());
-        }
+        public void GetCarrier_GettingRoutesWhenHaventThem_ThrowsException()
+            => Assert.Throws<ArgumentNullException>(() => carrierRepository.GetCarrier(2).Routes.ToList());
 
         [Test]
-        public void GetCarrier_WhenIdNotExists_ThrowsException()
-            => Assert.Throws<InvalidOperationException>(() =>
-                carrierRepository.GetCarrier(1280));
+        public void GetCarrier_WhenIdNotExists_ReturnsNull()
+        {
+            var result = carrierRepository.GetCarrier(1280);
+
+            Assert.IsNull(result);
+        }
 
         [Test]
         public void GetAllCarriers_ReturningAllCarriers()
@@ -141,7 +138,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         {
             var nOfCarriersBefore = context.Carriers.ToList().Count;
             var carrierToRemove = carrierRepository.GetCarrier(1);
-            carrierRepository.RemoveCarrier(carrierToRemove.Id);
+            carrierRepository.RemoveCarrier(carrierToRemove);
             var nOfCarriersAfter = context.Carriers.ToList().Count;
 
             Assert.AreEqual(nOfCarriersBefore - 1, nOfCarriersAfter);
@@ -150,14 +147,19 @@ namespace BusMap.WebApiTests.RepositoriesTests
 
         [Test]
         public void RemoveCarrier_WhenCarrierUnderIdDontExists_ThrowingException()
-            => Assert.Throws<InvalidOperationException>(() => 
-                carrierRepository.RemoveCarrier(1920));
+        {
+            var carrierToRemove = carrierRepository.GetCarrier(1920);
+
+            Assert.Throws<ArgumentNullException>(() =>
+                carrierRepository.RemoveCarrier(carrierToRemove));
+        }
 
         [Test]
         public void RemoveCarrier_WhenCarrierUnderIdExists_AlsoRemovingRoutes()
         {
             var nOfRoutesBefore = context.Routes.ToList().Count;
-            carrierRepository.RemoveCarrier(1);
+            var carrierToRemove = carrierRepository.GetCarrier(1);
+            carrierRepository.RemoveCarrier(carrierToRemove);
             var resultRoutes = context.Routes.ToList();
             var nOfRoutesAfter = resultRoutes.Count;
 
