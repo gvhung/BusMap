@@ -8,7 +8,7 @@ namespace BusMap.WebApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Pins",
+                name: "busStops",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -20,14 +20,14 @@ namespace BusMap.WebApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pins", x => x.Id);
+                    table.PrimaryKey("PK_busStops", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Pins");
+                name: "busStops");
         }
     }
 }
