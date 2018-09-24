@@ -18,7 +18,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         [Test]
         public void Get_WhenIdExists_ReturnsBusStop()
         {
-            var result = busStopRepository.Get(2);
+            var result = busStopRepository.GetBusStop(2);
 
             Assert.IsNotNull(result);
             Assert.AreEqual("TestAddress2", result.Address);
@@ -27,12 +27,12 @@ namespace BusMap.WebApiTests.RepositoriesTests
 
         [Test]
         public void Get_WhenIdNotExists_ThrowingException()
-            => Assert.Throws<InvalidOperationException>(() => busStopRepository.Get(7));
+            => Assert.Throws<InvalidOperationException>(() => busStopRepository.GetBusStop(7));
 
         [Test]
         public void Get_IncludeRoute_IsPossibleToGetRoute()
         {
-            var busStop = busStopRepository.Get(1);
+            var busStop = busStopRepository.GetBusStop(1);
             var result = busStop.Route;
 
             Assert.IsNotNull(result);
@@ -42,7 +42,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         [Test]
         public void Get_IncludeRouteCarrier_IsPossibleToGetCarrier()
         {
-            var busStop = busStopRepository.Get(1);
+            var busStop = busStopRepository.GetBusStop(1);
             var result = busStop.Route.Carrier;
 
             Assert.IsNotNull(result);
@@ -53,7 +53,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         public void GetAll_ReturningALlBusStops()
         {
             var nOfStopsFromContext = context.BusStops.ToList().Count;
-            var result = busStopRepository.GetAll();
+            var result = busStopRepository.GetAllBusStops();
 
             Assert.AreEqual(nOfStopsFromContext, result.Count());
         }
@@ -87,7 +87,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                 }
             };
 
-            busStopRepository.Add(busStopToAdd);
+            busStopRepository.AddBusStop(busStopToAdd);
             var result = context.BusStops.Last();
             var nOfBusStopsAfter = context.BusStops.ToList().Count;
             var nOfCarriersAfter = context.Carriers.ToList().Count;
@@ -127,7 +127,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                 }
             };
 
-            busStopRepository.Add(busStopToAdd);
+            busStopRepository.AddBusStop(busStopToAdd);
             var resultBusStop = context.BusStops.Last();
             var resultCarrierList = context.Carriers.ToList();
             var resultRoutesList = context.Routes.ToList();
@@ -149,7 +149,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         [Test]
         public void Add_AddingBusStopWithoutRoute_ThrowingException()
             => Assert.Throws<InvalidOperationException>(() => 
-                busStopRepository.Add(new BusStop
+                busStopRepository.AddBusStop(new BusStop
                 {
                     Label = "Label",
                     Address = "Address",
@@ -178,7 +178,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     }
                 }
             };
-            busStopRepository.Add(busStop);
+            busStopRepository.AddBusStop(busStop);
 
             Assert.IsTrue(context.BusStops.Count() == 4);
         }
@@ -188,9 +188,9 @@ namespace BusMap.WebApiTests.RepositoriesTests
         [Test]
         public void Remove_WhenBusStopExists_RemovingBusStop()
         {
-            var busStop = busStopRepository.Get(2);
+            var busStop = busStopRepository.GetBusStop(2);
 
-            busStopRepository.Remove(busStop.Id);
+            busStopRepository.RemoveBusStop(busStop.Id);
             var result = context.BusStops;
 
             Assert.IsFalse(result.Contains(busStop));
@@ -199,14 +199,14 @@ namespace BusMap.WebApiTests.RepositoriesTests
         [Test]
         public void Remove_WhenBusStopUnderIdNotExist_ThrowingException()
             => Assert.Throws<InvalidOperationException>(() => 
-                busStopRepository.Remove(7));
+                busStopRepository.RemoveBusStop(7));
 
         [Test]
         public void Remove_WhenBusStopExists_DontRemovingCarrier()
         {
             var nOfBusStops = context.BusStops.ToList().Count;
             var before = context.Carriers.ToList();
-            busStopRepository.Remove(3);
+            busStopRepository.RemoveBusStop(3);
             var result = context.Carriers.ToList();
 
             Assert.AreEqual(nOfBusStops - 1, context.BusStops.ToList().Count);
@@ -218,7 +218,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         {
             var nOfBusStops = context.BusStops.ToList().Count;
             var before = context.Routes.ToList();
-            busStopRepository.Remove(3);
+            busStopRepository.RemoveBusStop(3);
             var result = context.Routes.ToList();
 
             Assert.AreEqual(nOfBusStops - 1, context.BusStops.ToList().Count);

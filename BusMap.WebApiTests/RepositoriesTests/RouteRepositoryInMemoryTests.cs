@@ -60,7 +60,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
 
         [Test]
         public void GetRoute_WhenIdNotExists_ThrowingException()
-            => Assert.Throws<InvalidOperationException>(() => busStopRepository.Get(190));
+            => Assert.Throws<InvalidOperationException>(() => busStopRepository.GetBusStop(190));
 
         [Test]
         public void GetAllRoutes_ReturningAllRoutes()

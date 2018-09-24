@@ -13,11 +13,11 @@ namespace BusMap.WebApi.Controllers
     [ApiController]
     public class BusStopsController : ControllerBase
     {
-        private readonly IBusStopRepository _pinRepository;
+        private readonly IBusStopRepository __busStopRepository;
 
-        public BusStopsController(IBusStopRepository pinRepository)
+        public BusStopsController(IBusStopRepository busStopRepository)
         {
-            _pinRepository = pinRepository;
+            __busStopRepository = busStopRepository;
         }
 
         [HttpGet]
@@ -26,7 +26,7 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var pins = _pinRepository.GetAll();
+            var pins = __busStopRepository.GetAllBusStops();
 
             if (pins.ToList().Count == 0)
                 return NotFound();
@@ -40,7 +40,7 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var pin = _pinRepository.Get(id);
+            var pin = __busStopRepository.GetBusStop(id);
             if (pin == null)
                 return NotFound();
 
@@ -53,7 +53,7 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _pinRepository.Add(pin);
+            __busStopRepository.AddBusStop(pin);
 
             return CreatedAtAction("GetPin", new {id = pin.Id}, pin);
         }

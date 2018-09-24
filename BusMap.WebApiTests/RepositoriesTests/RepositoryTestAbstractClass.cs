@@ -16,6 +16,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         protected DatabaseContext context;
         protected BusStopRepository busStopRepository;
         protected RouteRepository routeRepository;
+        protected CarrierRepository carrierRepository;
 
         [SetUp]
         public void SetUp()
@@ -27,6 +28,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
             context = new DatabaseContext(options);
             busStopRepository = new BusStopRepository(context);
             routeRepository = new RouteRepository(context);
+            carrierRepository = new CarrierRepository(context);
 
             var routeForTest1 = new Route
             {
@@ -48,8 +50,8 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Name = "CarrierName1"
                 }
             };
-
-            busStopRepository.AddRange(new List<BusStop>
+            
+            busStopRepository.AddBusStopsRange(new List<BusStop>
             {
                 new BusStop
                 {
@@ -106,23 +108,13 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Route = routeForTest2
                 }
             });
+
+            carrierRepository.AddCarrier(new Carrier
+            {
+                Id = 2,
+                Name = "CarrierName2"
+            });
         }
-
-
-        [Test]
-        public void InMemoryDatabaseInitializationTest()
-        {
-            var result = busStopRepository.GetAll().Count();
-            Assert.IsTrue(busStopRepository.GetAll().Count() == 6);
-        }
-
-        [Test]
-        public void InMemoryDatabaseInitializationTest2()
-        {
-            Assert.IsTrue(busStopRepository.GetAll().Count() == 6);
-            Assert.AreEqual("TestLabel1", busStopRepository.Get(1).Label);
-        }
-
 
     }
 }

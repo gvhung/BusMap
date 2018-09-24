@@ -8,10 +8,10 @@ namespace BusMap.WebApi.Repositories.Abstract
 {
     public interface IBusStopRepository
     {
-        BusStop Get(int id);
-        IEnumerable<BusStop> GetAll();
-        void Add(BusStop busStop);
-        void AddRange(IEnumerable<BusStop> busStops);
-        void Remove(int id);
+        BusStop GetBusStop(int id);
+        IEnumerable<BusStop> GetAllBusStops();
+        void AddBusStop(BusStop busStop);
+        void AddBusStopsRange(IEnumerable<BusStop> busStops);
+        void RemoveBusStop(int id);
     }
 }

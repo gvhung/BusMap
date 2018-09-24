@@ -39,7 +39,7 @@ namespace BusMap.WebApiTests
                     Name = "CarrierName"
                 }
             };
-            repository.AddRange(new List<BusStop>
+            repository.AddBusStopsRange(new List<BusStop>
             {
                 new BusStop
                 {

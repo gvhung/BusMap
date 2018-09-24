@@ -18,30 +18,30 @@ namespace BusMap.WebApi.Repositories.Implementations
             _context = context;
         }
 
-        public BusStop Get(int id)
+        public BusStop GetBusStop(int id)
             => _context.BusStops
                 .Include(x => x.Route)
                 .ThenInclude(x => x.Carrier)
                 .First(x => x.Id == id);
 
-        public IEnumerable<BusStop> GetAll()
+        public IEnumerable<BusStop> GetAllBusStops()
             => _context.BusStops
                 .Include(x => x.Route)
                 .ThenInclude(x => x.Carrier);
 
-        public void Add(BusStop busStop)
+        public void AddBusStop(BusStop busStop)
         {
             _context.BusStops.Add(busStop);
             _context.SaveChanges();
         }
 
-        public void AddRange(IEnumerable<BusStop> busStops)
+        public void AddBusStopsRange(IEnumerable<BusStop> busStops)
         {
             _context.BusStops.AddRange(busStops);
             _context.SaveChanges();
         }
 
-        public void Remove(int id)
+        public void RemoveBusStop(int id)
         {
             var busStopToRemove = _context.BusStops.First(x => x.Id == id);
             _context.BusStops.Remove(busStopToRemove);
