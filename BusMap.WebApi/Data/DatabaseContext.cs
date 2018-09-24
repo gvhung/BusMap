@@ -14,6 +14,13 @@ namespace BusMap.WebApi.Data
         {
         }
 
-        public DbSet<Pin> Pins { get; set; }
+        public DatabaseContext()
+        { 
+        }
+
+
+        public DbSet<BusStop> BusStops { get; set; }
+        public DbSet<Route> Routes { get; set; }
+        public DbSet<Carrier> Carriers { get; set; }
     }
 }

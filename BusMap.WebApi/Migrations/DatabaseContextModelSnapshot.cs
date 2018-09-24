@@ -18,23 +18,80 @@ namespace BusMap.WebApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BusMap.WebApi.Models.Pin", b =>
+            modelBuilder.Entity("BusMap.WebApi.Models.BusStop", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
-                    b.Property<string>("Label");
+                    b.Property<string>("Label")
+                        .HasMaxLength(50);
 
                     b.Property<double>("Latitude");
 
                     b.Property<double>("Longitude");
 
+                    b.Property<int>("RouteId");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Pins");
+                    b.HasIndex("RouteId");
+
+                    b.ToTable("BusStops");
+                });
+
+            modelBuilder.Entity("BusMap.WebApi.Models.Carrier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Carriers");
+                });
+
+            modelBuilder.Entity("BusMap.WebApi.Models.Route", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CarrierId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarrierId");
+
+                    b.ToTable("Routes");
+                });
+
+            modelBuilder.Entity("BusMap.WebApi.Models.BusStop", b =>
+                {
+                    b.HasOne("BusMap.WebApi.Models.Route", "Route")
+                        .WithMany("BusStops")
+                        .HasForeignKey("RouteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BusMap.WebApi.Models.Route", b =>
+                {
+                    b.HasOne("BusMap.WebApi.Models.Carrier", "Carrier")
+                        .WithMany("Routes")
+                        .HasForeignKey("CarrierId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

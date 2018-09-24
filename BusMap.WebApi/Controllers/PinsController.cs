@@ -11,11 +11,11 @@ namespace BusMap.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PinsController : ControllerBase
+    public class BusStopsController : ControllerBase
     {
-        private readonly IPinRepository _pinRepository;
+        private readonly IBusStopRepository _pinRepository;
 
-        public PinsController(IPinRepository pinRepository)
+        public BusStopsController(IBusStopRepository pinRepository)
         {
             _pinRepository = pinRepository;
         }
@@ -48,7 +48,7 @@ namespace BusMap.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostPin([FromBody] Pin pin)
+        public IActionResult PostPin([FromBody] BusStop pin)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

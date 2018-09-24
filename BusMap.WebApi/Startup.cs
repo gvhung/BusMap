@@ -32,7 +32,7 @@ namespace BusMap.WebApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(@"Data Source=DESKTOP-6TBR12R\SQLEXPRESS;Database=BusMap;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
-            services.AddScoped<IPinRepository, PinRepository>();
+            services.AddScoped<IBusStopRepository, BusStopRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
