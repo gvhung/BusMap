@@ -31,10 +31,6 @@ namespace BusMap.WebApi.Repositories.Implementations
 
         public void Add(BusStop busStop)
         {
-            if (busStop.Address == null)
-            {
-                throw new Exception("test");
-            }
             _context.BusStops.Add(busStop);
             _context.SaveChanges();
         }

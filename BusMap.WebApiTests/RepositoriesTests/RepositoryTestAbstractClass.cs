@@ -13,8 +13,9 @@ namespace BusMap.WebApiTests.RepositoriesTests
     [TestFixture]
     public abstract class RepositoryTestAbstractClass
     {
-        protected  BusStopRepository repository;
         protected DatabaseContext context;
+        protected BusStopRepository busStopRepository;
+        protected RouteRepository routeRepository;
 
         [SetUp]
         public void SetUp()
@@ -24,20 +25,31 @@ namespace BusMap.WebApiTests.RepositoriesTests
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
             context = new DatabaseContext(options);
-            repository = new BusStopRepository(context);
+            busStopRepository = new BusStopRepository(context);
+            routeRepository = new RouteRepository(context);
 
-            var routeForTest = new Route
+            var routeForTest1 = new Route
             {
                 Id = 1,
-                Name = "RouteName",
+                Name = "RouteName1",
                 Carrier = new Carrier
                 {
                     Id = 1,
-                    Name = "CarrierName"
+                    Name = "CarrierName1"
+                }
+            };
+            var routeForTest2 = new Route
+            {
+                Id = 2,
+                Name = "RouteName2",
+                Carrier = new Carrier
+                {
+                    Id = 1,
+                    Name = "CarrierName1"
                 }
             };
 
-            repository.AddRange(new List<BusStop>
+            busStopRepository.AddRange(new List<BusStop>
             {
                 new BusStop
                 {
@@ -46,7 +58,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Longitude = 10.0,
                     Address = "TestAddress1",
                     Label = "TestLabel1",
-                    Route = routeForTest
+                    Route = routeForTest1
                 },
                 new BusStop
                 {
@@ -55,7 +67,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Longitude = 20.0,
                     Address = "TestAddress2",
                     Label = "TestLabel2",
-                    Route = routeForTest
+                    Route = routeForTest1
                 },
                 new BusStop
                 {
@@ -64,23 +76,51 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Longitude = 30.0,
                     Address = "TestAddress3",
                     Label = "TestLabel3",
-                    Route = routeForTest
+                    Route = routeForTest1
+                },
+                new BusStop
+                {
+                    Id = 4,
+                    Latitude = 35.0,
+                    Longitude = 40.0,
+                    Address = "TestAddress4",
+                    Label = "TestLabel4",
+                    Route = routeForTest2
+                },
+                new BusStop
+                {
+                    Id = 5,
+                    Latitude = 45.0,
+                    Longitude = 50.0,
+                    Address = "TestAddress5",
+                    Label = "TestLabel5",
+                    Route = routeForTest2
+                },
+                new BusStop
+                {
+                    Id = 6,
+                    Latitude = 55.0,
+                    Longitude = 60.0,
+                    Address = "TestAddress6",
+                    Label = "TestLabel6",
+                    Route = routeForTest2
                 }
             });
         }
 
+
         [Test]
         public void InMemoryDatabaseInitializationTest()
         {
-            var result = repository.GetAll().Count();
-            Assert.IsTrue(repository.GetAll().Count() == 3);
+            var result = busStopRepository.GetAll().Count();
+            Assert.IsTrue(busStopRepository.GetAll().Count() == 6);
         }
 
         [Test]
         public void InMemoryDatabaseInitializationTest2()
         {
-            Assert.IsTrue(repository.GetAll().Count() == 3);
-            Assert.AreEqual("TestLabel1", repository.Get(1).Label);
+            Assert.IsTrue(busStopRepository.GetAll().Count() == 6);
+            Assert.AreEqual("TestLabel1", busStopRepository.Get(1).Label);
         }
 
 
