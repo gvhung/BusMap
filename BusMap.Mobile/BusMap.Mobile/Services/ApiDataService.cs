@@ -55,6 +55,11 @@ namespace BusMap.Mobile.Services
             throw new NotImplementedException();
         }
 
+        public Task<List<Route>> FindRoutes(string startCity, string destinationCity)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate)
         {
             throw new NotImplementedException();

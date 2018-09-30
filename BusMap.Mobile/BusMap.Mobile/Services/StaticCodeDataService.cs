@@ -282,6 +282,7 @@ namespace BusMap.Mobile.Services
                 Id = 1,
                 Name = "Nowex Transport"
             };
+
             var carrier2 = new Carrier
             {
                 Id = 2,
@@ -351,9 +352,41 @@ namespace BusMap.Mobile.Services
             return _routes.Find(x => x.Id == routeId);
         }
 
-        public Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate)
+        //public async Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate)
+        //{
+        //    await Task.Delay(500);
+        //    return _routes.Where(predicate.Compile()).ToList();
+        //}
+
+        public async Task<List<Route>> FindRoutes(string startCity, string destinationCity)
         {
-            throw new NotImplementedException();
+            await Task.Delay(1000);
+
+            var result = new List<Route>();
+            var routesToTest = _routes
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant())))
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant())))
+                .ToList();
+
+            foreach (var route in routesToTest)
+            {
+                var start = route.BusStops.First(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant()));
+                var dest = route.BusStops.First(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant()));
+
+                if (start.Id < dest.Id)
+                    result.Add(route);
+            }
+
+            return result;
         }
+
     }
 }

@@ -17,6 +17,7 @@ namespace BusMap.Mobile.Services
         Task<ObservableCollection<Pin>> GetPinsForRoute(int routeId);
         Task<List<Route>> GetRoutes();
         Task<Route> GetRoute(int routeId);
-        Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate);
+        //Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate);
+        Task<List<Route>> FindRoutes(string startCity, string destinationCity);
     }
 }
