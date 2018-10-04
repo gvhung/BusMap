@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusMap.WebApi.DatabaseModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusMap.WebApi.Models
 {
-    public class BusStop
+    public class BusStopModel
     {
         public int Id { get; set; }
 
@@ -22,11 +23,5 @@ namespace BusMap.WebApi.Models
 
         [MaxLength(50)]
         public string Label { get; set; }
-
-
-
-        public int RouteId { get; set; }
-
-        public Route Route { get; set; }
     }
 }

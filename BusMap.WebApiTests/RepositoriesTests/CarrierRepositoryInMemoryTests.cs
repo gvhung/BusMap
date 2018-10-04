@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BusMap.WebApi.Models;
+using BusMap.WebApi.DatabaseModels;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 

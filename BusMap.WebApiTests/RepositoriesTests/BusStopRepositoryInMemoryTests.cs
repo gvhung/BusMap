@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BusMap.WebApi.Data;
-using BusMap.WebApi.Models;
+using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;

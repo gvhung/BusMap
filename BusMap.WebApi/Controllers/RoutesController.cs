@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BusMap.WebApi.Models;
+using AutoMapper;
+using BusMap.WebApi.Dto;
+using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Repositories.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BusMap.WebApi.Helpers;
 
 namespace BusMap.WebApi.Controllers
 {
@@ -15,10 +18,12 @@ namespace BusMap.WebApi.Controllers
     public class RoutesController : ControllerBase
     {
         private readonly IRouteRepository _routeRepository;
+        //private readonly IMapper _mapper;
 
         public RoutesController(IRouteRepository routeRepository)
         {
             _routeRepository = routeRepository;
+            //_mapper = mapper;
         }
 
         [HttpGet]
@@ -27,7 +32,9 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var routes = _routeRepository.GetAllRoutes().ToList();
+            var routes = _routeRepository.GetAllRoutes()
+                .ToList();
+
             if (routes.Count == 0)
                 return NotFound();
 
@@ -40,9 +47,13 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = _routeRepository.GetRoute(id);
+            var route = _routeRepository
+                .GetRouteIncludeBusStopsCarrier(id);
+                //.ToRouteDto();
+
             if (route == null)
                 return NotFound();
+            //var mappedRoute = _mapper.Map<RouteModel>(route);
 
             return Ok(route);
         }
@@ -69,14 +80,14 @@ namespace BusMap.WebApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteRoute([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            //if (!ModelState.IsValid)
+            //    return BadRequest(ModelState);
 
-            var routeToRemove = _routeRepository.GetRoute(id);
-            if (routeToRemove == null)
-                return NotFound();
+            //var routeToRemove = _routeRepository.GetRoute(id);
+            //if (routeToRemove == null)
+            //    return NotFound();
 
-            _routeRepository.RemoveRoute(routeToRemove);
+            //_routeRepository.RemoveRoute(routeToRemove);
             return Ok();
         }
 
