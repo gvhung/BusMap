@@ -6,6 +6,7 @@ using BusMap.WebApi.Automapper;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Repositories.Implementations;
+using BusMap.WebApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,10 +33,13 @@ namespace BusMap.WebApi
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(@"Data Source=LAPTOP-QRV40OSS;Database=BusMap;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
+                options.UseSqlServer(Connections.GeDbConnectionString()));
             services.AddScoped<IBusStopRepository, BusStopRepository>();
             services.AddScoped<IRouteRepository, RouteRepository>();
             services.AddScoped<ICarrierRepository, CarrierRepository>();
+
+            services.AddScoped<ICarrierService, CarrierService>();
+
             var config = new AutoMapper.MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new AutomapperProfile());

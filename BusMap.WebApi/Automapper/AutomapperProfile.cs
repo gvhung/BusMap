@@ -13,9 +13,10 @@ namespace BusMap.WebApi.Automapper
     {
         public AutomapperProfile()
         {
-            CreateMap<Route, RouteModel>().ReverseMap();
-            CreateMap<Carrier, CarrierModel>().ReverseMap();
-            CreateMap<BusStop, BusStopModel>().ReverseMap();
+            //CreateMap<Route, RouteModel>().ReverseMap();
+            //CreateMap<Carrier, CarrierModel>().ReverseMap();
+            //CreateMap<BusStop, BusStopModel>().ReverseMap();
+            CreateMap<Carrier, CarrierDto>();
         }
     }
 }

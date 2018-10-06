@@ -40,10 +40,16 @@
     <None Update="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <None Update="Views\BusStopsMap.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\NearestStopsMapPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\RoutesListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>

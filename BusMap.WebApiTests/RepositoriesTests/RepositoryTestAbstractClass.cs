@@ -109,7 +109,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                 }
             });
 
-            carrierRepository.AddCarrier(new Carrier
+            carrierRepository.AddCarrierAsync(new Carrier
             {
                 Id = 2,
                 Name = "CarrierName2"

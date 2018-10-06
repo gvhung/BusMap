@@ -19,7 +19,7 @@ namespace BusMap.WebApi.Helpers
             {
                 Id = route.Id,
                 Name = route.Name,
-                BusStops = route?.BusStops
+                //BusStops = route?.BusStops
             };
         }
     }

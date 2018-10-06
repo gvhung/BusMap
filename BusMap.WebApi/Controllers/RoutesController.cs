@@ -32,7 +32,7 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var routes = _routeRepository.GetAllRoutes()
+            var routes = _routeRepository.GetAllRoutesIncludeBusStops()
                 .ToList();
 
             if (routes.Count == 0)

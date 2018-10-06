@@ -20,10 +20,17 @@ namespace BusMap.WebApi.Repositories.Implementations
             _context = context;
         }
 
-        public Route GetRoute(int id)
+        public RouteModel GetRoute(int id)
             => _context.Routes
+                .Select(r => new RouteModel
+                {
+                    Id = r.Id,
+                    CarrierId = r.CarrierId,
+                    Name = r.Name
+                })
+                .FirstOrDefault(r => r.Id == id);
 
-            .FirstOrDefault(r => r.Id == id);
+        
 
         public RouteModel GetRouteIncludeBusStops(int id)
             => _context.Routes
@@ -56,7 +63,7 @@ namespace BusMap.WebApi.Repositories.Implementations
                 Name = routeCarrier.Name
             };
 
-            return _context.Routes
+            var allRoutes = _context.Routes
                 .Include(r => r.BusStops)
                 .Include(r => r.Carrier)
                 .Select(r => new RouteModel
@@ -76,6 +83,8 @@ namespace BusMap.WebApi.Repositories.Implementations
                     Carrier = carrierModel
                 })
                 .FirstOrDefault();
+
+            return allRoutes;
         }
 
 
@@ -88,6 +97,65 @@ namespace BusMap.WebApi.Repositories.Implementations
                     CarrierId = r.CarrierId
                 })
                 .ToList();
+
+        public IEnumerable<RouteModel> GetAllRoutesIncludeBusStops()
+            => _context.Routes
+                .Include(r => r.BusStops)
+                .Select(r => new RouteModel {
+                    Id = r.Id,
+                    Name = r.Name,
+                    CarrierId = r.CarrierId,
+                    BusStops = r.BusStops.Select(b => new BusStopModel
+                    {
+                        Id = b.Id,
+                        Address = b.Address,
+                        Label = b.Label,
+                        Latitude = b.Latitude,
+                        Longitude = b.Longitude
+                    })
+                    .ToList()
+                })
+                .ToList();
+
+        public IEnumerable<RouteModel> GetAllRoutesIncludeBusStopsCarrier()
+        {
+            var carriers = _context.Carriers.ToList();
+            var carriersModel = new List<CarrierModel>();
+
+            foreach (var carrier in carriers)
+            {
+                carriersModel.Add(new CarrierModel
+                {
+                    Id = carrier.Id,
+                    Name = carrier.Name
+                });
+            }
+
+            
+
+            var allRoutes = _context.Routes
+                .Include(r => r.BusStops)
+                .Include(r => r.Carrier)
+                .Select(r => new RouteModel
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    CarrierId = r.CarrierId,
+                    BusStops = r.BusStops.Select(b => new BusStopModel
+                    {
+                        Id = b.Id,
+                        Address = b.Address,
+                        Label = b.Label,
+                        Latitude = b.Latitude,
+                        Longitude = b.Longitude
+                    })
+                    .ToList(),
+                    Carrier = carriersModel.FirstOrDefault(c => c.Id == r.CarrierId)
+                })
+                .ToList();
+
+            return allRoutes;
+        }
 
         public void AddRoute(Route route)
         {

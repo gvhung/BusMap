@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Helpers;
 using NUnit.Framework;
 
 namespace BusMap.WebApiTests.RepositoriesTests
@@ -190,11 +191,11 @@ namespace BusMap.WebApiTests.RepositoriesTests
         {
             var nOfRoutesBefore = context.Routes.ToList().Count;
             var routeToRemove = routeRepository.GetRoute(2);
-            routeRepository.RemoveRoute(routeToRemove);
+            routeRepository.RemoveRoute(routeToRemove.ToRoute());
             var nOfRoutesAfter = context.Routes.ToList().Count;
 
             Assert.AreEqual(nOfRoutesBefore - 1, nOfRoutesAfter);
-            Assert.IsFalse(context.Routes.Contains(routeToRemove));
+            Assert.IsFalse(context.Routes.Contains(routeToRemove.ToRoute()));
         }
 
         [Test]
@@ -203,7 +204,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
             var routeToRemove = routeRepository.GetRoute(1290);
 
             Assert.Throws<ArgumentNullException>(() =>
-                routeRepository.RemoveRoute(routeToRemove));
+                routeRepository.RemoveRoute(routeToRemove.ToRoute()));
         }
 
 
@@ -212,7 +213,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         {
             var nOfBusStopsBefore = context.BusStops.ToList().Count;
             var routeToRemove = routeRepository.GetRoute(1);
-            routeRepository.RemoveRoute(routeToRemove);
+            routeRepository.RemoveRoute(routeToRemove.ToRoute());
             var nOfBusStopsAfter = context.BusStops.ToList().Count;
 
             Assert.AreEqual(nOfBusStopsBefore - 3, nOfBusStopsAfter);
@@ -223,7 +224,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
         {
             var nOfCarriersBefore = context.Carriers.ToList().Count;
             var routeToRemove = routeRepository.GetRoute(1);
-            routeRepository.RemoveRoute(routeToRemove);
+            routeRepository.RemoveRoute(routeToRemove.ToRoute());
             var nOfCarriersAfter = context.Carriers.ToList().Count;
 
             Assert.AreEqual(nOfCarriersBefore, nOfCarriersAfter);

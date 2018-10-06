@@ -19,28 +19,32 @@ namespace BusMap.WebApi.Repositories.Implementations
         }
 
 
-        public Carrier GetCarrier(int id)
-            => _context.Carriers.FirstOrDefault(x => x.Id == id);
+        public async Task<Carrier> GetCarrierAsync(int id)
+            => await _context.Carriers
+                .Include(x => x.Routes)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
-        public IEnumerable<Carrier> GetAllCarriers()
-            => _context.Carriers;
+        public async Task<IEnumerable<Carrier>> GetAllCarriers()
+            => await _context.Carriers
+                .Include(x => x.Routes)
+                .ToListAsync();
 
-        public void AddCarrier(Carrier carrier)
+        public async Task AddCarrierAsync(Carrier carrier)
         {
-            _context.Add(carrier);
-            _context.SaveChanges();
+            await _context.AddAsync(carrier);
+            await _context.SaveChangesAsync();
         }
 
-        public void AddCArrierRange(IEnumerable<Carrier> carriers)
+        public async Task AddCarrierRangeAsync(IEnumerable<Carrier> carriers)
         {
-            _context.Carriers.AddRange(carriers);
-            _context.SaveChanges();
+            await _context.Carriers.AddRangeAsync(carriers);
+            await _context.SaveChangesAsync();
         }
 
-        public void RemoveCarrier(Carrier carrier)
+        public async Task RemoveCarrier(Carrier carrier)
         {
             _context.Carriers.Remove(carrier);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
