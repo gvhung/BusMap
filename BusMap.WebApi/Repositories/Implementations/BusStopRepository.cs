@@ -18,28 +18,40 @@ namespace BusMap.WebApi.Repositories.Implementations
             _context = context;
         }
 
-        public BusStop GetBusStop(int id)
-            => _context.BusStops.FirstOrDefault(x => x.Id == id);
+        public async Task<BusStop> GetBusStopAsync(int id)
+            => await _context.BusStops
+                .FirstOrDefaultAsync(x => x.Id == id);
 
-        public IEnumerable<BusStop> GetAllBusStops()
-            => _context.BusStops;
+        public async Task<BusStop> GetBusStopIncludeRouteAsync(int id)
+            => await _context.BusStops
+                .Include(b => b.Route)
+                .FirstOrDefaultAsync(b => b.Id == id);
 
-        public void AddBusStop(BusStop busStop)
+        public async Task<BusStop> GetBusStopIncludeRouteCarrierAsync(int id)
+            => await _context.BusStops
+                .Include(b => b.Route)
+                .ThenInclude(r => r.Carrier)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+        public async Task<IEnumerable<BusStop>> GetAllBusStopsAsync()
+            => await _context.BusStops.ToListAsync();
+
+        public async Task AddBusStopAsync(BusStop busStop)
         {
-            _context.BusStops.Add(busStop);
-            _context.SaveChanges();
+            await _context.BusStops.AddAsync(busStop);
+            await _context.SaveChangesAsync();
         }
 
-        public void AddBusStopsRange(IEnumerable<BusStop> busStops)
+        public async Task AddBusStopsRangeAsync(IEnumerable<BusStop> busStops)
         {
-            _context.BusStops.AddRange(busStops);
-            _context.SaveChanges();
+            await _context.BusStops.AddRangeAsync(busStops);
+            await _context.SaveChangesAsync();
         }
 
-        public void RemoveBusStop(BusStop busStop)
+        public async Task RemoveBusStopAsync(BusStop busStop)
         {
             _context.BusStops.Remove(busStop);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

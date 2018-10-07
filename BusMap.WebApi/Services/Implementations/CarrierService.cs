@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BusMap.WebApi.DatabaseModels;
-using BusMap.WebApi.Dto;
+using BusMap.WebApi.Dto.Carriers;
 using BusMap.WebApi.Repositories.Abstract;
+using BusMap.WebApi.Services.Abstract;
 
-namespace BusMap.WebApi.Services
+namespace BusMap.WebApi.Services.Implementations
 {
     public class CarrierService : ICarrierService
     {
@@ -20,16 +21,16 @@ namespace BusMap.WebApi.Services
             _mapper = mapper;
         }
 
-        public async Task<CarrierDto> GetCarrierAsync(int id)
+        public async Task<CarriersCarrierDto> GetCarrierAsync(int id)
         {
             var carrier = await _carrierRepository.GetCarrierAsync(id);
-            return _mapper.Map<Carrier, CarrierDto>(carrier);
+            return _mapper.Map<Carrier, CarriersCarrierDto>(carrier);
         }
 
-        public async Task<IEnumerable<CarrierDto>> GetAllCarriersAsync()
+        public async Task<IEnumerable<CarriersCarrierDto>> GetAllCarriersAsync()
         {
             var carriers = await _carrierRepository.GetAllCarriers();
-            return _mapper.Map<IEnumerable<Carrier>, IEnumerable<CarrierDto>>(carriers);
+            return _mapper.Map<IEnumerable<Carrier>, IEnumerable<CarriersCarrierDto>>(carriers);
         }
 
         public async Task AddCarrierAsync(Carrier carrier)
@@ -38,7 +39,7 @@ namespace BusMap.WebApi.Services
         public async Task AddCarrierRangeAsync(IEnumerable<Carrier> carriers)
             => await _carrierRepository.AddCarrierRangeAsync(carriers);
 
-        public async Task RemoveCarrierAsync(CarrierDto carrier)
+        public async Task RemoveCarrierAsync(CarriersCarrierDto carrier)
         {
             var carrierToRemove = await _carrierRepository.GetCarrierAsync(carrier.Id);
             await _carrierRepository.RemoveCarrier(carrierToRemove);

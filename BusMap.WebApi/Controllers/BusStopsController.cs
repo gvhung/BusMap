@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Repositories.Abstract;
+using BusMap.WebApi.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,33 +15,59 @@ namespace BusMap.WebApi.Controllers
     [ApiController]
     public class BusStopsController : ControllerBase
     {
-        private readonly IBusStopRepository _busStopRepository;
+        private readonly IBusStopService _busStopService;
 
-        public BusStopsController(IBusStopRepository busStopRepository)
+        public BusStopsController(IBusStopService busStopService)
         {
-            _busStopRepository = busStopRepository;
+            _busStopService = busStopService;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var busStops = _busStopRepository.GetAllBusStops().ToList();
-            if (busStops.Count == 0)
+            var busStops = await _busStopService.GetAllBusStopsAsync();
+            if (busStops.ToList().Count == 0)
                 return NotFound();
 
             return Ok(busStops);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetBusStop([FromRoute] int id)
+        public async Task<IActionResult> GetBusStop([FromRoute] int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var busStop = _busStopRepository.GetBusStop(id);
+            var busStop = await _busStopService.GetBusStopAsync(id);
+            if (busStop == null)
+                return NotFound();
+
+            return Ok(busStop);
+        }
+
+        [HttpGet("{id}/route")]
+        public async Task<IActionResult> GetBusStopIncludeRoute([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var busStop = await _busStopService.GetBusStopIncludeRouteAsync(id);
+            if (busStop == null)
+                return NotFound();
+
+            return Ok(busStop);
+        }
+
+        [HttpGet("{id}/routeCarrier")]
+        public async Task<IActionResult> GetBusStopIncludeRouteCarrier([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var busStop = await _busStopService.GetBusStopIncludeRouteCarrierAsync(id);
             if (busStop == null)
                 return NotFound();
 
@@ -48,14 +75,14 @@ namespace BusMap.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostBusStop([FromBody] BusStop busStop)
+        public async Task<IActionResult> PostBusStop([FromBody] BusStop busStop)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                _busStopRepository.AddBusStop(busStop);
+                await _busStopService.AddBusStopAsync(busStop);
             }
             catch (DbUpdateException)
             {
@@ -66,16 +93,16 @@ namespace BusMap.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteBusStop([FromRoute] int id)
+        public async Task<IActionResult> DeleteBusStop([FromRoute] int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var busStopToRemove = _busStopRepository.GetBusStop(id);
+            var busStopToRemove = await _busStopService.GetBusStopAsync(id);
             if (busStopToRemove == null)
                 return NotFound();
 
-            _busStopRepository.RemoveBusStop(busStopToRemove);
+            await _busStopService.RemoveBusStopAsync(busStopToRemove);
             return Ok();
         }
 

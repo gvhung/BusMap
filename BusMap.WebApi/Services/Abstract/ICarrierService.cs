@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
-using BusMap.WebApi.Dto;
+using BusMap.WebApi.Dto.Carriers;
 
-namespace BusMap.WebApi.Services
+namespace BusMap.WebApi.Services.Abstract
 {
     public interface ICarrierService
     {
-        Task<CarrierDto> GetCarrierAsync(int id);
-        Task<IEnumerable<CarrierDto>> GetAllCarriersAsync();
+        Task<CarriersCarrierDto> GetCarrierAsync(int id);
+        Task<IEnumerable<CarriersCarrierDto>> GetAllCarriersAsync();
         Task AddCarrierAsync(Carrier carrier);
         Task AddCarrierRangeAsync(IEnumerable<Carrier> carriers);
-        Task RemoveCarrierAsync(CarrierDto carrier);
+        Task RemoveCarrierAsync(CarriersCarrierDto carrier);
     }
 }

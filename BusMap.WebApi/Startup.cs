@@ -7,6 +7,8 @@ using BusMap.WebApi.Data;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Repositories.Implementations;
 using BusMap.WebApi.Services;
+using BusMap.WebApi.Services.Abstract;
+using BusMap.WebApi.Services.Implementations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,6 +41,7 @@ namespace BusMap.WebApi
             services.AddScoped<ICarrierRepository, CarrierRepository>();
 
             services.AddScoped<ICarrierService, CarrierService>();
+            services.AddScoped<IBusStopService, BusStopService>();
 
             var config = new AutoMapper.MapperConfiguration(cfg =>
             {

@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BusMap.WebApi.DatabaseModels;
-using BusMap.WebApi.Dto;
+using BusMap.WebApi.Dto.BusStops;
+using BusMap.WebApi.Dto.Carriers;
 using BusMap.WebApi.Models;
 
 namespace BusMap.WebApi.Automapper
@@ -13,10 +14,13 @@ namespace BusMap.WebApi.Automapper
     {
         public AutomapperProfile()
         {
-            //CreateMap<Route, RouteModel>().ReverseMap();
-            //CreateMap<Carrier, CarrierModel>().ReverseMap();
-            //CreateMap<BusStop, BusStopModel>().ReverseMap();
-            CreateMap<Carrier, CarrierDto>();
+            CreateMap<Carrier, CarriersCarrierDto>();
+            CreateMap<BusStop, CarriersBusStopDto>();
+            CreateMap<Route, CarriersRouteDto>();
+
+            CreateMap<Carrier, BusStopsCarrierDto>();
+            CreateMap<BusStop, BusStopsBusStopDto>();
+            CreateMap<Route, BusStopsRouteDto>();
         }
     }
 }
