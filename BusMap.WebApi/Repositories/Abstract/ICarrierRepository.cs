@@ -9,9 +9,11 @@ namespace BusMap.WebApi.Repositories.Abstract
     public interface ICarrierRepository
     {
         Task<Carrier> GetCarrierAsync(int id);
-        Task<IEnumerable<Carrier>> GetAllCarriers();
+        Task<Carrier> GetCarrierIncludeRoutesAsync(int id);
+        Task<Carrier> GetCarrierIncludeRoutesBusStopsAsync(int id);
+        Task<IEnumerable<Carrier>> GetAllCarriersAsync();
         Task AddCarrierAsync(Carrier carrier);
         Task AddCarrierRangeAsync(IEnumerable<Carrier> carriers);
-        Task RemoveCarrier(Carrier carrier);
+        Task RemoveCarrierAsync(Carrier carrier);
     }
 }

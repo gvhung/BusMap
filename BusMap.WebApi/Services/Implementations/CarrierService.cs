@@ -27,9 +27,21 @@ namespace BusMap.WebApi.Services.Implementations
             return _mapper.Map<Carrier, CarriersCarrierDto>(carrier);
         }
 
+        public async Task<CarriersCarrierDto> GetCarrierIncludeRoutesAsync(int id)
+        {
+            var carrier = await _carrierRepository.GetCarrierIncludeRoutesAsync(id);
+            return _mapper.Map<Carrier, CarriersCarrierDto>(carrier);
+        }
+
+        public async Task<CarriersCarrierDto> GetCarrierIncludeRoutesBusStopsAsync(int id)
+        {
+            var carrier = await _carrierRepository.GetCarrierIncludeRoutesBusStopsAsync(id);
+            return _mapper.Map<Carrier, CarriersCarrierDto>(carrier);
+        }
+
         public async Task<IEnumerable<CarriersCarrierDto>> GetAllCarriersAsync()
         {
-            var carriers = await _carrierRepository.GetAllCarriers();
+            var carriers = await _carrierRepository.GetAllCarriersAsync();
             return _mapper.Map<IEnumerable<Carrier>, IEnumerable<CarriersCarrierDto>>(carriers);
         }
 
@@ -42,7 +54,7 @@ namespace BusMap.WebApi.Services.Implementations
         public async Task RemoveCarrierAsync(CarriersCarrierDto carrier)
         {
             var carrierToRemove = await _carrierRepository.GetCarrierAsync(carrier.Id);
-            await _carrierRepository.RemoveCarrier(carrierToRemove);
+            await _carrierRepository.RemoveCarrierAsync(carrierToRemove);
         } 
     }
 }

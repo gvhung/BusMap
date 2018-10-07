@@ -21,12 +21,21 @@ namespace BusMap.WebApi.Repositories.Implementations
 
         public async Task<Carrier> GetCarrierAsync(int id)
             => await _context.Carriers
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+        public async Task<Carrier> GetCarrierIncludeRoutesAsync(int id)
+            => await _context.Carriers
                 .Include(x => x.Routes)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-        public async Task<IEnumerable<Carrier>> GetAllCarriers()
+        public async Task<Carrier> GetCarrierIncludeRoutesBusStopsAsync(int id)
             => await _context.Carriers
                 .Include(x => x.Routes)
+                .ThenInclude(x => x.BusStops)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+        public async Task<IEnumerable<Carrier>> GetAllCarriersAsync()
+            => await _context.Carriers
                 .ToListAsync();
 
         public async Task AddCarrierAsync(Carrier carrier)
@@ -41,7 +50,7 @@ namespace BusMap.WebApi.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveCarrier(Carrier carrier)
+        public async Task RemoveCarrierAsync(Carrier carrier)
         {
             _context.Carriers.Remove(carrier);
             await _context.SaveChangesAsync();

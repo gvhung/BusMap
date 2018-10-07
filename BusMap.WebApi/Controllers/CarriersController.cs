@@ -48,6 +48,34 @@ namespace BusMap.WebApi.Controllers
             return Ok(carrier);
         }
 
+        [HttpGet("{id}/routes")]
+        public async Task<IActionResult> GetCarrierIncludeRoutes([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var carrier = await _carrierService.GetCarrierIncludeRoutesAsync(id);
+
+            if (carrier == null)
+                return NotFound();
+
+            return Ok(carrier);
+        }
+
+        [HttpGet("{id}/routesBusStops")]
+        public async Task<IActionResult> GetCarrierIncludeRoutesBusStops([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var carrier = await _carrierService.GetCarrierIncludeRoutesBusStopsAsync(id);
+
+            if (carrier == null)
+                return NotFound();
+
+            return Ok(carrier);
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostCarrier([FromBody] Carrier carrier)
         {
