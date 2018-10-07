@@ -17,9 +17,5 @@ namespace BusMap.WebApi.Dto.Carriers
 
         public string Label { get; set; }
 
-
-
-        public int RouteId { get; set; }
-
     }
 }

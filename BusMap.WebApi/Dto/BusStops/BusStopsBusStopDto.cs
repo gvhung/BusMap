@@ -17,10 +17,6 @@ namespace BusMap.WebApi.Dto.BusStops
 
         public string Label { get; set; }
 
-
-
-        public int RouteId { get; set; }
-
         public BusStopsRouteDto Route { get; set; }
     }
 }

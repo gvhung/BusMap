@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Dto.Routes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BusMap.WebApi.Services.Abstract;
@@ -18,124 +21,65 @@ namespace BusMap.WebApi.Controllers
             _routeService = routeService;
         }
 
+
+
         [HttpGet]
-        public async Task<IActionResult> GetRoutes()
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var routes = await _routeService
-                .GetAllRoutesAsync();
-
-            if (routes.ToList().Count == 0)
-                return NotFound();
-
-            return Ok(routes);
-        }
+        public async Task<IActionResult> GetAllRoutes()
+            => await GetAllRoutesFunc(async () => await _routeService.GetAllRoutesAsync());
 
         [HttpGet("busStops")]
-        public async Task<IActionResult> GetRoutesIncludeBusStops()
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var routes = await _routeService
-                .GetAllRoutesIncludeBusStopsAsync();
-
-            if (routes.ToList().Count == 0)
-                return NotFound();
-
-            return Ok(routes);
-        }
+        public async Task<IActionResult> GetAllRoutesIncludeBusStops()
+            => await GetAllRoutesFunc(async () => await _routeService.GetAllRoutesIncludeBusStopsAsync());
 
         [HttpGet("carrier")]
-        public async Task<IActionResult> GetRoutesIncludeCarrier()
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var routes = await _routeService
-                .GetAllRoutesIncludeCarrierAsync();
-
-            if (routes.ToList().Count == 0)
-                return NotFound();
-
-            return Ok(routes);
-        }
+        public async Task<IActionResult> GetAllRoutesIncludeCarrier()
+            => await GetAllRoutesFunc(async () => await _routeService.GetAllRoutesIncludeCarrierAsync());
 
         [HttpGet("busStopsCarrier")]
         [HttpGet("carrierBusStops")]
-        public async Task<IActionResult> GetRoutesIncludeBusStopsCarrier()
+        public async Task<IActionResult> GetAllRoutesIncludeBusStopsCarrier()
+            => await GetAllRoutesFunc(async () => await _routeService.GetAllRoutesIncludeBusStopsCarrierAsync());
+
+
+        public async Task<IActionResult> GetAllRoutesFunc(Func<Task<IEnumerable<RoutesRouteDto>>> getAllRoutesFunc)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var routes = await _routeService
-                .GetAllRoutesIncludeBusStopsCarrierAsync();
+            var routes = await getAllRoutesFunc();
 
             if (routes.ToList().Count == 0)
                 return NotFound();
 
             return Ok(routes);
         }
-
 
 
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetRoute([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var route = await _routeService
-                .GetRouteAsync(id);
-
-            if (route == null)
-                return NotFound();
-
-            return Ok(route);
-        }
+            => await GetRouteFunc(id, async x => await _routeService.GetRouteAsync(id));
 
         [HttpGet("{id:int}/busStops")]
         public async Task<IActionResult> GetRouteIncludeBusStops([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var route = await _routeService
-                .GetRouteIncludeBusStopsAsync(id);
-
-            if (route == null)
-                return NotFound();
-
-            return Ok(route);
-        }
+            => await GetRouteFunc(id, async x => await _routeService.GetRouteIncludeBusStopsAsync(id));
 
         [HttpGet("{id:int}/carrier")]
         public async Task<IActionResult> GetRouteIncludeCarrier([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var route = await _routeService
-                .GetRouteIncludeCarrierAsync(id);
-
-            if (route == null)
-                return NotFound();
-
-            return Ok(route);
-        }
+            => await GetRouteFunc(id, async x => await _routeService.GetRouteIncludeCarrierAsync(id));
 
         [HttpGet("{id:int}/busStopsCarrier")]
         [HttpGet("{id:int}/carrierBusStops")]
         public async Task<IActionResult> GetRouteIncludeBusStopsCarriers([FromRoute] int id)
+            => await GetRouteFunc(id, async x => await _routeService.GetRouteIncludeBusStopsCarrierAsync(id));
+
+
+        public async Task<IActionResult> GetRouteFunc(int id, Func<int, Task<RoutesRouteDto>> getRouteFunc)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = await _routeService
-                .GetRouteIncludeBusStopsCarrierAsync(id);
+            var route = await getRouteFunc(id);
 
             if (route == null)
                 return NotFound();
@@ -143,7 +87,7 @@ namespace BusMap.WebApi.Controllers
             return Ok(route);
         }
 
-
+        
 
         [HttpPost]
         public async Task<IActionResult> PostRoute([FromBody] Route route)
