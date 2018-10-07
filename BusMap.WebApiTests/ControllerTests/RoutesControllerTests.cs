@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BusMap.WebApi.Controllers;
 using BusMap.WebApi.Data;
-using BusMap.WebApi.Models;
+using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Repositories.Implementations;
 using BusMap.WebApiTests.RepositoriesTests;

@@ -18,7 +18,7 @@ namespace BusMap.WebApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BusMap.WebApi.Models.BusStop", b =>
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.BusStop", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +78,7 @@ namespace BusMap.WebApi.Migrations
                     );
                 });
 
-            modelBuilder.Entity("BusMap.WebApi.Models.Carrier", b =>
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.Carrier", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -98,7 +98,7 @@ namespace BusMap.WebApi.Migrations
                     );
                 });
 
-            modelBuilder.Entity("BusMap.WebApi.Models.Route", b =>
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.Route", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -123,17 +123,17 @@ namespace BusMap.WebApi.Migrations
                     );
                 });
 
-            modelBuilder.Entity("BusMap.WebApi.Models.BusStop", b =>
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.BusStop", b =>
                 {
-                    b.HasOne("BusMap.WebApi.Models.Route", "Route")
+                    b.HasOne("BusMap.WebApi.DatabaseModels.Route", "Route")
                         .WithMany("BusStops")
                         .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("BusMap.WebApi.Models.Route", b =>
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.Route", b =>
                 {
-                    b.HasOne("BusMap.WebApi.Models.Carrier", "Carrier")
+                    b.HasOne("BusMap.WebApi.DatabaseModels.Carrier", "Carrier")
                         .WithMany("Routes")
                         .HasForeignKey("CarrierId")
                         .OnDelete(DeleteBehavior.Cascade);

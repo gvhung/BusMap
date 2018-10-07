@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BusMap.WebApi.Models;
+using BusMap.WebApi.DatabaseModels;
 
 namespace BusMap.WebApi.Repositories.Abstract
 {
     public interface ICarrierRepository
     {
-        Carrier GetCarrier(int id);
-        IEnumerable<Carrier> GetAllCarriers();
-        void AddCarrier(Carrier carrier);
-        void AddCArrierRange(IEnumerable<Carrier> carriers);
-        void RemoveCarrier(Carrier carrier);
+        Task<Carrier> GetCarrierAsync(int id);
+        Task<Carrier> GetCarrierIncludeRoutesAsync(int id);
+        Task<Carrier> GetCarrierIncludeRoutesBusStopsAsync(int id);
+
+        Task<IEnumerable<Carrier>> GetAllCarriersAsync();
+        Task<IEnumerable<Carrier>> GetAllCarriersIncludeRoutesAsync();
+        Task<IEnumerable<Carrier>> GetAllCarriersIncludeRoutesBusStopsAsync();
+
+        Task AddCarrierAsync(Carrier carrier);
+        Task AddCarrierRangeAsync(IEnumerable<Carrier> carriers);
+        Task RemoveCarrierAsync(Carrier carrier);
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BusMap.WebApi.Models;
+using BusMap.WebApi.DatabaseModels;
 using Microsoft.EntityFrameworkCore;
 // ReSharper disable All
 

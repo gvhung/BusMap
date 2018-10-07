@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
 using BusMap.Mobile.Annotations;
+using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using BusMap.Mobile.Views;
@@ -58,17 +59,36 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        public ICommand Command => new Command(async () =>
+        public ICommand SearchCommand => new Command(async () =>
         {
             IsBusy = true;
-            var allRoutes = await _dataService.GetRoutes();
+            
+            try
+            {
+                var allRoutes = await _dataService.FindRoutes(StartBusStopName, DestinationBusStopName);
+                if (allRoutes.Count <= 0)
+                {
+                    MessagingHelper.Toast("No routes found.", ToastTime.LongTime);
+                    return;
+                }
 
-            //var routes = await _dataService?.FindRoute(x => x.StartingBusStop.Address.ToLowerInvariant().
-            //    Trim().Equals(StartBusStopName.ToLowerInvariant().Trim()));
+                var viewModel =
+                    new RoutesListPageViewModel(_dataService, allRoutes, StartBusStopName, DestinationBusStopName);
+                await Application.Current.MainPage.Navigation.PushAsync(new RoutesListPage(viewModel));
+            }
+            catch (NullReferenceException)
+            {
+                MessagingHelper.Toast("Please enter bus stops in both entries.", ToastTime.ShortTime);
+            }
+            catch (Exception ex)
+            {
+                MessagingHelper.Toast(ex.Message, ToastTime.LongTime);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
 
-            var viewModel = new RoutesListPageViewModel(_dataService, allRoutes, StartBusStopName, DestinationBusStopName);
-            IsBusy = false;
-            await Application.Current.MainPage.Navigation.PushAsync(new RoutesListPage(viewModel));
         });
 
 

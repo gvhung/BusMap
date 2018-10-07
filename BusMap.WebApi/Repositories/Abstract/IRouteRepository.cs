@@ -1,17 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BusMap.WebApi.Models;
+using BusMap.WebApi.DatabaseModels;
 
 namespace BusMap.WebApi.Repositories.Abstract
 {
     public interface IRouteRepository
     {
-        Route GetRoute(int id);
-        IEnumerable<Route> GetAllRoutes();
-        void AddRoute(Route route);
-        void AddRouteRange(IEnumerable<Route> routes);
-        void RemoveRoute(Route route);
+        Task<Route> GetRouteAsync(int id);
+        Task<Route> GetRouteIncludeBusStopsAsync(int id);
+        Task<Route> GetRouteIncludeCarrierAsync(int id);
+        Task<Route> GetRouteIncludeBusStopsCarrierAsync(int id);
+        
+        Task<IEnumerable<Route>> GetAllRoutesAsync();
+        Task<IEnumerable<Route>> GetAllRoutesIncludeBusStopsAsync();
+        Task<IEnumerable<Route>> GetAllRoutesIncludeCarrierAsync();
+        Task<IEnumerable<Route>> GetAllRoutesIncludeBusStopsCarrierAsync();
+
+        Task AddRouteAsync(Route route);
+        Task AddRouteRangeAsync(IEnumerable<Route> routes);
+        Task RemoveRouteAsync(Route route);
     }
 }

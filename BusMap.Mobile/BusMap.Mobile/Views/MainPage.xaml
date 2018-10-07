@@ -56,7 +56,7 @@
                            HorizontalOptions="Center"
                            IsVisible="{Binding IsBusy}"/>
                     <Button Text="Search"
-                            Command="{Binding Command}"
+                            Command="{Binding SearchCommand}"
                             AutomationId="SearchButton"/>
                     <Button Text="Advanced"
                             Clicked="AdvancedButton_OnClicked"/>

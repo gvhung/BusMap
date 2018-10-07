@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BusMap.WebApi.Data;
-using BusMap.WebApi.Models;
+using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
@@ -109,7 +109,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                 }
             });
 
-            carrierRepository.AddCarrier(new Carrier
+            carrierRepository.AddCarrierAsync(new Carrier
             {
                 Id = 2,
                 Name = "CarrierName2"

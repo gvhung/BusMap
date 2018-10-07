@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusMap.WebApi.Automapper;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Repositories.Implementations;
+using BusMap.WebApi.Services;
+using BusMap.WebApi.Services.Abstract;
+using BusMap.WebApi.Services.Implementations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,10 +35,22 @@ namespace BusMap.WebApi
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(@"Data Source=DESKTOP-6TBR12R\SQLEXPRESS;Database=BusMap;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
+                options.UseSqlServer(Connections.GeDbConnectionString()));
+
             services.AddScoped<IBusStopRepository, BusStopRepository>();
             services.AddScoped<IRouteRepository, RouteRepository>();
             services.AddScoped<ICarrierRepository, CarrierRepository>();
+
+            services.AddScoped<ICarrierService, CarrierService>();
+            services.AddScoped<IBusStopService, BusStopService>();
+            services.AddScoped<IRouteService, RouteService>();
+
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutomapperProfile());
+            });
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +67,7 @@ namespace BusMap.WebApi
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
         }
     }
 }
