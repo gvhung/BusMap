@@ -46,6 +46,18 @@ namespace BusMap.WebApi.Services.Implementations
             return _mapper.Map<IEnumerable<BusStop>, IEnumerable<BusStopsBusStopDto>>(busStops);
         }
 
+        public async Task<IEnumerable<BusStopsBusStopDto>> GetAllBusStopsIncludeRouteAsync()
+        {
+            var busStops = await _repository.GetAllBusStopsIncludeRouteAsync();
+            return _mapper.Map<IEnumerable<BusStop>, IEnumerable<BusStopsBusStopDto>>(busStops);
+        }
+
+        public async Task<IEnumerable<BusStopsBusStopDto>> GetAllBusStopsIncludeRouteCarrierAsync()
+        {
+            var busStops = await _repository.GetAllBusStopsIncludeRouteCarrierAsync();
+            return _mapper.Map<IEnumerable<BusStop>, IEnumerable<BusStopsBusStopDto>>(busStops);
+        }
+
         public async Task AddBusStopAsync(BusStop busStop)
             => await _repository.AddBusStopAsync(busStop);
 

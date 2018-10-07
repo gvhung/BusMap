@@ -38,7 +38,7 @@ namespace BusMap.WebApi.Repositories.Implementations
             => await _context.Routes
                 .Include(r => r.BusStops)
                 .Include(r => r.Carrier)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(r => r.Id == id);
 
         public async Task<IEnumerable<Route>> GetAllRoutesAsync()
             => await _context.Routes.ToListAsync();
