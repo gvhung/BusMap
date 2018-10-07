@@ -38,7 +38,7 @@ namespace BusMap.Mobile
         private void UnityIoC()
         {
             var unityContainer = new UnityContainer();
-            unityContainer.RegisterType<IDataService, StaticCodeDataService>();
+            unityContainer.RegisterType<IDataService, ApiDataService>();
 
             ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(unityContainer));
         }

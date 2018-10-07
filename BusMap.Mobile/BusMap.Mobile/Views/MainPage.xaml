@@ -59,7 +59,7 @@
                             Command="{Binding SearchCommand}"
                             AutomationId="SearchButton"/>
                     <Button Text="Advanced"
-                            Clicked="AdvancedButton_OnClicked"/>
+                            Command="{Binding AdvancedButtonCommand}"/>
                     <Button Text="Nearest stops"
                             Clicked="NearestStopsButton_OnClicked"
                             AutomationId="MainPage_NearestStopsButton"/>

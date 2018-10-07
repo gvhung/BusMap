@@ -63,7 +63,8 @@ namespace BusMap.Mobile.ViewModels
         private async Task GetPins()
         {
             Pins = new ObservableCollection<Pin>();
-            Pins = await _dataService.GetPins();
+            var pins = await _dataService.GetBusStops();
+            Pins = pins.ConvertToMapPins();
         }
 
         //private async Task GetPins(int routeId)

@@ -46,9 +46,5 @@ namespace BusMap.Mobile.Views
             await Navigation.PushAsync(new RoutesListPage(FromEntry.Text, ToEntry.Text));
         }
 
-        private void AdvancedButton_OnClicked(object sender, EventArgs e)
-        {
-            MessagingHelper.Toast("test", ToastTime.LongTime);
-        }
     }
 }

@@ -65,6 +65,13 @@ namespace BusMap.Mobile.ViewModels
             
             try
             {
+                if (String.IsNullOrEmpty(StartBusStopName) || String.IsNullOrEmpty(DestinationBusStopName))
+                {
+                    MessagingHelper.Toast("Please enter bus stops in both entries.", ToastTime.ShortTime);
+                    return;
+                }
+                    
+
                 var allRoutes = await _dataService.FindRoutes(StartBusStopName, DestinationBusStopName);
                 if (allRoutes.Count <= 0)
                 {
@@ -75,10 +82,6 @@ namespace BusMap.Mobile.ViewModels
                 var viewModel =
                     new RoutesListPageViewModel(_dataService, allRoutes, StartBusStopName, DestinationBusStopName);
                 await Application.Current.MainPage.Navigation.PushAsync(new RoutesListPage(viewModel));
-            }
-            catch (NullReferenceException)
-            {
-                MessagingHelper.Toast("Please enter bus stops in both entries.", ToastTime.ShortTime);
             }
             catch (Exception ex)
             {
@@ -92,7 +95,11 @@ namespace BusMap.Mobile.ViewModels
         });
 
 
-
+        public ICommand AdvancedButtonCommand => new Command(async () =>
+        {
+            var test = await _dataService.GetBusStops();
+            var x1 = 123;
+        });
 
 
 
