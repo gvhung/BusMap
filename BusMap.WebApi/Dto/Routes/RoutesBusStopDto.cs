@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BusMap.WebApi.Dto.Routes
 {
-    public class BusStopDto
+    public class RoutesBusStopDto
     {
         public int Id { get; set; }
 
@@ -17,10 +17,7 @@ namespace BusMap.WebApi.Dto.Routes
 
         public string Label { get; set; }
 
-
-
         public int RouteId { get; set; }
 
-        public RouteDto Route { get; set; }
     }
 }

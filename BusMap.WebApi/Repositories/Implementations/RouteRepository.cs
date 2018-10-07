@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
-using BusMap.WebApi.Dto;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
-using BusMap.WebApi.Models;
 
 namespace BusMap.WebApi.Repositories.Implementations
 {
@@ -20,159 +18,63 @@ namespace BusMap.WebApi.Repositories.Implementations
             _context = context;
         }
 
-        public RouteModel GetRoute(int id)
-            => _context.Routes
-                .Select(r => new RouteModel
-                {
-                    Id = r.Id,
-                    CarrierId = r.CarrierId,
-                    Name = r.Name
-                })
-                .FirstOrDefault(r => r.Id == id);
+        public async Task<Route> GetRouteAsync(int id)
+            => await _context.Routes
+                .FirstOrDefaultAsync(r => r.Id == id);
 
         
 
-        public RouteModel GetRouteIncludeBusStops(int id)
-            => _context.Routes
+        public async Task<Route> GetRouteIncludeBusStopsAsync(int id)
+            => await _context.Routes
                 .Include(r => r.BusStops)
-                .Select(r => new RouteModel
-                {
-                    Id = r.Id,
-                    Name = r.Name,
-                    CarrierId = r.CarrierId,
-                    BusStops = r.BusStops.Select(b => new BusStopModel
-                    {
-                        Id = b.Id,
-                        Address = b.Address,
-                        Label = b.Label,
-                        Latitude = b.Latitude,
-                        Longitude = b.Longitude
-                    })
-                    .ToList()
-                })
-                .SingleOrDefault(r => r.Id == id);
+                .SingleOrDefaultAsync(r => r.Id == id);
 
-        public RouteModel GetRouteIncludeBusStopsCarrier(int id)
-        {
-            var routeCarrier = _context.
-                Carriers
-                .SingleOrDefault(c => c.Id == _context.Routes.SingleOrDefault(r => r.Id == id).CarrierId);
-            var carrierModel = new CarrierModel
-            {
-                Id = routeCarrier.Id,
-                Name = routeCarrier.Name
-            };
+        public async Task<Route> GetRouteIncludeCarrierAsync(int id)
+            => await _context.Routes
+                .Include(r => r.Carrier)
+                .SingleOrDefaultAsync(r => r.Id == id);
 
-            var allRoutes = _context.Routes
+        public async Task<Route> GetRouteIncludeBusStopsCarrierAsync(int id)
+            => await _context.Routes
                 .Include(r => r.BusStops)
                 .Include(r => r.Carrier)
-                .Select(r => new RouteModel
-                {
-                    Id = r.Id,
-                    Name = r.Name,
-                    CarrierId = r.CarrierId,
-                    BusStops = r.BusStops.Select(b => new BusStopModel
-                    {
-                        Id = b.Id,
-                        Address = b.Address,
-                        Label = b.Label,
-                        Latitude = b.Latitude,
-                        Longitude = b.Longitude
-                    })
-                    .ToList(),
-                    Carrier = carrierModel
-                })
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
-            return allRoutes;
-        }
+        public async Task<IEnumerable<Route>> GetAllRoutesAsync()
+            => await _context.Routes.ToListAsync();
 
-
-        public IEnumerable<RouteModel> GetAllRoutes()
-            => _context.Routes
-                .Select(r => new RouteModel
-                {
-                    Id = r.Id,
-                    Name = r.Name,
-                    CarrierId = r.CarrierId
-                })
-                .ToList();
-
-        public IEnumerable<RouteModel> GetAllRoutesIncludeBusStops()
-            => _context.Routes
+        public async Task<IEnumerable<Route>> GetAllRoutesIncludeBusStopsAsync()
+            => await _context.Routes
                 .Include(r => r.BusStops)
-                .Select(r => new RouteModel {
-                    Id = r.Id,
-                    Name = r.Name,
-                    CarrierId = r.CarrierId,
-                    BusStops = r.BusStops.Select(b => new BusStopModel
-                    {
-                        Id = b.Id,
-                        Address = b.Address,
-                        Label = b.Label,
-                        Latitude = b.Latitude,
-                        Longitude = b.Longitude
-                    })
-                    .ToList()
-                })
-                .ToList();
+                .ToListAsync();
 
-        public IEnumerable<RouteModel> GetAllRoutesIncludeBusStopsCarrier()
-        {
-            var carriers = _context.Carriers.ToList();
-            var carriersModel = new List<CarrierModel>();
+        public async Task<IEnumerable<Route>> GetAllRoutesIncludeCarrierAsync()
+            => await _context.Routes
+                .Include(r => r.Carrier)
+                .ToListAsync();
 
-            foreach (var carrier in carriers)
-            {
-                carriersModel.Add(new CarrierModel
-                {
-                    Id = carrier.Id,
-                    Name = carrier.Name
-                });
-            }
-
-            
-
-            var allRoutes = _context.Routes
+        public async Task<IEnumerable<Route>> GetAllRoutesIncludeBusStopsCarrierAsync()
+            => await _context.Routes
                 .Include(r => r.BusStops)
                 .Include(r => r.Carrier)
-                .Select(r => new RouteModel
-                {
-                    Id = r.Id,
-                    Name = r.Name,
-                    CarrierId = r.CarrierId,
-                    BusStops = r.BusStops.Select(b => new BusStopModel
-                    {
-                        Id = b.Id,
-                        Address = b.Address,
-                        Label = b.Label,
-                        Latitude = b.Latitude,
-                        Longitude = b.Longitude
-                    })
-                    .ToList(),
-                    Carrier = carriersModel.FirstOrDefault(c => c.Id == r.CarrierId)
-                })
-                .ToList();
+                .ToListAsync();
 
-            return allRoutes;
-        }
-
-        public void AddRoute(Route route)
+        public async Task AddRouteAsync(Route route)
         {
-            _context.Routes.Add(route);
-            _context.SaveChanges();
+            await _context.Routes.AddAsync(route);
+            await _context.SaveChangesAsync();
         }
 
-        public void AddRouteRange(IEnumerable<Route> routes)
+        public async Task AddRouteRangeAsync(IEnumerable<Route> routes)
         {
-            _context.Routes.AddRange(routes);
-            _context.SaveChanges();
+            await _context.Routes.AddRangeAsync(routes);
+            await _context.SaveChangesAsync();
         }
 
-        public void RemoveRoute(Route route)
+        public async Task RemoveRouteAsync(Route route)
         {
             _context.Routes.Remove(route);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

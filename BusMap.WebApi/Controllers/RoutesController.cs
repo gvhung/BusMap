@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using BusMap.WebApi.Dto;
 using BusMap.WebApi.DatabaseModels;
-using BusMap.WebApi.Repositories.Abstract;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BusMap.WebApi.Helpers;
+using BusMap.WebApi.Services.Abstract;
 
 namespace BusMap.WebApi.Controllers
 {
@@ -17,77 +11,169 @@ namespace BusMap.WebApi.Controllers
     [ApiController]
     public class RoutesController : ControllerBase
     {
-        private readonly IRouteRepository _routeRepository;
-        //private readonly IMapper _mapper;
+        private readonly IRouteService _routeService;
 
-        public RoutesController(IRouteRepository routeRepository)
+        public RoutesController(IRouteService routeService)
         {
-            _routeRepository = routeRepository;
-            //_mapper = mapper;
+            _routeService = routeService;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetRoutes()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var routes = _routeRepository.GetAllRoutesIncludeBusStops()
-                .ToList();
+            var routes = await _routeService
+                .GetAllRoutesAsync();
 
-            if (routes.Count == 0)
+            if (routes.ToList().Count == 0)
                 return NotFound();
 
             return Ok(routes);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetRoute([FromRoute] int id)
+        [HttpGet("busStops")]
+        public async Task<IActionResult> GetRoutesIncludeBusStops()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = _routeRepository
-                .GetRouteIncludeBusStopsCarrier(id);
-                //.ToRouteDto();
+            var routes = await _routeService
+                .GetAllRoutesIncludeBusStopsAsync();
+
+            if (routes.ToList().Count == 0)
+                return NotFound();
+
+            return Ok(routes);
+        }
+
+        [HttpGet("carrier")]
+        public async Task<IActionResult> GetRoutesIncludeCarrier()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var routes = await _routeService
+                .GetAllRoutesIncludeCarrierAsync();
+
+            if (routes.ToList().Count == 0)
+                return NotFound();
+
+            return Ok(routes);
+        }
+
+        [HttpGet("busStopsCarrier")]
+        [HttpGet("carrierBusStops")]
+        public async Task<IActionResult> GetRoutesIncludeBusStopsCarrier()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var routes = await _routeService
+                .GetAllRoutesIncludeBusStopsCarrierAsync();
+
+            if (routes.ToList().Count == 0)
+                return NotFound();
+
+            return Ok(routes);
+        }
+
+
+
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetRoute([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var route = await _routeService
+                .GetRouteAsync(id);
 
             if (route == null)
                 return NotFound();
-            //var mappedRoute = _mapper.Map<RouteModel>(route);
 
             return Ok(route);
         }
 
+        [HttpGet("{id:int}/busStops")]
+        public async Task<IActionResult> GetRouteIncludeBusStops([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var route = await _routeService
+                .GetRouteIncludeBusStopsAsync(id);
+
+            if (route == null)
+                return NotFound();
+
+            return Ok(route);
+        }
+
+        [HttpGet("{id:int}/carrier")]
+        public async Task<IActionResult> GetRouteIncludeCarrier([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var route = await _routeService
+                .GetRouteIncludeCarrierAsync(id);
+
+            if (route == null)
+                return NotFound();
+
+            return Ok(route);
+        }
+
+        [HttpGet("{id:int}/busStopsCarrier")]
+        [HttpGet("{id:int}/carrierBusStops")]
+        public async Task<IActionResult> GetRouteIncludeBusStopsCarriers([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var route = await _routeService
+                .GetRouteIncludeBusStopsCarrierAsync(id);
+
+            if (route == null)
+                return NotFound();
+
+            return Ok(route);
+        }
+
+
+
         [HttpPost]
-        public IActionResult PostRoute([FromBody] Route route)
+        public async Task<IActionResult> PostRoute([FromBody] Route route)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                _routeRepository.AddRoute(route);
+                await _routeService.AddRouteAsync(route);
             }
             catch (DbUpdateException)
             {
                 return BadRequest("Route object is incomplete or contains wrong data.");
             }
             
-
             return CreatedAtAction("GetRoute", new {id = route.Id}, route);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteRoute([FromRoute] int id)
+        public async Task<IActionResult> DeleteRoute([FromRoute] int id)
         {
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            //var routeToRemove = _routeRepository.GetRoute(id);
-            //if (routeToRemove == null)
-            //    return NotFound();
+            var routeToRemove = await _routeService.GetRouteAsync(id);
+            if (routeToRemove == null)
+                return NotFound();
 
-            //_routeRepository.RemoveRoute(routeToRemove);
+            await _routeService.RemoveRouteAsync(routeToRemove);
             return Ok();
         }
 

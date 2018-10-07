@@ -36,12 +36,14 @@ namespace BusMap.WebApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Connections.GeDbConnectionString()));
+
             services.AddScoped<IBusStopRepository, BusStopRepository>();
             services.AddScoped<IRouteRepository, RouteRepository>();
             services.AddScoped<ICarrierRepository, CarrierRepository>();
 
             services.AddScoped<ICarrierService, CarrierService>();
             services.AddScoped<IBusStopService, BusStopService>();
+            services.AddScoped<IRouteService, RouteService>();
 
             var config = new AutoMapper.MapperConfiguration(cfg =>
             {
