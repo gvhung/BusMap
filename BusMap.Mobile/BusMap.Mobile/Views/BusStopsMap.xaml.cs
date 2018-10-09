@@ -21,5 +21,6 @@ namespace BusMap.Mobile.Views
             InitializeComponent();
 	    }
 
+
 	}
 }

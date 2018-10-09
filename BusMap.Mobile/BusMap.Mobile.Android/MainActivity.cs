@@ -1,6 +1,8 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Prism;
+using Prism.Ioc;
 
 namespace BusMap.Mobile.Droid
 {
@@ -18,7 +20,15 @@ namespace BusMap.Mobile.Droid
             Xamarin.FormsMaps.Init(this, savedInstanceState);
             Acr.UserDialogs.UserDialogs.Init(this);
 
-            LoadApplication(new App());
+            LoadApplication(new App(new AndroidInitializer()));
+        }
+
+        public class AndroidInitializer : IPlatformInitializer
+        {
+            public void RegisterTypes(IContainerRegistry container)
+            {
+                // Register any platform specific implementations
+            }
         }
 
     }

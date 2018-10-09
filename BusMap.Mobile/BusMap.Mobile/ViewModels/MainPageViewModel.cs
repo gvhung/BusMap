@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Annotations;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using BusMap.Mobile.Views;
+using Prism.Commands;
+using Prism.Navigation;
 using Xamarin.Forms;
 
 namespace BusMap.Mobile.ViewModels
 {
-    public class MainPageViewModel : INotifyPropertyChanged
+    public class MainPageViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
 
@@ -25,63 +28,53 @@ namespace BusMap.Mobile.ViewModels
         public string StartBusStopName
         {
             get => _startBusStopName;
-            set
-            {
-                _startBusStopName = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _startBusStopName, value);
         }
 
         public string DestinationBusStopName
         {
             get => _destinationBusStopName;
-            set
-            {
-                _destinationBusStopName = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _destinationBusStopName, value);
         }
 
         public bool IsBusy
         {
             get => _isBusy;
-            set
-            {
-                _isBusy = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _isBusy, value);
         }
 
 
-        public MainPageViewModel(IDataService dataService)
+        public MainPageViewModel(IDataService dataService, INavigationService navigationService) 
+            : base(navigationService)
         {
             _dataService = dataService;
         }
 
 
-        public ICommand SearchCommand => new Command(async () =>
+        private async Task<List<Route>> searchRoutes()
         {
             IsBusy = true;
-            
+            var resultRoutes = new List<Route>();
+
             try
             {
                 if (String.IsNullOrEmpty(StartBusStopName) || String.IsNullOrEmpty(DestinationBusStopName))
                 {
                     MessagingHelper.Toast("Please enter bus stops in both entries.", ToastTime.ShortTime);
-                    return;
+                    return null;
                 }
-                    
 
-                var allRoutes = await _dataService.FindRoutes(StartBusStopName, DestinationBusStopName);
-                if (allRoutes.Count <= 0)
+
+                resultRoutes = await _dataService.FindRoutes(StartBusStopName, DestinationBusStopName);
+                if (resultRoutes.Count <= 0)
                 {
                     MessagingHelper.Toast("No routes found.", ToastTime.LongTime);
-                    return;
+                    return null;
                 }
 
-                var viewModel =
-                    new RoutesListPageViewModel(_dataService, allRoutes, StartBusStopName, DestinationBusStopName);
-                await Application.Current.MainPage.Navigation.PushAsync(new RoutesListPage(viewModel));
+                //var viewModel =
+                //    new RoutesListPageViewModel(_dataService, resultRoutes, StartBusStopName, DestinationBusStopName);
+                //await Application.Current.MainPage.Navigation.PushAsync(new RoutesListPage(viewModel));
             }
             catch (Exception ex)
             {
@@ -91,8 +84,21 @@ namespace BusMap.Mobile.ViewModels
             {
                 IsBusy = false;
             }
+            return resultRoutes;
+        }
 
+        public ICommand SearchAndNavigateToRoutesListPageCommand => new DelegateCommand(async () =>
+        {
+            var foundedRoutes = await searchRoutes();
+
+            var parameters = new NavigationParameters();
+            parameters.Add("foundedRoutes", foundedRoutes);
+            parameters.Add("startBusStopName", StartBusStopName);
+            parameters.Add("destinationBusStopName", DestinationBusStopName);
+
+            await NavigationService.NavigateAsync("RoutesListPage", parameters);
         });
+
 
 
         public ICommand AdvancedButtonCommand => new Command(async () =>
@@ -102,14 +108,5 @@ namespace BusMap.Mobile.ViewModels
 
 
 
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

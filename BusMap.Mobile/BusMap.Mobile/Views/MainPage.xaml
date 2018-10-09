@@ -1,90 +1,74 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:BusMap.Mobile"
              xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
              x:Class="BusMap.Mobile.Views.MainPage"
-             BindingContext="{Binding MainPageViewModel, Source={StaticResource Locator}}">
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True">
 
-    <MasterDetailPage.Detail>
-        <ContentPage Title="DetailPage">
-            <ContentPage.Padding>
-                <OnPlatform x:TypeArguments="Thickness">
-                    <On Platform="Android" Value="5"/>
-                    <On Platform="Windows" Value="5"/>
-                    <On Platform="iOS" Value="5,20,5,5"/>
-                </OnPlatform>
-            </ContentPage.Padding>
-            <ContentPage.Content>
-                <StackLayout>
-                    <Grid Padding="25,0,25,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="8*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Text="From:"
+
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness">
+            <On Platform="Android" Value="5"/>
+            <On Platform="Windows" Value="5"/>
+            <On Platform="iOS" Value="5,20,5,5"/>
+        </OnPlatform>
+    </ContentPage.Padding>
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid Padding="25,0,25,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="8*"/>
+                </Grid.ColumnDefinitions>
+                <Label Text="From:"
                                Grid.Row="0"
                                Grid.Column="0"
                                VerticalTextAlignment="Center"
                                HorizontalTextAlignment="Center"/>
-                        <Entry x:Name="FromEntry"
+                <Entry x:Name="FromEntry"
                                Grid.Row="0"
                                Grid.Column="1"
                                AutomationId="MainPage_FromEntry"
                                Text="{Binding StartBusStopName}"/>
-                        <Label Text="To:"
+                <Label Text="To:"
                                Grid.Row="1"
                                Grid.Column="0"
                                VerticalTextAlignment="Center"
                                HorizontalTextAlignment="Center"/>
-                        <Entry x:Name="ToEntry"
+                <Entry x:Name="ToEntry"
                                Grid.Row="1"
                                Grid.Column="1"
                                AutomationId="MainPage_ToEntry"
                                Text="{Binding DestinationBusStopName}"/>
-                    </Grid>
-                    <ActivityIndicator x:Name="ActivityIndicator"
+            </Grid>
+            <ActivityIndicator x:Name="ActivityIndicator"
                                        IsRunning="{Binding IsBusy}"
                                        VerticalOptions="Center"
                                        HorizontalOptions="Center"
                                        Color="DodgerBlue"/>
-                    <Label Text="Downloading results"
+            <Label Text="Downloading results"
                            HorizontalOptions="Center"
                            IsVisible="{Binding IsBusy}"/>
-                    <Button Text="Search"
-                            Command="{Binding SearchCommand}"
+            <Button Text="Search"
+                            Command="{Binding SearchAndNavigateToRoutesListPageCommand}"
                             AutomationId="SearchButton"/>
-                    <Button Text="Advanced"
+            <Button Text="Advanced"
                             Command="{Binding AdvancedButtonCommand}"/>
-                    <Button Text="Nearest stops"
+            <Button Text="Nearest stops"
                             Clicked="NearestStopsButton_OnClicked"
                             AutomationId="MainPage_NearestStopsButton"/>
-                </StackLayout>
-            </ContentPage.Content>
-        </ContentPage>
-    </MasterDetailPage.Detail>
+        </StackLayout>
+    </ContentPage.Content>
 
 
 
 
-    <MasterDetailPage.Master>
-        <ContentPage BackgroundColor="Aquamarine"
-                     Title="MasterPage">
-            <ContentPage.Content>
-                <StackLayout>
-                    <Label Text="Master"
-                           TextColor="BlueViolet"/>
-                    <Button Text="Track new route"
-                            HorizontalOptions="Center"
-                            Clicked="TrackNewRouteButton_OnClicked"/>
-                </StackLayout>
-            </ContentPage.Content>
-        </ContentPage>
-    </MasterDetailPage.Master>
-    
 
-</MasterDetailPage>
+
+</ContentPage>

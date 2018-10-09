@@ -9,11 +9,13 @@ using System.Windows.Input;
 using BusMap.Mobile.Annotations;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
+using Prism.Commands;
+using Prism.Navigation;
 using Xamarin.Forms;
 
 namespace BusMap.Mobile.ViewModels
 {
-    public class RoutesListPageViewModel : INotifyPropertyChanged
+    public class RoutesListPageViewModel : ViewModelBase
     {
         private IDataService _dataService;
         private List<Route> _routes;
@@ -26,44 +28,23 @@ namespace BusMap.Mobile.ViewModels
         public List<Route> Routes
         {
             get => _routes;
-            set
-            {
-                _routes = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _routes, value);
         }
 
         public bool IsRefreshing
         {
             get => _isRefreshing;
-            set
-            {
-                _isRefreshing = value;
-                OnPropertyChanged();
-            } 
+            set => SetProperty(ref _isRefreshing, value);
         }
 
-        //public RoutesListPageViewModel(IDataService dataService)
-        //{
-        //    _dataService = dataService;
-        //    GetRoutes();
-        //}
-
-        public RoutesListPageViewModel(IDataService dataService, IEnumerable<Route> routes, string from, string to)
+        public RoutesListPageViewModel(IDataService dataService, INavigationService navigationService)
+            : base(navigationService)
         {
             _dataService = dataService;
-            Routes = routes.ToList();
-            StartPoint = from;
-            DestinationPoint = to;
         }
 
-        //public RoutesListPageViewModel()
-        //{
-        //}
 
-
-
-        public ICommand RefreshCommand => new Command(async () =>
+        public ICommand RefreshCommand => new DelegateCommand(async () =>
         {
             await GetRoutes();
         });
@@ -77,17 +58,16 @@ namespace BusMap.Mobile.ViewModels
 
 
 
-
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public override void OnNavigatingTo(NavigationParameters parameters)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Routes = parameters["foundedRoutes"] as List<Route>;
+            var startName = parameters["startBusStopName"] as string;
+            var destName = parameters["destinationBusStopName"] as string;
+            Title = $"{startName} - {destName}";
         }
+
+
+
 
     }
 }

@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace BusMap.Mobile.Views
 {
-    public partial class MainPage : MasterDetailPage
+    public partial class MainPage : ContentPage
     {
         private readonly ILogger _logger = DependencyService.Get<ILogManager>().GetLog();
 
@@ -41,10 +41,10 @@ namespace BusMap.Mobile.Views
             await Navigation.PushAsync(new NearestStopsMapPage());
         }
 
-        private async void SearchButton_OnClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new RoutesListPage(FromEntry.Text, ToEntry.Text));
-        }
+        //private async void SearchButton_OnClicked(object sender, EventArgs e)
+        //{
+        //    await Navigation.PushAsync(new RoutesListPage(FromEntry.Text, ToEntry.Text));
+        //}
 
 
 

@@ -33,6 +33,10 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
+                                <ViewCell.ContextActions>
+                                    <MenuItem Text="Edit" Clicked="EditMenuItem_OnClicked"/>
+                                    <MenuItem Text="Delete"/>
+                                </ViewCell.ContextActions>
                                 <StackLayout>
                                     <Label Text="{Binding Address}"/>
                                     <Label Text="{Binding Label}"/>
