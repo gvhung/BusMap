@@ -46,5 +46,11 @@ namespace BusMap.Mobile.Views
             await Navigation.PushAsync(new RoutesListPage(FromEntry.Text, ToEntry.Text));
         }
 
+
+
+        private async void TrackNewRouteButton_OnClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new TrackNewRoutePage());
+        }
     }
 }

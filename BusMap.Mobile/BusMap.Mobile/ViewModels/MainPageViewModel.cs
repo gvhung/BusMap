@@ -98,7 +98,6 @@ namespace BusMap.Mobile.ViewModels
         public ICommand AdvancedButtonCommand => new Command(async () =>
         {
             var test = await _dataService.GetBusStops();
-            var x1 = 123;
         });
 
 

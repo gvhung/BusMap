@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:customControls="clr-namespace:BusMap.Mobile.CustomControls;assembly=BusMap.Mobile"
+             x:Class="BusMap.Mobile.Views.TrackNewRoutePage"
+             BindingContext="{Binding TrackNewRouteViewModel, Source={StaticResource Locator}}">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="8*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackLayout Orientation="Horizontal"
+                             HorizontalOptions="Center"
+                             Grid.Row="0"
+                             Grid.Column="0">
+                    <Button Text="Add bus stop"/>
+                    <Button Text="Save route"/>
+                </StackLayout>
+                <Label Text="Carrier: CarrierName"
+                       HorizontalOptions="Center"
+                       Grid.Row="1"
+                       Grid.Column="0"/> 
+                <ListView ItemsSource="{Binding BusStops}"
+                          Grid.Row="2"
+                          Grid.Column="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout>
+                                    <Label Text="{Binding Address}"/>
+                                    <Label Text="{Binding Label}"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

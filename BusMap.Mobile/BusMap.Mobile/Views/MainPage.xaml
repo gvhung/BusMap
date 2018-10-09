@@ -75,8 +75,13 @@
         <ContentPage BackgroundColor="Aquamarine"
                      Title="MasterPage">
             <ContentPage.Content>
-                <Label Text="Master"
-                       TextColor="BlueViolet"/>
+                <StackLayout>
+                    <Label Text="Master"
+                           TextColor="BlueViolet"/>
+                    <Button Text="Track new route"
+                            HorizontalOptions="Center"
+                            Clicked="TrackNewRouteButton_OnClicked"/>
+                </StackLayout>
             </ContentPage.Content>
         </ContentPage>
     </MasterDetailPage.Master>

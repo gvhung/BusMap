@@ -16,5 +16,8 @@ namespace BusMap.Mobile.ViewModels
         public MainPageViewModel MainPageViewModel
             => ServiceLocator.Current.GetInstance<MainPageViewModel>();
 
+        public TrackNewRouteViewModel TrackNewRouteViewModel
+            => ServiceLocator.Current.GetInstance<TrackNewRouteViewModel>();
+
     }
 }
