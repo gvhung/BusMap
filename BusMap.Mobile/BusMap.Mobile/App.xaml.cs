@@ -1,6 +1,7 @@
 ﻿using BusMap.Mobile.Views;
 using System;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.ViewModels;
 using CommonServiceLocator;
 using Prism;
 using Prism.Ioc;
@@ -34,10 +35,11 @@ namespace BusMap.Mobile
         {
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage>();
-            containerRegistry.RegisterForNavigation<BusStopsMap>();
             containerRegistry.RegisterForNavigation<NearestStopsMapPage>();
             containerRegistry.RegisterForNavigation<RoutesListPage>();
+            containerRegistry.RegisterForNavigation<BusStopsMapPage>();
             containerRegistry.RegisterForNavigation<TrackNewRoutePage>();
+
             containerRegistry.Register<IDataService, ApiDataService>();
         }
 

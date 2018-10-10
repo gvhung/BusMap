@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Annotations;
+using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using Prism.Commands;
@@ -23,7 +24,6 @@ namespace BusMap.Mobile.ViewModels
 
         public string StartPoint { get; set; }
         public string DestinationPoint { get; set; }
-        public string StartDestinationTitle => $"{StartPoint} - {DestinationPoint}";
 
         public List<Route> Routes
         {
@@ -48,6 +48,21 @@ namespace BusMap.Mobile.ViewModels
         {
             await GetRoutes();
         });
+
+        public ICommand SelectedRouteCommand => new DelegateCommand<Route>(async route =>
+        {
+            var parameters = new NavigationParameters();
+            parameters.Add("route", route);
+
+            await NavigationService.NavigateAsync("BusStopsMapPage", parameters);
+        });
+
+        public ICommand SelectedRouteCommand2 => new DelegateCommand<Route>(async route =>
+        {
+            Helpers.MessagingHelper.Toast("toast", ToastTime.LongTime);
+        });
+
+
 
         private async Task GetRoutes()
         {

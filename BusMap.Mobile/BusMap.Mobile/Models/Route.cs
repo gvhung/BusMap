@@ -49,15 +49,10 @@ namespace BusMap.Mobile.Models
         }
 
 
-
+        //Todo: Find how to convert to behaviour/put to viewModel
         public ICommand LabelCommand => new DelegateCommand(() =>
         {
             BusStopsStringIsVisible = !BusStopsStringIsVisible;
-        });
-
-        public ICommand OpenRouteOnMapCommand => new DelegateCommand(async () =>
-        {
-            //Todo: OpenRouteOnMapCommand
         });
 
 
