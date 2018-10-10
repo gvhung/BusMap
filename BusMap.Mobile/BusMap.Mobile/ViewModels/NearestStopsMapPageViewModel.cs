@@ -12,12 +12,13 @@ using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using Plugin.Geolocator;
+using Prism.Navigation;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
 namespace BusMap.Mobile.ViewModels
 {
-    public class NearestStopsMapPageViewModel : INotifyPropertyChanged
+    public class NearestStopsMapPageViewModel : ViewModelBase
     {
         private readonly ILogger _logger = DependencyService.Get<ILogManager>().GetLog();
         private IDataService _dataService;
@@ -28,36 +29,23 @@ namespace BusMap.Mobile.ViewModels
         public Position UserPosition
         {
             get => _userPosition;
-            set
-            {
-                _userPosition = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _userPosition, value);
         }
 
         public ObservableCollection<Pin> Pins
         {
             get => _pins;
-            set
-            {
-                _pins = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _pins, value);
         }
 
 
-        public NearestStopsMapPageViewModel(IDataService dataService)
+        public NearestStopsMapPageViewModel(IDataService dataService, INavigationService navigationService)
+            : base (navigationService)
         {
             _dataService = dataService;
             SetCurrentUserLocation();
             GetPins();
         }
-
-        //public NearestStopsMapPageViewModel(IDataService dataService, int routeId)
-        //{
-        //    _dataService = dataService;
-        //    GetPins(routeId);
-        //}
 
 
         private async Task GetPins()
@@ -67,17 +55,9 @@ namespace BusMap.Mobile.ViewModels
             Pins = pins.ConvertToMapPins();
         }
 
-        //private async Task GetPins(int routeId)
-        //{
-            
-        //    var pins = await _dataService.GetPinsForRoute(routeId);
-        //    Pins = pins;
-        //}
-
 
         private async void SetCurrentUserLocation()
         {
-
             Position startMapPosition = UserPosition;
             try
             {
@@ -101,6 +81,7 @@ namespace BusMap.Mobile.ViewModels
             }
         }
 
+
         private async Task<Position> GetCurrentUserLocationAsync()
         {
             var locator = CrossGeolocator.Current;
@@ -114,32 +95,5 @@ namespace BusMap.Mobile.ViewModels
             return new Position(geoPosition.Latitude, geoPosition.Longitude);
         }
 
-
-        #region TestPurposes only
-        public ICommand GetPinsCommand => new Command(async () =>
-        {
-            await GetPins();
-        });
-
-        public ICommand CheckPinsCommand => new Command(() =>
-        {
-            var msg = $"Count: {Pins.Count}\n";
-            foreach (var pin in Pins)
-            {
-                msg += $"{pin.Label}, {pin.Address}, {pin.Position.Latitude}, {pin.Position.Longitude};";
-            }
-            MessagingHelper.DisplayAlert(msg);
-        });
-        #endregion
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

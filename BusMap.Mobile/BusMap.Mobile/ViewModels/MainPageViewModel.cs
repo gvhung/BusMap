@@ -10,6 +10,7 @@ using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using BusMap.Mobile.Views;
+using Plugin.Geolocator;
 using Prism.Commands;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -48,6 +49,22 @@ namespace BusMap.Mobile.ViewModels
             : base(navigationService)
         {
             _dataService = dataService;
+            LocalizationAlert();
+        }
+
+
+        private void LocalizationAlert()
+        {
+            if (!CheckIfLocalizationIsEnabled())
+                MessagingHelper.DisplayAlert("Warning.",
+                    "Localization in your device is disabled.\n" +
+                    "Please enable localization, if you want use all app features.");
+        }
+
+        private bool CheckIfLocalizationIsEnabled()
+        {
+            var locator = CrossGeolocator.Current;
+            return locator.IsGeolocationEnabled;
         }
 
 
@@ -58,7 +75,10 @@ namespace BusMap.Mobile.ViewModels
 
             try
             {
-                if (String.IsNullOrEmpty(StartBusStopName) || String.IsNullOrEmpty(DestinationBusStopName))
+                if (String.IsNullOrEmpty(StartBusStopName) 
+                    || String.IsNullOrEmpty(DestinationBusStopName)
+                    || String.IsNullOrWhiteSpace(StartBusStopName) 
+                    || String.IsNullOrWhiteSpace(DestinationBusStopName))
                 {
                     MessagingHelper.Toast("Please enter bus stops in both entries.", ToastTime.ShortTime);
                     return null;
@@ -71,10 +91,6 @@ namespace BusMap.Mobile.ViewModels
                     MessagingHelper.Toast("No routes found.", ToastTime.LongTime);
                     return null;
                 }
-
-                //var viewModel =
-                //    new RoutesListPageViewModel(_dataService, resultRoutes, StartBusStopName, DestinationBusStopName);
-                //await Application.Current.MainPage.Navigation.PushAsync(new RoutesListPage(viewModel));
             }
             catch (Exception ex)
             {
@@ -91,6 +107,9 @@ namespace BusMap.Mobile.ViewModels
         {
             var foundedRoutes = await searchRoutes();
 
+            if (foundedRoutes == null)
+                return;
+
             var parameters = new NavigationParameters();
             parameters.Add("foundedRoutes", foundedRoutes);
             parameters.Add("startBusStopName", StartBusStopName);
@@ -99,6 +118,13 @@ namespace BusMap.Mobile.ViewModels
             await NavigationService.NavigateAsync("RoutesListPage", parameters);
         });
 
+        
+        public ICommand NavigateToNearestStopsPageCommand => new DelegateCommand(async () =>
+            await NavigationService.NavigateAsync("NearestStopsMapPage"));
+
+
+        public ICommand NavigateToTrackNewRouteCommand => new DelegateCommand(async () => 
+            await NavigationService.NavigateAsync("TrackNewRoutePage"));
 
 
         public ICommand AdvancedButtonCommand => new Command(async () =>

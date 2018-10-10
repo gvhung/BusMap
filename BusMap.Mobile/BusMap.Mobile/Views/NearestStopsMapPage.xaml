@@ -4,7 +4,8 @@
              xmlns:customControls="clr-namespace:BusMap.Mobile.CustomControls;assembly=BusMap.Mobile"
              xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
              x:Class="BusMap.Mobile.Views.NearestStopsMapPage"
-             BindingContext="{Binding NearestStopsMapPageViewModel, Source={StaticResource Locator}}"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
              Title="Nearest stops">
 
 
@@ -16,14 +17,6 @@
                 MapPosition="{Binding UserPosition}"
                 MapPins="{Binding Pins}"
                 AutomationId="NearestStopsMapPage_Map"/>
-            <StackLayout Orientation="Horizontal">
-                <Button Text="Test"
-                        HorizontalOptions="Center"
-                        Command="{Binding GetPinsCommand}"/>
-                <Button Text="Check"
-                        HorizontalOptions="Center"
-                        Command="{Binding CheckPinsCommand}"/>
-            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

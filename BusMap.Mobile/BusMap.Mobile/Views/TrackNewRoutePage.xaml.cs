@@ -28,13 +28,6 @@ namespace BusMap.Mobile.Views
             MenuItem menuItem = sender as MenuItem;
             StackLayout stackItem = menuItem.Parent as StackLayout;
             var busStop = stackItem.BindingContext as BusStop;
-            //Navigation.Pu
-
-
-            //Button button = sender as Button;
-            //Grid gridItem = button.Parent as Grid;
-            //var route = gridItem.BindingContext as Route;
-            //Navigation.PushAsync(new BusStopsMap(new BusStopsMapViewModel(route)));
         }
     }
 }
