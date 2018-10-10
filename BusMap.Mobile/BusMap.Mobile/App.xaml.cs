@@ -1,7 +1,11 @@
 ﻿using BusMap.Mobile.Views;
 using System;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.ViewModels;
 using CommonServiceLocator;
+using Prism;
+using Prism.Ioc;
+using Prism.Unity;
 using Unity;
 using Unity.ServiceLocation;
 using Xamarin.Forms;
@@ -10,37 +14,33 @@ using Xamarin.Forms.Xaml;
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace BusMap.Mobile
 {
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
-        public App()
+
+        public App() : this(null) { }
+
+        public App(IPlatformInitializer initializer) : base(initializer)
+        {
+        }
+
+
+        protected override async void OnInitialized()
         {
             InitializeComponent();
-            UnityIoC();
 
-            MainPage = new NavigationPage(new MainPage());
+            await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 
-        protected override void OnStart()
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            // Handle when your app starts
-        }
+            containerRegistry.RegisterForNavigation<NavigationPage>();  //v
+            containerRegistry.RegisterForNavigation<MainPage>();    //v
+            containerRegistry.RegisterForNavigation<NearestStopsMapPage>();  //v
+            containerRegistry.RegisterForNavigation<RoutesListPage>();  //v
+            containerRegistry.RegisterForNavigation<BusStopsMapPage>(); //v
+            containerRegistry.RegisterForNavigation<TrackNewRoutePage>();
 
-        protected override void OnSleep()
-        {
-            // Handle when your app sleeps
-        }
-
-        protected override void OnResume()
-        {
-            // Handle when your app resumes
-        }
-
-        private void UnityIoC()
-        {
-            var unityContainer = new UnityContainer();
-            unityContainer.RegisterType<IDataService, StaticCodeDataService>();
-
-            ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(unityContainer));
+            containerRegistry.Register<IDataService, ApiDataService>();
         }
 
     }

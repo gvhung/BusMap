@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -15,54 +16,71 @@ namespace BusMap.Mobile.Services
 {
     public class ApiDataService : IDataService
     {
-        private const string Uri = "http://192.168.0.110:5003/api/pins";
-        public async Task<ObservableCollection<Pin>> GetPins()
-        {
-            HttpClient httpClient = new HttpClient();
+        private const string Uri = "http://192.168.0.108:5003/api/";
 
-            var json = await httpClient.GetStringAsync(Uri);
-            var busStops = JsonConvert.DeserializeObject<List<BusStop>>(json);
 
-            ObservableCollection<Pin> result = busStops.ConvertToMapPins();
-
-            return result;
-        }
-
-        public async Task PostPins(BusStop busStop)
+        public async Task<List<BusStop>> GetBusStops()
         {
             var httpClient = new HttpClient();
-            var json = JsonConvert.SerializeObject(busStop);
-            StringContent content = new StringContent(json);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var result = await httpClient.PostAsync(Uri, content);
-            if (result.IsSuccessStatusCode)
-                MessagingHelper.Toast("Posted successfully", ToastTime.LongTime);
+            var json = await httpClient.GetStringAsync(Uri + "/busStops/routeCarrier");
+            var busStops = JsonConvert.DeserializeObject<List<BusStop>>(json);
+
+            return busStops;
         }
 
-        public Task<ObservableCollection<Pin>> GetPinsForRoute(int routeId)
+        public async Task PostBusStop(BusStop busStop)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Route>> GetRoutes()
+        public async Task<List<BusStop>> GetBusStopsForRoute(int routeId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Route> GetRoute(int routeId)
+        public async Task<List<Route>> GetRoutes()
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Route>> FindRoutes(string startCity, string destinationCity)
+        public async Task<Route> GetRoute(int routeId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate)
+        public async Task<List<Route>> FindRoutes(string startCity, string destinationCity)
         {
-            throw new NotImplementedException();
+            var result = new List<Route>();
+
+            var httpClient = new HttpClient();
+
+            var json = await httpClient.GetStringAsync(Uri + "/routes/busStopsCarrier");
+            var routes = JsonConvert.DeserializeObject<List<Route>>(json);
+
+            var routesToTest = routes
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant())))
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant())))
+                .ToList();
+
+            foreach (var route in routesToTest)
+            {
+                var start = route.BusStops.First(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant()));
+                var dest = route.BusStops.First(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant()));
+
+                if (start.Id < dest.Id)
+                    result.Add(route);
+            }
+
+            return result;
         }
     }
 }
