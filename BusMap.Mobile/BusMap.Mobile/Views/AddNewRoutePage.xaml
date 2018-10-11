@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.AddNewRoutePage"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Title="{Binding Title}">
+
+    <ContentPage.Content>
+        <StackLayout>
+            <Entry Placeholder="City name"
+                   Text="{Binding }"/>
+            <Entry Placeholder="Bus stop name"
+                   Text="{Binding }"/>
+            <Entry Text="{Binding Time}"/>
+            <Label Text="{Binding GeoPosition.Latitude}"/>
+            <Label Text="{Binding GeoPosition.Longitude}"/>
+            <Button Text="Save Bus Stop"
+                    HorizontalOptions="Center"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

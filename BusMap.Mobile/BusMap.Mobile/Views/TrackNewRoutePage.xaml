@@ -1,36 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:customControls="clr-namespace:BusMap.Mobile.CustomControls;assembly=BusMap.Mobile"
              x:Class="BusMap.Mobile.Views.TrackNewRoutePage"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
-             prism:ViewModelLocator.AutowireViewModel="True">
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Title="{Binding Title}">
 
-    <ContentPage.Content>
-        <ScrollView>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="8*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+    <!--AddingPage-->
+    <ContentPage Title="Add bus stops">
+        <ContentPage.Content>
+            <StackLayout>
                 <StackLayout Orientation="Horizontal"
-                             HorizontalOptions="Center"
-                             Grid.Row="0"
-                             Grid.Column="0">
-                    <Button Text="Add bus stop"/>
+                             HorizontalOptions="Center">
+                    <Button Text="Add bus stop"
+                            Command="{Binding PopupCommand}"/>
                     <Button Text="Save route"/>
                 </StackLayout>
-                <Label Text="Carrier: CarrierName"
-                       HorizontalOptions="Center"
-                       Grid.Row="1"
-                       Grid.Column="0"/> 
-                <ListView ItemsSource="{Binding BusStops}"
-                          Grid.Row="2"
-                          Grid.Column="0">
+                <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
+                       HorizontalOptions="Center"/>
+                <ListView ItemsSource="{Binding BusStops}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -46,7 +35,15 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-            </Grid>
-        </ScrollView>
-    </ContentPage.Content>
-</ContentPage>
+            </StackLayout>
+        </ContentPage.Content>
+    </ContentPage>
+
+    <!--MapPage-->
+    <ContentPage Title="MapPage">
+        <StackLayout>
+            <customControls:BindableMap Margin="15,10,15,10"/>
+        </StackLayout>
+    </ContentPage>
+
+</TabbedPage>

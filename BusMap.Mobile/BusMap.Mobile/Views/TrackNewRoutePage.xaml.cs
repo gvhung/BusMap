@@ -11,7 +11,7 @@ using Xamarin.Forms.Xaml;
 namespace BusMap.Mobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class TrackNewRoutePage : ContentPage
+    public partial class TrackNewRoutePage : TabbedPage
     {
         public TrackNewRoutePage()
         {

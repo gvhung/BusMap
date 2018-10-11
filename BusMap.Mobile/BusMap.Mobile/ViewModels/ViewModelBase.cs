@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Prism.Mvvm;
 using Prism.Navigation;
+using Rg.Plugins.Popup.Contracts;
 
 namespace BusMap.Mobile.ViewModels
 {
@@ -20,6 +21,7 @@ namespace BusMap.Mobile.ViewModels
         public ViewModelBase(INavigationService navigationService)
         {
             NavigationService = navigationService;
+
         }
 
 
