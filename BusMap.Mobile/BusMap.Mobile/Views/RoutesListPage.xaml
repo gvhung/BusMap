@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
+             x:Class="BusMap.Mobile.Views.RoutesListPage" 
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:helpers="clr-namespace:BusMap.Mobile.Helpers;assembly=BusMap.Mobile"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Title="{Binding Title}">
+
+
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView ItemsSource="{Binding Routes}"
+                      HasUnevenRows="True"
+                      IsPullToRefreshEnabled="True"
+                      RefreshCommand="{Binding RefreshCommand}"
+                      IsRefreshing="{Binding IsRefreshing}">
+                <ListView.Behaviors>
+                    <b:EventToCommandBehavior EventName="ItemTapped"
+                                              Command="{Binding SelectedRouteCommand}"
+                                              EventArgsConverter="{helpers:ItemTappedEventArgsConverter}"/>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Row="0"
+                                                 Grid.Column="0">
+                                    <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
+                                               FontSize="Medium"/>
+                                    <Label Text="{Binding Name, StringFormat='Route name: {0}'}"
+                                               FontSize="Small"/>
+                                    <Label Text="{Binding BusStops.Count, StringFormat='Number of stops: {0}'}"
+                                               TextColor="Blue">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding LabelCommand}"></TapGestureRecognizer>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Label Text="{Binding BusStopsString}"
+                                               FontSize="Small"
+                                               IsVisible="{Binding BusStopsStringIsVisible}"/>
+                                </StackLayout>
+                                <Button Text="See on map"
+                                            FontSize="Small"
+                                            Clicked="Button_OnClicked"
+                                            VerticalOptions="CenterAndExpand"
+                                            Grid.Row="0"
+                                            Grid.Column="1"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
