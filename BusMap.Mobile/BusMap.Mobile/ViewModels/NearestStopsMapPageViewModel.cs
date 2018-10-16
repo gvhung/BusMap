@@ -102,7 +102,7 @@ namespace BusMap.Mobile.ViewModels
         {
             try
             {
-                var position = await NavigationHelpers.GetCurrentUserPositionAsync(true);
+                var position = await LocalizationHelpers.GetCurrentUserPositionAsync(true);
                 UserPosition = position.ToMapsPosition();
             }
             catch (TaskCanceledException)

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:customControls="clr-namespace:BusMap.Mobile.CustomControls;assembly=BusMap.Mobile"
+             x:Class="BusMap.Mobile.Views.EditBusStopPage"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+                <StackLayout>
+                    <Entry Placeholder="City name"
+                           Text="{Binding CityNameEntry}"/>
+                    <Entry Placeholder="Bus stop name"
+                           Text="{Binding StopNameEntry}"/>
+                    <TimePicker Time="{Binding Time}"
+                                Format="HH:mm"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Button Text="Save Bus Stop"
+                                Command="{Binding SaveButtonCommand}"/>
+                        <Button Text="Set current location" 
+                                Command="{Binding SetCurrentLocationButtonCommand}"/>
+                    </StackLayout>
+                </StackLayout>
+                <customControls:BindableMap IsShowingUser="True"
+                                            MapPosition="{Binding MapPosition}"
+                                            MapPins="{Binding MapPins}"/>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

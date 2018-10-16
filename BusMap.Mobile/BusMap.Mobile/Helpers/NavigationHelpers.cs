@@ -7,7 +7,7 @@ using Plugin.Geolocator.Abstractions;
 
 namespace BusMap.Mobile.Helpers
 {
-    public class NavigationHelpers
+    public static class LocalizationHelpers
     {
         public static async Task<Position> GetCurrentUserPositionAsync(bool displayToast)
         {

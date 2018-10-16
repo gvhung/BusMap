@@ -79,7 +79,7 @@ namespace BusMap.Mobile.ViewModels
         {
             try
             {
-                GeoPosition = await NavigationHelpers.GetCurrentUserPositionAsync(true);
+                GeoPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(true);
             }
             catch (TaskCanceledException)
             {

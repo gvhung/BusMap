@@ -12,6 +12,7 @@ using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using BusMap.Mobile.Views;
+using Microsoft.EntityFrameworkCore.Internal;
 using Prism;
 using Prism.Commands;
 using Prism.Navigation;
@@ -28,6 +29,8 @@ namespace BusMap.Mobile.ViewModels
         private Position _mapPosition;
         private ObservableCollection<BusStop> _busStops;
         private Carrier _carrier;
+
+        private int _editingElementIndex = -1;
 
         public ObservableCollection<Pin> MapPins
         {
@@ -74,8 +77,8 @@ namespace BusMap.Mobile.ViewModels
                     Address = "Address1",
                     Id = 1,
                     Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
+                    Latitude = 50.205373,
+                    Longitude = 21.880392
                 },
                 new BusStop
                 {
@@ -94,11 +97,11 @@ namespace BusMap.Mobile.ViewModels
             await NavigationService.NavigateAsync("AddNewRoutePage");
         });
 
-        public ICommand TestCommand => new DelegateCommand(async () =>
+        public ICommand MapAppearingCommand => new DelegateCommand(async () =>
         {
             try
             {
-                var currentPosition = await NavigationHelpers.GetCurrentUserPositionAsync(false);
+                var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
                 MapPosition = currentPosition.ToMapsPosition();
             }
             catch (TaskCanceledException)
@@ -108,23 +111,29 @@ namespace BusMap.Mobile.ViewModels
 
         });
 
-        //public override void OnNavigatingTo(NavigationParameters parameters)
-        //{
-        //    if (parameters.ContainsKey("newBusStop"))
-        //    {
-        //        BusStops.Add(parameters["newBusStop"] as BusStop);
-        //    }
-        //}
+        public ICommand SelectedBusStopCommand => new DelegateCommand<BusStop>(async busStop =>
+        {
+            var navigationParameters = new NavigationParameters();
+            navigationParameters.Add("busStopToEdit", busStop);
+            _editingElementIndex = BusStops.IndexOf(busStop);
+
+            await NavigationService.NavigateAsync("EditBusStopPage", navigationParameters); //TODO
+        });
+
+
 
         public override void OnNavigatedTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("newBusStop"))
-            {
-                //BusStops.Add(parameters["newBusStop"] as BusStop);
                 BusStops.Insert(0, parameters["newBusStop"] as BusStop);
+            if (parameters.ContainsKey("busStopFromEdit"))
+            {
+                var busStopFromEdit = parameters["busStopFromEdit"] as BusStop;
+                BusStops[_editingElementIndex] = busStopFromEdit;
+                _editingElementIndex = -1;
             }
+
         }
 
-        //newBusStop
     }
 }

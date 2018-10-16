@@ -22,6 +22,11 @@
                 <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
                        HorizontalOptions="Center"/>
                 <ListView ItemsSource="{Binding BusStops}">
+                    <ListView.Behaviors>
+                        <b:EventToCommandBehavior EventName="ItemTapped"
+                                                  Command="{Binding SelectedBusStopCommand}"
+                                                  EventArgsConverter="{converters:ItemTappedEventArgsConverter}"/>
+                    </ListView.Behaviors>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -45,12 +50,13 @@
     <ContentPage Title="MapPage">
         <ContentPage.Behaviors>
             <b:EventToCommandBehavior EventName="Appearing"
-                                      Command="{Binding TestCommand}"
+                                      Command="{Binding MapAppearingCommand}"
                                       EventArgsConverter="ContentPageApearingConverter"/>
         </ContentPage.Behaviors>
         <StackLayout>
             <customControls:BindableMap Margin="15,10,15,10"
-                                        MapPosition="{Binding MapPosition}"/>
+                                        MapPosition="{Binding MapPosition}"
+                                        IsShowingUser="True"/>
         </StackLayout>
     </ContentPage>
 
