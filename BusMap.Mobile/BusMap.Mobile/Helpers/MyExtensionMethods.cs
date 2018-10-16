@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using BusMap.Mobile.Models;
+using Xamarin.Forms.Maps;
 
 namespace BusMap.Mobile.Helpers
 {
@@ -41,6 +42,9 @@ namespace BusMap.Mobile.Helpers
 
             return stringBuilder.ToString();
         }
+
+        public static Position ToMapsPosition(this Plugin.Geolocator.Abstractions.Position geolocatorPosition)
+            => new Position(geolocatorPosition.Latitude, geolocatorPosition.Longitude);
 
 
     }

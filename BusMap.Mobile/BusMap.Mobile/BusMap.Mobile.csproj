@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Acr.UserDialogs" Version="7.0.1" />
+    <PackageReference Include="Behaviors.Forms" Version="1.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Prism.Unity.Forms" Version="7.0.0.396" />
     <PackageReference Include="Rg.Plugins.Popup" Version="1.1.4.168" />

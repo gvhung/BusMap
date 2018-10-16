@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Annotations;
+using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using BusMap.Mobile.Views;
+using Prism;
 using Prism.Commands;
 using Prism.Navigation;
 using Rg.Plugins.Popup.Services;
@@ -23,7 +26,7 @@ namespace BusMap.Mobile.ViewModels
         private readonly IDataService _dataService;
         private ObservableCollection<Pin> _mapPins;
         private Position _mapPosition;
-        private List<BusStop> _busStops;
+        private ObservableCollection<BusStop> _busStops;
         private Carrier _carrier;
 
         public ObservableCollection<Pin> MapPins
@@ -38,7 +41,7 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _mapPosition, value);
         }
 
-        public List<BusStop> BusStops
+        public ObservableCollection<BusStop> BusStops
         {
             get => _busStops;
             set => SetProperty(ref _busStops, value);
@@ -64,7 +67,7 @@ namespace BusMap.Mobile.ViewModels
                 Name = "Placeholder carrier"
             };
 
-            BusStops = new List<BusStop>
+            BusStops = new ObservableCollection<BusStop>
             {
                 new BusStop
                 {
@@ -76,46 +79,9 @@ namespace BusMap.Mobile.ViewModels
                 },
                 new BusStop
                 {
-                    Address = "Address1",
+                    Address = "Address2",
                     Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },
-                new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },
-                new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
+                    Label = "Label2",
                     Latitude = 1,
                     Longitude = 1
                 }
@@ -128,5 +94,37 @@ namespace BusMap.Mobile.ViewModels
             await NavigationService.NavigateAsync("AddNewRoutePage");
         });
 
+        public ICommand TestCommand => new DelegateCommand(async () =>
+        {
+            try
+            {
+                var currentPosition = await NavigationHelpers.GetCurrentUserPositionAsync(false);
+                MapPosition = currentPosition.ToMapsPosition();
+            }
+            catch (TaskCanceledException)
+            {
+                MessagingHelper.Toast("Unable to get position.", ToastTime.ShortTime);
+            }
+
+        });
+
+        //public override void OnNavigatingTo(NavigationParameters parameters)
+        //{
+        //    if (parameters.ContainsKey("newBusStop"))
+        //    {
+        //        BusStops.Add(parameters["newBusStop"] as BusStop);
+        //    }
+        //}
+
+        public override void OnNavigatedTo(NavigationParameters parameters)
+        {
+            if (parameters.ContainsKey("newBusStop"))
+            {
+                //BusStops.Add(parameters["newBusStop"] as BusStop);
+                BusStops.Insert(0, parameters["newBusStop"] as BusStop);
+            }
+        }
+
+        //newBusStop
     }
 }

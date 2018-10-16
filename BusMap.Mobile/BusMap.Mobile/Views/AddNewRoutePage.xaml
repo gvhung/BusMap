@@ -9,14 +9,16 @@
     <ContentPage.Content>
         <StackLayout>
             <Entry Placeholder="City name"
-                   Text="{Binding }"/>
+                   Text="{Binding CityNameEntry}"/>
             <Entry Placeholder="Bus stop name"
-                   Text="{Binding }"/>
-            <Entry Text="{Binding Time}"/>
+                   Text="{Binding StopNameEntry}"/>
+            <TimePicker Time="{Binding Time}"
+                        Format="HH:mm"/>
             <Label Text="{Binding GeoPosition.Latitude}"/>
             <Label Text="{Binding GeoPosition.Longitude}"/>
             <Button Text="Save Bus Stop"
-                    HorizontalOptions="Center"/>
+                    HorizontalOptions="Center"
+                    Command="{Binding SaveButtonCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

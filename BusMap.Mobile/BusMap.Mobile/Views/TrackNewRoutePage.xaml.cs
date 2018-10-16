@@ -29,5 +29,10 @@ namespace BusMap.Mobile.Views
             StackLayout stackItem = menuItem.Parent as StackLayout;
             var busStop = stackItem.BindingContext as BusStop;
         }
+
+        //private void Page_OnAppearing(object sender, EventArgs e)
+        //{
+        //    MessagingHelper.Toast("test", ToastTime.ShortTime);
+        //}
     }
 }

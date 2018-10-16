@@ -43,8 +43,10 @@ namespace BusMap.Mobile.ViewModels
             : base (navigationService)
         {
             _dataService = dataService;
-            SetCurrentUserLocation();
-            GetPins();
+            Pins = new ObservableCollection<Pin>();
+            UserPosition = new Position();
+            //SetCurrentUserLocation();
+            //GetPins();
         }
 
 
@@ -56,44 +58,62 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        private async void SetCurrentUserLocation()
-        {
-            Position startMapPosition = UserPosition;
-            try
-            {
-                var position = await GetCurrentUserLocationAsync();
-                UserPosition = position;
+        //private async void SetCurrentUserLocation()
+        //{
+        //    Position startMapPosition = UserPosition;
+        //    try
+        //    {
+        //        var position = await GetCurrentUserLocationAsync();
+        //        UserPosition = position;
 
-                if (startMapPosition != position)
-                {
-                    MessagingHelper.Toast("Position obtained successfully.", ToastTime.LongTime);
-                }
-                else
-                {
-                    MessagingHelper.DisplayAlert("Could not obtain position");
-                    await Application.Current.MainPage.Navigation.PopAsync(true);
-                }
-            }
-            catch (Exception)
-            {
-                MessagingHelper.Toast("Unable to get location", ToastTime.LongTime);
-                await Application.Current.MainPage.Navigation.PopToRootAsync();
-            }
-        }
+        //        if (startMapPosition != position)
+        //        {
+        //            MessagingHelper.Toast("Position obtained successfully.", ToastTime.LongTime);
+        //        }
+        //        else
+        //        {
+        //            MessagingHelper.DisplayAlert("Could not obtain position");
+        //            await Application.Current.MainPage.Navigation.PopAsync(true);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        MessagingHelper.Toast("Unable to get location", ToastTime.LongTime);
+        //        await Application.Current.MainPage.Navigation.PopToRootAsync();
+        //    }
+        //}
 
 
-        private async Task<Position> GetCurrentUserLocationAsync()
-        {
-            var locator = CrossGeolocator.Current;
-            locator.DesiredAccuracy = 20;
+        //private async Task<Position> GetCurrentUserLocationAsync()
+        //{
+        //    var locator = CrossGeolocator.Current;
+        //    locator.DesiredAccuracy = 20;
             
 
-            MessagingHelper.Toast("Getting your localization...", ToastTime.ShortTime);
-            var geoPosition =
-                await locator.GetPositionAsync(timeout: TimeSpan.FromSeconds(10)); //TODO: cancel-token (?)
+        //    MessagingHelper.Toast("Getting your localization...", ToastTime.ShortTime);
+        //    var geoPosition =
+        //        await locator.GetPositionAsync(timeout: TimeSpan.FromSeconds(10)); //TODO: cancel-token (?)
 
-            return new Position(geoPosition.Latitude, geoPosition.Longitude);
+        //    return new Position(geoPosition.Latitude, geoPosition.Longitude);
+        //}
+
+
+        public override async void OnNavigatingTo(NavigationParameters parameters)
+        {
+            try
+            {
+                var position = await NavigationHelpers.GetCurrentUserPositionAsync(true);
+                UserPosition = position.ToMapsPosition();
+            }
+            catch (TaskCanceledException)
+            {
+                MessagingHelper.Toast("Unable to get location", ToastTime.ShortTime);
+                await NavigationService.GoBackAsync();
+            }
+            
+            await GetPins();
         }
+
 
     }
 }

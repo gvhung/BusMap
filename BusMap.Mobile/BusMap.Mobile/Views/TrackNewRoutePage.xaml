@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:customControls="clr-namespace:BusMap.Mobile.CustomControls;assembly=BusMap.Mobile"
              x:Class="BusMap.Mobile.Views.TrackNewRoutePage"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:converters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              Title="{Binding Title}">
@@ -41,8 +43,14 @@
 
     <!--MapPage-->
     <ContentPage Title="MapPage">
+        <ContentPage.Behaviors>
+            <b:EventToCommandBehavior EventName="Appearing"
+                                      Command="{Binding TestCommand}"
+                                      EventArgsConverter="ContentPageApearingConverter"/>
+        </ContentPage.Behaviors>
         <StackLayout>
-            <customControls:BindableMap Margin="15,10,15,10"/>
+            <customControls:BindableMap Margin="15,10,15,10"
+                                        MapPosition="{Binding MapPosition}"/>
         </StackLayout>
     </ContentPage>
 

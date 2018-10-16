@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using BusMap.Mobile.Helpers;
+using BusMap.Mobile.Models;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
+using Prism.Commands;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -16,9 +19,9 @@ namespace BusMap.Mobile.ViewModels
     {
         private IPageDialogService _pageDialogService;
         private Position _geoPosition;
-        private string _cityLabel;
-        private string _addressLabel;
-        private DateTime _time;
+        private string _cityNameEntry;
+        private string _stopNameEntry;
+        private TimeSpan _time;
 
         public Position GeoPosition
         {
@@ -26,19 +29,19 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _geoPosition, value);
         }
 
-        public string CityLabel
+        public string CityNameEntry
         {
-            get => _cityLabel;
-            set => SetProperty(ref _cityLabel, value);
+            get => _cityNameEntry;
+            set => SetProperty(ref _cityNameEntry, value);
         }
 
-        public string AddressLabel
+        public string StopNameEntry
         {
-            get => _addressLabel;
-            set => SetProperty(ref _addressLabel, value);
+            get => _stopNameEntry;
+            set => SetProperty(ref _stopNameEntry, value);
         }
 
-        public DateTime Time
+        public TimeSpan Time
         {
             get => _time;
             set => SetProperty(ref _time, value);
@@ -50,37 +53,46 @@ namespace BusMap.Mobile.ViewModels
         {
             _pageDialogService = pageDialogService;
             Title = "Add new bus stop";
+            Time = DateTime.Now.TimeOfDay;
         }
 
 
-        private async Task<Position> GetCurrentUserPositionAsync()
+        public ICommand SaveButtonCommand => new DelegateCommand(async () =>
         {
-            var locator = CrossGeolocator.Current;
-            locator.DesiredAccuracy = 20;
+            var newBusStop = new BusStop
+            {
+                Address = CityNameEntry,
+                Label = StopNameEntry,
+                Latitude = GeoPosition.Latitude,
+                Longitude = GeoPosition.Longitude
+            };
 
-            MessagingHelper.Toast("Getting your localization...", ToastTime.ShortTime);
-            var geoPosition =
-                await locator.GetPositionAsync(timeout: TimeSpan.FromSeconds(10));
+            var navigationParameters = new NavigationParameters();
+            navigationParameters.Add("newBusStop", newBusStop);
 
-            if (geoPosition != null)
-                MessagingHelper.Toast("Position obtained successfully.", ToastTime.ShortTime);
-            
-            return geoPosition;
-        }
-
+            await NavigationService.GoBackAsync(navigationParameters);
+        });
 
 
 
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
-            GeoPosition = await GetCurrentUserPositionAsync();
-            Time = DateTime.Now;
+            try
+            {
+                GeoPosition = await NavigationHelpers.GetCurrentUserPositionAsync(true);
+            }
+            catch (TaskCanceledException)
+            {
+                MessagingHelper.Toast("Unable to get position.", ToastTime.ShortTime);
+            }
+            
         }
 
         public override void Destroy()
         {
             
         }
+
 
     }
 }
