@@ -42,7 +42,7 @@ namespace BusMap.WebApi.Controllers
 
             var route = await getAllBusStopsFunc();
 
-            if (route == null)
+            if (route == null || route.Count() < 1)
                 return NotFound();
 
             return Ok(route);
@@ -92,8 +92,8 @@ namespace BusMap.WebApi.Controllers
             {
                 return BadRequest("BusStop object is incomplete or contains wrong data.");
             };
-            
-            return CreatedAtAction("GetBusStop", new {id = busStop.Id}, busStop);
+
+            return CreatedAtAction("GetBusStop", new { id = busStop.Id }, busStop);
         }
 
         [HttpDelete("{id}")]
