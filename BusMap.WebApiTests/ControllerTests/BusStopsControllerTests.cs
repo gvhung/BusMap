@@ -11,6 +11,7 @@ using BusMap.WebApi.Dto.BusStops;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Repositories.Implementations;
 using BusMap.WebApi.Services.Implementations;
+using BusMap.WebApiTests.ControllerTests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
@@ -18,92 +19,22 @@ using NUnit.Framework;
 namespace BusMap.WebApiTests
 {
     [TestFixture]
-    public class BusStopsControllerTests
+    public class BusStopsControllerTests : ControllerTestAbstractClass
     {
         private BusStopsController _busStopsController;
         private BusStopsController _busStopsControllerEmpty;
-        private IMapper mapper;
-        
-        
-
-        public BusStopsControllerTests()
-        {
-            AutoMapperSetup();
-        }
-
-        private void AutoMapperSetup()
-        {
-            var config = new AutoMapper.MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new AutomapperProfile());
-            });
-            mapper = config.CreateMapper();
-        }
 
         [SetUp]
-        public async Task Setup()
-        { 
-            var options = new DbContextOptionsBuilder<DatabaseContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
-            var context = new DatabaseContext(options);
-            var repository = new BusStopRepository(context);
-            
-            var optionsEmpty = new DbContextOptionsBuilder<DatabaseContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
-            var emptyContext = new DatabaseContext(optionsEmpty);
-            var emptyRepository = new BusStopRepository(emptyContext);
+        public void Setup()
+        {
+            var repository = new BusStopRepository(Context);
+            var repositoryEmpty = new BusStopRepository(ContextEmpty);
 
-            var service = new BusStopService(repository, mapper);
-            var emptyService = new BusStopService(emptyRepository, mapper);
-
-            var routeForTest = new Route
-            {
-                Id = 1,
-                Name = "RouteName",
-                Carrier = new Carrier
-                {
-                    Id = 1,
-                    Name = "CarrierName"
-                }
-            };
-            await repository.AddBusStopsRangeAsync(new List<BusStop>
-            {
-                new BusStop
-                {
-                    Id = 1,
-                    Latitude = 5.0,
-                    Longitude = 10.0,
-                    Address = "TestAddress1",
-                    Label = "TestLabel1",
-                    Route = routeForTest
-                },
-                new BusStop
-                {
-                    Id = 2,
-                    Latitude = 15.0,
-                    Longitude = 20.0,
-                    Address = "TestAddress2",
-                    Label = "TestLabel2",
-                    Route = routeForTest
-                },
-                new BusStop
-                {
-                    Id = 3,
-                    Latitude = 25.0,
-                    Longitude = 30.0,
-                    Address = "TestAddress3",
-                    Label = "TestLabel3",
-                    Route = routeForTest
-                }
-
-            });
+            var service = new BusStopService(repository, Mapper);
+            var serviceEmpty = new BusStopService(repositoryEmpty, Mapper);
 
             _busStopsController = new BusStopsController(service);
-            _busStopsControllerEmpty = new BusStopsController(emptyService);
+            _busStopsControllerEmpty = new BusStopsController(serviceEmpty);
         }
 
 
