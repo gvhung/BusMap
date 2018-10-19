@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
-namespace BusMap.WebApiTests
+namespace BusMap.WebApiTests.ControllerTests
 {
     [TestFixture]
     public class BusStopsControllerTests : ControllerTestAbstractClass
@@ -25,7 +25,7 @@ namespace BusMap.WebApiTests
         private BusStopsController _busStopsControllerEmpty;
 
         [SetUp]
-        public void Setup()
+        public void Setup() 
         {
             var repository = new BusStopRepository(Context);
             var repositoryEmpty = new BusStopRepository(ContextEmpty);
