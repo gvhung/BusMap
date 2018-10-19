@@ -40,12 +40,12 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = await getAllBusStopsFunc();
+            var busStops = await getAllBusStopsFunc();
 
-            if (route == null || route.Count() < 1)
+            if (busStops == null || busStops.Count() < 1)
                 return NotFound();
 
-            return Ok(route);
+            return Ok(busStops);
         }
 
 
@@ -68,12 +68,12 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = await getBusStopsFunc(id);
+            var busStop = await getBusStopsFunc(id);
 
-            if (route == null)
+            if (busStop == null)
                 return NotFound();
 
-            return Ok(route);
+            return Ok(busStop);
         }
 
 
