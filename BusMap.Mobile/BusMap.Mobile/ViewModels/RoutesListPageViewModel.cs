@@ -10,6 +10,7 @@ using BusMap.Mobile.Annotations;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.Views;
 using Prism.Commands;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -54,7 +55,7 @@ namespace BusMap.Mobile.ViewModels
             var parameters = new NavigationParameters();
             parameters.Add("route", route);
 
-            await NavigationService.NavigateAsync("BusStopsMapPage", parameters);
+            await NavigationService.NavigateAsync(nameof(BusStopsMapPage), parameters);
         });
 
         public ICommand SelectedRouteCommand2 => new DelegateCommand<Route>(async route =>

@@ -21,6 +21,8 @@ namespace BusMap.Mobile.Droid
 
             Acr.UserDialogs.UserDialogs.Init(this);
             Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
+            Xamarin.FormsGoogleMaps.Init(this, savedInstanceState);
+            Xamarin.FormsGoogleMapsBindings.Init();
 
             LoadApplication(new App(new AndroidInitializer()));
         }

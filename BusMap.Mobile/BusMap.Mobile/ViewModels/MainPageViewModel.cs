@@ -115,16 +115,16 @@ namespace BusMap.Mobile.ViewModels
             parameters.Add("startBusStopName", StartBusStopName);
             parameters.Add("destinationBusStopName", DestinationBusStopName);
 
-            await NavigationService.NavigateAsync("RoutesListPage", parameters);
+            await NavigationService.NavigateAsync(nameof(RoutesListPage), parameters);
         });
 
         
         public ICommand NavigateToNearestStopsPageCommand => new DelegateCommand(async () =>
-            await NavigationService.NavigateAsync("NearestStopsMapPage"));
+            await NavigationService.NavigateAsync(nameof(NearestStopsMapPage)));
 
 
         public ICommand NavigateToTrackNewRouteCommand => new DelegateCommand(async () => 
-            await NavigationService.NavigateAsync("TrackNewRoutePage"));
+            await NavigationService.NavigateAsync(nameof(TrackNewRoutePage)));
 
 
         public ICommand AdvancedButtonCommand => new Command(async () =>

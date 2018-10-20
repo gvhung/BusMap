@@ -37,7 +37,5 @@ namespace BusMap.Mobile.Models
             return result;
         }
 
-
-
     }
 }

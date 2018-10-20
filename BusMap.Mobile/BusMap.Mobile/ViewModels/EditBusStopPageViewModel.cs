@@ -8,7 +8,7 @@ using BusMap.Mobile.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Prism.Commands;
 using Prism.Navigation;
-using Xamarin.Forms.Maps;
+using Xamarin.Forms.GoogleMaps;
 using Position = Plugin.Geolocator.Abstractions.Position;
 
 namespace BusMap.Mobile.ViewModels
@@ -20,7 +20,7 @@ namespace BusMap.Mobile.ViewModels
         private string _stopNameEntry;
         private TimeSpan _time;
         private Position _geoPosition;
-        private Xamarin.Forms.Maps.Position _mapPosition;
+        private MapSpan _mapPosition;
         private ObservableCollection<Pin> _mapPins;
 
 
@@ -54,7 +54,7 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _geoPosition, value);
         }
 
-        public Xamarin.Forms.Maps.Position MapPosition
+        public MapSpan MapPosition
         {
             get => _mapPosition;
             set => SetProperty(ref _mapPosition, value);
@@ -70,7 +70,6 @@ namespace BusMap.Mobile.ViewModels
         public EditBusStopPageViewModel(INavigationService navigationService) 
             : base(navigationService)
         {
-            MapPosition = new Xamarin.Forms.Maps.Position();
             MapPins = new ObservableCollection<Pin>();
         }
 
@@ -92,7 +91,7 @@ namespace BusMap.Mobile.ViewModels
 
         public ICommand SetCurrentLocationButtonCommand => new DelegateCommand(async () =>
         {
-            var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
+            var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(true);
             UpdateDataUsingPosition(currentPosition);
         });
 
@@ -101,8 +100,8 @@ namespace BusMap.Mobile.ViewModels
             BusStopToEdit.Latitude = position.Latitude;
             BusStopToEdit.Longitude = position.Longitude;
             GeoPosition = position;
-            MapPins = new ObservableCollection<Pin> { BusStopToEdit.ConvertToFormsMapsPin() };
-            MapPosition = position.ToMapsPosition();
+            MapPins.Add(BusStopToEdit.ToGoogleMapsPin());
+            MapPosition = position.ToMapSpan(Distance.FromKilometers(10));
         }
 
 
@@ -115,8 +114,8 @@ namespace BusMap.Mobile.ViewModels
                 SetBusStopToChilds(BusStopToEdit);
 
                 Title = $"{BusStopToEdit.Address}, {BusStopToEdit.Label}";
-                MapPosition = GeoPosition.ToMapsPosition();
-                var pinToAdd = BusStopToEdit.ConvertToFormsMapsPin();
+                MapPosition = GeoPosition.ToMapSpan(Distance.FromKilometers(10));
+                var pinToAdd = BusStopToEdit.ToGoogleMapsPin();
                 MapPins.Add(pinToAdd);
             }
         }

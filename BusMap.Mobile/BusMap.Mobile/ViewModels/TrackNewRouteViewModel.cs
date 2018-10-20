@@ -18,7 +18,7 @@ using Prism.Commands;
 using Prism.Navigation;
 using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
-using Xamarin.Forms.Maps;
+using Xamarin.Forms.GoogleMaps;
 
 namespace BusMap.Mobile.ViewModels
 {
@@ -26,7 +26,7 @@ namespace BusMap.Mobile.ViewModels
     {
         private readonly IDataService _dataService;
         private ObservableCollection<Pin> _mapPins;
-        private Position _mapPosition;
+        private MapSpan _mapPosition;
         private ObservableCollection<BusStop> _busStops;
         private Carrier _carrier;
 
@@ -38,7 +38,7 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _mapPins, value);
         }
 
-        public Position MapPosition
+        public MapSpan MapPosition
         {
             get => _mapPosition;
             set => SetProperty(ref _mapPosition, value);
@@ -62,8 +62,8 @@ namespace BusMap.Mobile.ViewModels
         {
             _dataService = dataService;
             Title = "Add route";
-
             MapPins = new ObservableCollection<Pin>();
+
             Carrier = new Carrier
             {
                 Id = 1,
@@ -85,24 +85,28 @@ namespace BusMap.Mobile.ViewModels
                     Address = "Address2",
                     Id = 1,
                     Label = "Label2",
-                    Latitude = 1,
-                    Longitude = 1
+                    Latitude = 49,
+                    Longitude = 22
                 }
             };
+            MapPins.AddRange(BusStops.ToGoogleMapsPins());
         }
 
 
         public ICommand PopupCommand => new DelegateCommand(async () =>
         {
-            await NavigationService.NavigateAsync("AddNewRoutePage");
+            await NavigationService.NavigateAsync(nameof(AddNewRoutePage));
         });
 
         public ICommand MapAppearingCommand => new DelegateCommand(async () =>
         {
             try
             {
-                var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
-                MapPosition = currentPosition.ToMapsPosition();
+                var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(true);
+                MapPosition = null;
+                MapPosition = MapSpan.FromCenterAndRadius(currentPosition.ToGoogleMapsPosition(), Distance.FromKilometers(10));
+                if (MapPins == null || MapPins.Count < 1)
+                    MapPins.AddRange(BusStops.ToGoogleMapsPins());
             }
             catch (TaskCanceledException)
             {
@@ -117,7 +121,7 @@ namespace BusMap.Mobile.ViewModels
             navigationParameters.Add("busStopToEdit", busStop);
             _editingElementIndex = BusStops.IndexOf(busStop);
 
-            await NavigationService.NavigateAsync("EditBusStopPage", navigationParameters); //TODO
+            await NavigationService.NavigateAsync(nameof(EditBusStopPage), navigationParameters);
         });
 
 
@@ -125,14 +129,27 @@ namespace BusMap.Mobile.ViewModels
         public override void OnNavigatedTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("newBusStop"))
-                BusStops.Insert(0, parameters["newBusStop"] as BusStop);
+                AddBusStopToLists(parameters["newBusStop"] as BusStop);
             if (parameters.ContainsKey("busStopFromEdit"))
             {
                 var busStopFromEdit = parameters["busStopFromEdit"] as BusStop;
-                BusStops[_editingElementIndex] = busStopFromEdit;
-                _editingElementIndex = -1;
+                AddEditedBusStopToLists(busStopFromEdit, ref _editingElementIndex);
             }
 
+        }
+
+        private void AddBusStopToLists(BusStop busStop)
+        {
+            BusStops.Insert(0, busStop);
+            MapPins.Insert(0, busStop.ToGoogleMapsPin());
+        }
+
+        private void AddEditedBusStopToLists(BusStop busStop, ref int index)
+        {
+            BusStops[index] = busStop;
+            MapPins.RemoveAt(index);
+            MapPins.Insert(index, busStop.ToGoogleMapsPin());
+            index = -1;
         }
 
     }
