@@ -22,6 +22,8 @@ namespace BusMap.Mobile.ViewModels
         private string _cityNameEntry;
         private string _stopNameEntry;
         private TimeSpan _time;
+        private bool _saveButtonIsEnabled;
+        private bool _positionIsDownloading;
 
         public Position GeoPosition
         {
@@ -47,6 +49,17 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _time, value);
         }
 
+        public bool SaveButtonIsEnabled
+        {
+            get => _saveButtonIsEnabled;
+            set => SetProperty(ref _saveButtonIsEnabled, value);
+        }
+
+        public bool PositionIsDownloading
+        {
+            get => _positionIsDownloading;
+            set => SetProperty(ref _positionIsDownloading, value);
+        }
 
         public AddNewRouteViewModel(INavigationService navigationService, IPageDialogService pageDialogService) 
             : base (navigationService)
@@ -79,7 +92,10 @@ namespace BusMap.Mobile.ViewModels
         {
             try
             {
-                GeoPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(true);
+                PositionIsDownloading = true;
+                GeoPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
+                SaveButtonIsEnabled = true;
+                PositionIsDownloading = false;
             }
             catch (TaskCanceledException)
             {

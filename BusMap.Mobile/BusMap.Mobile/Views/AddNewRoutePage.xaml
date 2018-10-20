@@ -18,7 +18,21 @@
             <Label Text="{Binding GeoPosition.Longitude}"/>
             <Button Text="Save Bus Stop"
                     HorizontalOptions="Center"
-                    Command="{Binding SaveButtonCommand}"/>
-        </StackLayout>
+                    Command="{Binding SaveButtonCommand}"
+                    IsEnabled="{Binding SaveButtonIsEnabled}"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Downloading your position..."
+                       IsVisible="{Binding PositionIsDownloading}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <ActivityIndicator IsRunning="{Binding PositionIsDownloading}"
+                                   IsVisible="True"
+                                   Color="DodgerBlue"
+                                   HorizontalOptions="CenterAndExpand"
+                                   VerticalOptions="Center"/>
+            </StackLayout>
+            
+            
+            </StackLayout>
     </ContentPage.Content>
 </ContentPage>
