@@ -29,6 +29,7 @@
                     <googleMaps:Map.Behaviors>
                         <googleMapsBindings:BindingPinsBehavior Value="{Binding MapPins}"/>
                         <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                        <googleMapsBindings:PinDragEndToCommandBehavior Command="{Binding PinDraggingEndCommand}"/>
                     </googleMaps:Map.Behaviors>
                 </googleMaps:Map>
             </StackLayout>

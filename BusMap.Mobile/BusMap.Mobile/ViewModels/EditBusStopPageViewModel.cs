@@ -95,6 +95,15 @@ namespace BusMap.Mobile.ViewModels
             UpdateDataUsingPosition(currentPosition);
         });
 
+        public ICommand PinDraggingEndCommand => new DelegateCommand<PinDragEventArgs>(args =>
+        {
+            var position = args.Pin.Position;
+            GeoPosition = new Position(position.Latitude, position.Longitude);
+        });
+
+
+
+
         private void UpdateDataUsingPosition(Position position)
         {
             BusStopToEdit.Latitude = position.Latitude;
@@ -116,6 +125,7 @@ namespace BusMap.Mobile.ViewModels
                 Title = $"{BusStopToEdit.Address}, {BusStopToEdit.Label}";
                 MapPosition = GeoPosition.ToMapSpan(Distance.FromKilometers(10));
                 var pinToAdd = BusStopToEdit.ToGoogleMapsPin();
+                pinToAdd.IsDraggable = true;
                 MapPins.Add(pinToAdd);
             }
         }
