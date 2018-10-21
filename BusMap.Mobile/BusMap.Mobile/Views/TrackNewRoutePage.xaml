@@ -43,6 +43,10 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                <Button Text="Save route"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="End"
+                        IsEnabled="{Binding SaveButtonEnabled}"/>
             </StackLayout>
         </ContentPage.Content>
     </ContentPage>

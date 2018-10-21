@@ -101,6 +101,14 @@ namespace BusMap.Mobile.ViewModels
             GeoPosition = new Position(position.Latitude, position.Longitude);
         });
 
+        public ICommand RemoveButtonCommand => new DelegateCommand(async () =>
+        {
+            var navigationParameters = new NavigationParameters();
+            navigationParameters.Add("removeBusStopId", BusStopToEdit.Id);
+
+            await NavigationService.GoBackAsync(navigationParameters);
+        });
+
 
 
 

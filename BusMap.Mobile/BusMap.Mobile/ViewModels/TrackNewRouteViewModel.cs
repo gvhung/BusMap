@@ -31,6 +31,7 @@ namespace BusMap.Mobile.ViewModels
         private Carrier _carrier;
 
         private int _editingElementIndex = -1;
+        private bool _saveButtonEnabled;
 
         public ObservableCollection<Pin> MapPins
         {
@@ -56,6 +57,12 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _carrier, value);
         }
 
+        public bool SaveButtonEnabled
+        {
+            get => _saveButtonEnabled;
+            set => SetProperty(ref _saveButtonEnabled, value);
+        }
+
 
         public TrackNewRouteViewModel(IDataService dataService, INavigationService navigationService)
             : base (navigationService)
@@ -63,39 +70,29 @@ namespace BusMap.Mobile.ViewModels
             _dataService = dataService;
             Title = "Add route";
             MapPins = new ObservableCollection<Pin>();
+            BusStops = new ObservableCollection<BusStop>();
 
             Carrier = new Carrier
             {
                 Id = 1,
                 Name = "Placeholder carrier"
             };
-
-            BusStops = new ObservableCollection<BusStop>
-            {
-                new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 50.205373,
-                    Longitude = 21.880392
-                },
-                new BusStop
-                {
-                    Address = "Address2",
-                    Id = 1,
-                    Label = "Label2",
-                    Latitude = 49,
-                    Longitude = 22
-                }
-            };
-            MapPins.AddRange(BusStops.ToGoogleMapsPins());
         }
 
 
         public ICommand PopupCommand => new DelegateCommand(async () =>
         {
-            await NavigationService.NavigateAsync(nameof(AddNewRoutePage));
+            var navigationParams = new NavigationParameters();
+            if (BusStops.Count < 1)
+            {
+                navigationParams.Add("lastIndex", 0);
+            }
+            else
+            {
+                navigationParams.Add("lastIndex", BusStops.First().Id);
+            }
+            
+            await NavigationService.NavigateAsync(nameof(AddNewRoutePage), navigationParams);
         });
 
         public ICommand MapAppearingCommand => new DelegateCommand(async () =>
@@ -129,11 +126,28 @@ namespace BusMap.Mobile.ViewModels
         public override void OnNavigatedTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("newBusStop"))
+            {
                 AddBusStopToLists(parameters["newBusStop"] as BusStop);
+                if (BusStops.Count > 1)
+                {
+                    SaveButtonEnabled = true;
+                }
+            }
+                
             if (parameters.ContainsKey("busStopFromEdit"))
             {
                 var busStopFromEdit = parameters["busStopFromEdit"] as BusStop;
                 AddEditedBusStopToLists(busStopFromEdit, ref _editingElementIndex);
+            }
+
+            if (parameters.ContainsKey("removeBusStopId"))
+            {
+                var busStopToRemoveId = (int) parameters["removeBusStopId"];
+                RemoveBusStop(busStopToRemoveId);
+                if (BusStops.Count < 2)
+                {
+                    SaveButtonEnabled = false;
+                }
             }
 
         }
@@ -150,6 +164,17 @@ namespace BusMap.Mobile.ViewModels
             MapPins.RemoveAt(index);
             MapPins.Insert(index, busStop.ToGoogleMapsPin());
             index = -1;
+        }
+
+        private void RemoveBusStop(int id)
+        {
+            BusStops.Remove(BusStops.SingleOrDefault(b => b.Id == id));
+        }
+
+        private async Task<int> GetLastBusStopId()
+        {
+            MessagingHelper.Toast("Downloading data...", ToastTime.ShortTime);
+            return await _dataService.GetBusStopLastId();
         }
 
     }

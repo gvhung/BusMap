@@ -20,16 +20,18 @@
                     HorizontalOptions="Center"
                     Command="{Binding SaveButtonCommand}"
                     IsEnabled="{Binding SaveButtonIsEnabled}"/>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Downloading your position..."
-                       IsVisible="{Binding PositionIsDownloading}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"/>
+            <StackLayout Orientation="Horizontal"
+                         HorizontalOptions="Center"
+                         VerticalOptions="EndAndExpand">
                 <ActivityIndicator IsRunning="{Binding PositionIsDownloading}"
                                    IsVisible="True"
                                    Color="DodgerBlue"
-                                   HorizontalOptions="CenterAndExpand"
+                                   HorizontalOptions="Start"
                                    VerticalOptions="Center"/>
+                <Label Text="Downloading your position..."
+                       IsVisible="{Binding PositionIsDownloading}"
+                       HorizontalOptions="StartAndExpand"
+                       VerticalOptions="Center"/>
             </StackLayout>
             
             

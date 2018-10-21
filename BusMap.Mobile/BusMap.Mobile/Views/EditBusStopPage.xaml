@@ -9,30 +9,38 @@
              Title="{Binding Title}">
 
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout>
-                <StackLayout>
-                    <Entry Placeholder="City name"
-                           Text="{Binding CityNameEntry}"/>
-                    <Entry Placeholder="Bus stop name"
-                           Text="{Binding StopNameEntry}"/>
-                    <TimePicker Time="{Binding Time}"
-                                Format="HH:mm"/>
-                    <StackLayout Orientation="Horizontal">
+        <StackLayout>
+            <StackLayout Margin="15,5,15,0">
+                <StackLayout Orientation="Horizontal">
+                    <StackLayout HorizontalOptions="FillAndExpand"
+                                 >
+                        <Entry Placeholder="City name"
+                               Text="{Binding CityNameEntry}"/>
+                        <Entry Placeholder="Bus stop name"
+                               Text="{Binding StopNameEntry}"/>
+                        <TimePicker Time="{Binding Time}"
+                                    Format="HH:mm"/>
+                    </StackLayout>
+                    <StackLayout HorizontalOptions="Fill">
                         <Button Text="Save Bus Stop"
+                                FontSize="Micro"
                                 Command="{Binding SaveButtonCommand}"/>
                         <Button Text="Set current location" 
+                                FontSize="Micro"
                                 Command="{Binding SetCurrentLocationButtonCommand}"/>
+                        <Button Text="Remove"
+                                FontSize="Micro"
+                                Command="{Binding RemoveButtonCommand}"/>
                     </StackLayout>
                 </StackLayout>
-                <googleMaps:Map MyLocationEnabled="True">
-                    <googleMaps:Map.Behaviors>
-                        <googleMapsBindings:BindingPinsBehavior Value="{Binding MapPins}"/>
-                        <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
-                        <googleMapsBindings:PinDragEndToCommandBehavior Command="{Binding PinDraggingEndCommand}"/>
-                    </googleMaps:Map.Behaviors>
-                </googleMaps:Map>
             </StackLayout>
-        </ScrollView>
+            <googleMaps:Map MyLocationEnabled="True">
+                <googleMaps:Map.Behaviors>
+                    <googleMapsBindings:BindingPinsBehavior Value="{Binding MapPins}"/>
+                    <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                    <googleMapsBindings:PinDragEndToCommandBehavior Command="{Binding PinDraggingEndCommand}"/>
+                </googleMaps:Map.Behaviors>
+            </googleMaps:Map>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

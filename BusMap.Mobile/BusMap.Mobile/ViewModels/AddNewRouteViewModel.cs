@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
+using BusMap.Mobile.Services;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 using Prism.Commands;
@@ -17,6 +18,8 @@ namespace BusMap.Mobile.ViewModels
 {
     public class AddNewRouteViewModel : ViewModelBase
     {
+        private int _lastIdFromDb;
+
         private IPageDialogService _pageDialogService;
         private Position _geoPosition;
         private string _cityNameEntry;
@@ -77,7 +80,8 @@ namespace BusMap.Mobile.ViewModels
                 Address = CityNameEntry,
                 Label = StopNameEntry,
                 Latitude = GeoPosition.Latitude,
-                Longitude = GeoPosition.Longitude
+                Longitude = GeoPosition.Longitude,
+                Id = _lastIdFromDb
             };
 
             var navigationParameters = new NavigationParameters();
@@ -91,10 +95,11 @@ namespace BusMap.Mobile.ViewModels
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
             try
-            {
+            {               
                 PositionIsDownloading = true;
                 GeoPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
-                SaveButtonIsEnabled = true;
+                _lastIdFromDb = (int)parameters["lastIndex"] + 1;
+                SaveButtonIsEnabled = true;               
                 PositionIsDownloading = false;
             }
             catch (TaskCanceledException)
@@ -104,10 +109,8 @@ namespace BusMap.Mobile.ViewModels
             
         }
 
-        public override void Destroy()
-        {
-            
-        }
+        
+
 
 
     }
