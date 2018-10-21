@@ -29,6 +29,16 @@ namespace BusMap.Mobile.Services
             return busStops;
         }
 
+        public async Task<int> GetBusStopLastId()
+        {
+            var httpClient = new HttpClient();
+
+            var json = await httpClient.GetStringAsync(Uri + "/busStops/lastId");
+            int lastId = JsonConvert.DeserializeObject<int>(json);
+
+            return lastId;
+        }
+
         public async Task PostBusStop(BusStop busStop)
         {
             throw new NotImplementedException();

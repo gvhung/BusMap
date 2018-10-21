@@ -21,6 +21,9 @@ namespace BusMap.Mobile.Services
         //Task<List<Route>> FindRoutes(string startCity, string destinationCity);
 
         Task<List<BusStop>> GetBusStops();
+        Task<int> GetBusStopLastId();
+
+
         Task PostBusStop(BusStop busStop);
         Task<List<BusStop>> GetBusStopsForRoute(int routeId);
         Task<List<Route>> GetRoutes();
