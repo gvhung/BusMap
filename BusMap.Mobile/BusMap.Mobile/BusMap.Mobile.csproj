@@ -29,13 +29,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\AddNewBusStopPage.xaml.cs">
+      <DependentUpon>AddNewBusStopPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\BusStopsMapPage.xaml.cs">
       <DependentUpon>BusStopsMapPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Views\AddNewRoutePage.xaml">
+    <EmbeddedResource Update="Views\AddNewBusStopPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\BusStopsMapPage.xaml">

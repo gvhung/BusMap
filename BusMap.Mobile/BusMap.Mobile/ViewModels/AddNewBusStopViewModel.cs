@@ -16,10 +16,8 @@ using Xamarin.Forms;
 
 namespace BusMap.Mobile.ViewModels
 {
-    public class AddNewRouteViewModel : ViewModelBase
+    public class AddNewBusStopViewModel : ViewModelBase
     {
-        private int _lastIdFromDb;
-
         private IPageDialogService _pageDialogService;
         private Position _geoPosition;
         private string _cityNameEntry;
@@ -64,7 +62,7 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _positionIsDownloading, value);
         }
 
-        public AddNewRouteViewModel(INavigationService navigationService, IPageDialogService pageDialogService) 
+        public AddNewBusStopViewModel(INavigationService navigationService, IPageDialogService pageDialogService) 
             : base (navigationService)
         {
             _pageDialogService = pageDialogService;
@@ -81,7 +79,7 @@ namespace BusMap.Mobile.ViewModels
                 Label = StopNameEntry,
                 Latitude = GeoPosition.Latitude,
                 Longitude = GeoPosition.Longitude,
-                Id = _lastIdFromDb
+                Id = 0
             };
 
             var navigationParameters = new NavigationParameters();
@@ -98,7 +96,6 @@ namespace BusMap.Mobile.ViewModels
             {               
                 PositionIsDownloading = true;
                 GeoPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
-                _lastIdFromDb = (int)parameters["lastIndex"] + 1;
                 SaveButtonIsEnabled = true;               
                 PositionIsDownloading = false;
             }

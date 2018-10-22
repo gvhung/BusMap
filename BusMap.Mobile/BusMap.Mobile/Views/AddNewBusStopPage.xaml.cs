@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace BusMap.Mobile.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AddNewRoutePage : ContentPage
+	public partial class AddNewBusStopPage : ContentPage
 	{
-		public AddNewRoutePage ()
+		public AddNewBusStopPage()
 		{
 			InitializeComponent ();
 		}

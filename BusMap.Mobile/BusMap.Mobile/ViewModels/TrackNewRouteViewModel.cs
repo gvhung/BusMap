@@ -26,7 +26,7 @@ namespace BusMap.Mobile.ViewModels
     public class TrackNewRouteViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
-        private IPageDialogService _pageDialogService;
+        private readonly IPageDialogService _pageDialogService;
 
         private ObservableCollection<Pin> _mapPins;
         private MapSpan _mapPosition;
@@ -86,18 +86,8 @@ namespace BusMap.Mobile.ViewModels
 
 
         public ICommand PopupCommand => new DelegateCommand(async () =>
-        {
-            var navigationParams = new NavigationParameters();
-            if (BusStops.Count < 1)
-            {
-                navigationParams.Add("lastIndex", 0);
-            }
-            else
-            {
-                navigationParams.Add("lastIndex", BusStops.First().Id);
-            }
-            
-            await NavigationService.NavigateAsync(nameof(AddNewRoutePage), navigationParams);
+        {            
+            await NavigationService.NavigateAsync(nameof(AddNewBusStopPage));
         });
 
         public ICommand MapAppearingCommand => new DelegateCommand(async () =>
@@ -117,7 +107,7 @@ namespace BusMap.Mobile.ViewModels
 
         });
 
-        public ICommand SelectedBusStopCommand => new DelegateCommand<BusStop>(async busStop =>
+        public ICommand EditBusStopCommand => new DelegateCommand<BusStop>(async busStop =>
         {
             var navigationParameters = new NavigationParameters();
             navigationParameters.Add("busStopToEdit", busStop);
@@ -129,10 +119,10 @@ namespace BusMap.Mobile.ViewModels
         public ICommand SaveButtonCommand => new DelegateCommand(async () =>
         {
             var busStopsReversed = BusStops.Reverse().ToList();
-            foreach (var stop in busStopsReversed)
-            {
-                stop.Id = 0;
-            }
+            //foreach (var stop in busStopsReversed)
+            //{
+            //    stop.Id = 0;
+            //}
 
             var route = new Route
             {
@@ -170,7 +160,7 @@ namespace BusMap.Mobile.ViewModels
 
 
 
-        public override void OnNavigatedTo(NavigationParameters parameters)
+        public override async void OnNavigatedTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("newBusStop"))
             {
@@ -187,16 +177,16 @@ namespace BusMap.Mobile.ViewModels
                 AddEditedBusStopToLists(busStopFromEdit, ref _editingElementIndex);
             }
 
-            if (parameters.ContainsKey("removeBusStopId"))
+            if (parameters.ContainsKey("removeBusStopAddress") && parameters.ContainsKey("removeBusStopLabel"))
             {
-                var busStopToRemoveId = (int) parameters["removeBusStopId"];
-                RemoveBusStop(busStopToRemoveId);
+                var busStopToRemoveLabel = parameters["removeBusStopLabel"] as string;
+                var busStopToRemoveAddress = parameters["removeBusStopAddress"] as string;
+                await RemoveBusStop(busStopToRemoveAddress, busStopToRemoveLabel);
                 if (BusStops.Count < 2)
                 {
                     SaveButtonEnabled = false;
                 }
             }
-
         }
 
         private void AddBusStopToLists(BusStop busStop)
@@ -213,9 +203,21 @@ namespace BusMap.Mobile.ViewModels
             index = -1;
         }
 
-        private void RemoveBusStop(int id)
+        private async Task RemoveBusStop(string address, string label)
         {
-            BusStops.Remove(BusStops.SingleOrDefault(b => b.Id == id));
+            var busStopToRemove = BusStops
+                .Where(b => b.Address.Equals(address))
+                .SingleOrDefault(b => b.Label.Equals(label));
+
+            if (busStopToRemove != null)
+            {
+                BusStops.Remove(busStopToRemove);
+                MapPins.Remove(busStopToRemove.ToGoogleMapsPin());
+            }
+            else
+            {
+                await _pageDialogService.DisplayAlertAsync("Alert!", "Could not remove busStop.\nPlease try again.", "Ok");
+            }
         }
 
     }

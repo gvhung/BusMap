@@ -104,7 +104,8 @@ namespace BusMap.Mobile.ViewModels
         public ICommand RemoveButtonCommand => new DelegateCommand(async () =>
         {
             var navigationParameters = new NavigationParameters();
-            navigationParameters.Add("removeBusStopId", BusStopToEdit.Id);
+            navigationParameters.Add("removeBusStopLabel", BusStopToEdit.Label);
+            navigationParameters.Add("removeBusStopAddress", BusStopToEdit.Address);
 
             await NavigationService.GoBackAsync(navigationParameters);
         });

@@ -25,7 +25,7 @@
                 <ListView ItemsSource="{Binding BusStops}">
                     <ListView.Behaviors>
                         <b:EventToCommandBehavior EventName="ItemTapped"
-                                                  Command="{Binding SelectedBusStopCommand}"
+                                                  Command="{Binding EditBusStopCommand}"
                                                   EventArgsConverter="{converters:ItemTappedEventArgsConverter}"/>
                     </ListView.Behaviors>
                     <ListView.ItemTemplate>
