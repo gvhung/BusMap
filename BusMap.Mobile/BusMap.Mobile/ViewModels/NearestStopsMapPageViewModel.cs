@@ -40,7 +40,7 @@ namespace BusMap.Mobile.ViewModels
 
         private async Task GetPins()
         {
-            var busStops = await _dataService.GetBusStops();
+            var busStops = await _dataService.GetBusStopsAsync();
             var pins = busStops.ToGoogleMapsPins();
             Pins.AddRange(pins);
         }

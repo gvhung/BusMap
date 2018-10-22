@@ -46,7 +46,8 @@
                 <Button Text="Save route"
                         HorizontalOptions="CenterAndExpand"
                         VerticalOptions="End"
-                        IsEnabled="{Binding SaveButtonEnabled}"/>
+                        IsEnabled="{Binding SaveButtonEnabled}"
+                        Command="{Binding SaveButtonCommand}"/>
             </StackLayout>
         </ContentPage.Content>
     </ContentPage>

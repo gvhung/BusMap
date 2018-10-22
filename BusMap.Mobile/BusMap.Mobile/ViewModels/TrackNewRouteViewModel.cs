@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Prism;
 using Prism.Commands;
 using Prism.Navigation;
+using Prism.Services;
 using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
@@ -25,6 +26,8 @@ namespace BusMap.Mobile.ViewModels
     public class TrackNewRouteViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
+        private IPageDialogService _pageDialogService;
+
         private ObservableCollection<Pin> _mapPins;
         private MapSpan _mapPosition;
         private ObservableCollection<BusStop> _busStops;
@@ -64,18 +67,20 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        public TrackNewRouteViewModel(IDataService dataService, INavigationService navigationService)
+        public TrackNewRouteViewModel(IDataService dataService, INavigationService navigationService,
+            IPageDialogService pageDialogService)
             : base (navigationService)
         {
             _dataService = dataService;
+            _pageDialogService = pageDialogService;
             Title = "Add route";
             MapPins = new ObservableCollection<Pin>();
             BusStops = new ObservableCollection<BusStop>();
 
             Carrier = new Carrier
             {
-                Id = 1,
-                Name = "Placeholder carrier"
+                Name = "Placeholder carrier",
+                Id = 2  //Todo: get id carrier checked on list
             };
         }
 
@@ -120,6 +125,48 @@ namespace BusMap.Mobile.ViewModels
 
             await NavigationService.NavigateAsync(nameof(EditBusStopPage), navigationParameters);
         });
+
+        public ICommand SaveButtonCommand => new DelegateCommand(async () =>
+        {
+            var busStopsReversed = BusStops.Reverse().ToList();
+            foreach (var stop in busStopsReversed)
+            {
+                stop.Id = 0;
+            }
+
+            var route = new Route
+            {
+                BusStops = busStopsReversed,
+                CarrierId = Carrier.Id,
+                Name = "Test" //TODO: From Entry
+            };
+
+            var dialogAnswer = await _pageDialogService
+                .DisplayAlertAsync("Are you sure?", "You would not edit route after it.", "Yes", "No");
+            if (dialogAnswer)
+            {
+                await PostDataAsync(route);
+            }
+
+            
+        });
+
+        private async Task PostDataAsync(Route route)
+        {
+            MessagingHelper.Toast("Uploading new route...", ToastTime.ShortTime);
+            var result = await _dataService.PostRouteAsync(route);
+            if (result)
+            {
+                //MessagingHelper.Toast("Upload successful!", ToastTime.LongTime);
+                await _pageDialogService.DisplayAlertAsync("Success!",
+                    "Route added successfully.\nYou can find it in new routes queue.", "Ok");
+                await NavigationService.GoBackAsync();
+            }
+            else
+            {
+                MessagingHelper.Toast("Upload failed!", ToastTime.ShortTime);
+            }
+        }
 
 
 
@@ -169,12 +216,6 @@ namespace BusMap.Mobile.ViewModels
         private void RemoveBusStop(int id)
         {
             BusStops.Remove(BusStops.SingleOrDefault(b => b.Id == id));
-        }
-
-        private async Task<int> GetLastBusStopId()
-        {
-            MessagingHelper.Toast("Downloading data...", ToastTime.ShortTime);
-            return await _dataService.GetBusStopLastId();
         }
 
     }

@@ -19,7 +19,7 @@ namespace BusMap.Mobile.Services
         private const string Uri = "http://192.168.0.108:5003/api/";
 
 
-        public async Task<List<BusStop>> GetBusStops()
+        public async Task<List<BusStop>> GetBusStopsAsync()
         {
             var httpClient = new HttpClient();
 
@@ -29,7 +29,7 @@ namespace BusMap.Mobile.Services
             return busStops;
         }
 
-        public async Task<int> GetBusStopLastId()
+        public async Task<int> GetBusStopLastIdAsync()
         {
             var httpClient = new HttpClient();
 
@@ -59,7 +59,7 @@ namespace BusMap.Mobile.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<Route>> FindRoutes(string startCity, string destinationCity)
+        public async Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity)
         {
             var result = new List<Route>();
 
@@ -91,6 +91,17 @@ namespace BusMap.Mobile.Services
             }
 
             return result;
+        }
+
+        public async Task<bool> PostRouteAsync(Route route)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(route);
+            var stringContent = new StringContent(json);
+            stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var result = await httpClient.PostAsync(Uri + "/routes", stringContent);
+            return result.IsSuccessStatusCode;
         }
     }
 }

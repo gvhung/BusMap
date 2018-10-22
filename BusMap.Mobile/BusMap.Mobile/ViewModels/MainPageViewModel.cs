@@ -85,7 +85,7 @@ namespace BusMap.Mobile.ViewModels
                 }
 
 
-                resultRoutes = await _dataService.FindRoutes(StartBusStopName, DestinationBusStopName);
+                resultRoutes = await _dataService.FindRoutesAsync(StartBusStopName, DestinationBusStopName);
                 if (resultRoutes.Count <= 0)
                 {
                     MessagingHelper.Toast("No routes found.", ToastTime.LongTime);
@@ -129,7 +129,7 @@ namespace BusMap.Mobile.ViewModels
 
         public ICommand AdvancedButtonCommand => new Command(async () =>
         {
-            var test = await _dataService.GetBusStops();
+            var test = await _dataService.GetBusStopsAsync();
         });
 
 
