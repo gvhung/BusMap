@@ -103,5 +103,28 @@ namespace BusMap.Mobile.Services
             var result = await httpClient.PostAsync(Uri + "/routes", stringContent);
             return result.IsSuccessStatusCode;
         }
+
+        public async Task<bool> CheckIfCarrierExistAsync(string name)
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync($"{Uri}carriers/carrierExist?name={name}");
+            var result = JsonConvert.DeserializeObject<bool>(json);
+
+            return result;
+        }
+
+        public async Task<Carrier> PostCarrierAsync(Carrier carrier)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(carrier);
+            var stringContent = new StringContent(json);
+            stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var result = await httpClient.PostAsync(Uri + "carriers", stringContent);
+            var resultObject = await result.Content.ReadAsStringAsync();
+            var resultResponse = JsonConvert.DeserializeObject<Carrier>(resultObject);
+
+            return resultResponse;
+        }
     }
 }

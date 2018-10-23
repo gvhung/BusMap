@@ -49,6 +49,10 @@ namespace BusMap.WebApi.Repositories.Implementations
                 .ThenInclude(r => r.BusStops)
                 .ToListAsync();
 
+        public async Task<bool> CheckIfCarrierExistAsync(string name)
+            =>  await _context.Carriers
+                .AnyAsync(c => c.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+
         public async Task AddCarrierAsync(Carrier carrier)
         {
             await _context.AddAsync(carrier);

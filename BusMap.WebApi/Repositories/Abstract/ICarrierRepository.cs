@@ -16,6 +16,8 @@ namespace BusMap.WebApi.Repositories.Abstract
         Task<IEnumerable<Carrier>> GetAllCarriersIncludeRoutesAsync();
         Task<IEnumerable<Carrier>> GetAllCarriersIncludeRoutesBusStopsAsync();
 
+        Task<bool> CheckIfCarrierExistAsync(string name);
+
         Task AddCarrierAsync(Carrier carrier);
         Task AddCarrierRangeAsync(IEnumerable<Carrier> carriers);
         Task RemoveCarrierAsync(Carrier carrier);

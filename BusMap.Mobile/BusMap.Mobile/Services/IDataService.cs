@@ -19,17 +19,18 @@ namespace BusMap.Mobile.Services
         //Task<Route> GetRoute(int routeId);
         //Task<List<Route>> FindRoute(Expression<Func<Route, bool>> predicate);
         //Task<List<Route>> FindRoutes(string startCity, string destinationCity);
+        //Task<int> GetBusStopLastIdAsync();
+        //Task PostBusStop(BusStop busStop);
+        //Task<List<BusStop>> GetBusStopsForRoute(int routeId);
+        //Task<Route> GetRoute(int routeId);
+
 
         Task<List<BusStop>> GetBusStopsAsync();
-        Task<int> GetBusStopLastIdAsync();
-
-
-        Task PostBusStop(BusStop busStop);
-        Task<List<BusStop>> GetBusStopsForRoute(int routeId);
         Task<List<Route>> GetRoutes();
-        Task<Route> GetRoute(int routeId);
         Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity);
         Task<bool> PostRouteAsync(Route route);
+        Task<bool> CheckIfCarrierExistAsync(string name);
+        Task<Carrier> PostCarrierAsync(Carrier carrier);
 
     }
 }

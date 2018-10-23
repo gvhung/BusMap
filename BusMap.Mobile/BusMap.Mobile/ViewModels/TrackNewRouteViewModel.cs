@@ -119,16 +119,12 @@ namespace BusMap.Mobile.ViewModels
         public ICommand SaveButtonCommand => new DelegateCommand(async () =>
         {
             var busStopsReversed = BusStops.Reverse().ToList();
-            //foreach (var stop in busStopsReversed)
-            //{
-            //    stop.Id = 0;
-            //}
 
             var route = new Route
             {
                 BusStops = busStopsReversed,
                 CarrierId = Carrier.Id,
-                Name = "Test" //TODO: From Entry
+                Name = DateTime.Now.ToShortTimeString() //TODO: From Entry
             };
 
             var dialogAnswer = await _pageDialogService
@@ -141,6 +137,15 @@ namespace BusMap.Mobile.ViewModels
             
         });
 
+        public ICommand CreateNewCarrierCommand => new DelegateCommand(async () =>
+        {
+            var dialogAnswer = await _pageDialogService
+                .DisplayAlertAsync("Are you sure?", "Before creating new carrier please be sure, " +
+                    "if carrier which You want add not exist in our database.", "Yes", "No");
+            if (dialogAnswer)
+                await NavigationService.NavigateAsync(nameof(AddNewCarrierPage));
+        });
+
         private async Task PostDataAsync(Route route)
         {
             MessagingHelper.Toast("Uploading new route...", ToastTime.ShortTime);
@@ -148,9 +153,9 @@ namespace BusMap.Mobile.ViewModels
             if (result)
             {
                 //MessagingHelper.Toast("Upload successful!", ToastTime.LongTime);
+                await NavigationService.GoBackAsync();
                 await _pageDialogService.DisplayAlertAsync("Success!",
                     "Route added successfully.\nYou can find it in new routes queue.", "Ok");
-                await NavigationService.GoBackAsync();
             }
             else
             {
@@ -186,6 +191,11 @@ namespace BusMap.Mobile.ViewModels
                 {
                     SaveButtonEnabled = false;
                 }
+            }
+
+            if (parameters.ContainsKey("addedCarrier"))
+            {
+                Carrier = parameters["addedCarrier"] as Carrier;
             }
         }
 

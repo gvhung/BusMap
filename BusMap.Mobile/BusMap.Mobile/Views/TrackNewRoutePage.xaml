@@ -18,7 +18,8 @@
                              HorizontalOptions="Center">
                     <Button Text="Add bus stop"
                             Command="{Binding PopupCommand}"/>
-                    <Button Text="Save route"/>
+                    <Button Text="Create new carrier"
+                            Command="{Binding CreateNewCarrierCommand}"/>
                 </StackLayout>
                 <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
                        HorizontalOptions="Center"/>
