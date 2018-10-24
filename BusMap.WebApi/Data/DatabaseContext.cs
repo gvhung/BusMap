@@ -23,11 +23,24 @@ namespace BusMap.WebApi.Data
         public DbSet<BusStop> BusStops { get; set; }
         public DbSet<Route> Routes { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
+        public DbSet<BusStopQueued> BusStopsQueued { get; set; }
+        public DbSet<RouteQueued> RoutesQueued { get; set; }
+        public DbSet<CarrierQueued> CarriersQueued { get; set; }
 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<RouteQueued>()
+                .Property(r => r.PositiveVotes)
+                .HasDefaultValue(0);
+            modelBuilder.Entity<RouteQueued>()
+                .Property(r => r.NegativeVotes)
+                .HasDefaultValue(0);
+            modelBuilder.Entity<RouteQueued>()
+                .Property(r => r.CreatedDatetime)
+                .HasDefaultValueSql("GETDATE()");
+
             modelBuilder.Entity<Carrier>().HasData(
                 new Carrier
                 {
