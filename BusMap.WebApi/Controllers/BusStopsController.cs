@@ -40,12 +40,12 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = await getAllBusStopsFunc();
+            var busStops = await getAllBusStopsFunc();
 
-            if (route == null)
+            if (busStops == null || busStops.Count() < 1)
                 return NotFound();
 
-            return Ok(route);
+            return Ok(busStops);
         }
 
 
@@ -68,12 +68,12 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = await getBusStopsFunc(id);
+            var busStop = await getBusStopsFunc(id);
 
-            if (route == null)
+            if (busStop == null)
                 return NotFound();
 
-            return Ok(route);
+            return Ok(busStop);
         }
 
         [HttpGet("lastId")]
@@ -104,8 +104,8 @@ namespace BusMap.WebApi.Controllers
             {
                 return BadRequest("BusStop object is incomplete or contains wrong data.");
             };
-            
-            return CreatedAtAction("GetBusStop", new {id = busStop.Id}, busStop);
+
+            return CreatedAtAction("GetBusStop", new { id = busStop.Id }, busStop);
         }
 
         [HttpDelete("{id}")]

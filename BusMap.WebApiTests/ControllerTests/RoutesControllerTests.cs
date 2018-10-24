@@ -1,180 +1,152 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
-//using BusMap.WebApi.Controllers;
-//using BusMap.WebApi.Data;
-//using BusMap.WebApi.DatabaseModels;
-//using BusMap.WebApi.Repositories.Abstract;
-//using BusMap.WebApi.Repositories.Implementations;
-//using BusMap.WebApiTests.RepositoriesTests;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.EntityFrameworkCore;
-//using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using BusMap.WebApi.Controllers;
+using BusMap.WebApi.Data;
+using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Dto.Routes;
+using BusMap.WebApi.Repositories.Abstract;
+using BusMap.WebApi.Repositories.Implementations;
+using BusMap.WebApi.Services.Implementations;
+using BusMap.WebApiTests.RepositoriesTests;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
 
-//namespace BusMap.WebApiTests.ControllerTests
-//{
-//    [TestFixture]
-//    public class RoutesControllerTests
-//    {
+namespace BusMap.WebApiTests.ControllerTests
+{
+    [TestFixture]
+    public class RoutesControllerTests : ControllerTestAbstractClass
+    {
 
-//        private RoutesController _routesController;
-//        private RoutesController _routesControllerEmpty;
+        private RoutesController _routesController;
+        private RoutesController _routesControllerEmpty;
 
-//        [SetUp]
-//        public void SetUp()
-//        {
-//            var options = new DbContextOptionsBuilder<DatabaseContext>()
-//                .UseInMemoryDatabase(databaseName: "TestDb2")
-//                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-//                .Options;
-//            var context = new DatabaseContext(options);
-//            var repository = new RouteRepository(context);
+        [SetUp]
+        public void SetUp()
+        {
+            var repository = new RouteRepository(Context);
+            var repositoryEmpty = new RouteRepository(ContextEmpty);
 
-//            var optionsEmpty = new DbContextOptionsBuilder<DatabaseContext>()
-//                .UseInMemoryDatabase(databaseName: "TestDb2")
-//                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-//                .Options;
-//            var emptyContext = new DatabaseContext(optionsEmpty);
-//            var emptyRepository = new RouteRepository(emptyContext);
+            var service = new RouteService(repository, Mapper);
+            var serviceEmpty = new RouteService(repositoryEmpty, Mapper);
 
-//            var routeForTest1 = new Route
-//            {
-//                Id = 1,
-//                Name = "RouteName1",
-//                Carrier = new Carrier
-//                {
-//                    Id = 1,
-//                    Name = "CarrierName1"
-//                }
-//            };
-//            var routeForTest2 = new Route
-//            {
-//                Id = 2,
-//                Name = "RouteName2",
-//                Carrier = new Carrier
-//                {
-//                    Id = 1,
-//                    Name = "CarrierName1"
-//                }
-//            };
-//            repository.AddRoute(routeForTest1);
-//            repository.AddRoute(routeForTest2);
-
-//            _routesController = new RoutesController(repository);
-//            _routesControllerEmpty = new RoutesController(emptyRepository);
-//        }
+            _routesController = new RoutesController(service, Mapper);
+            _routesControllerEmpty = new RoutesController(serviceEmpty, Mapper);
+        }
 
 
-//        #region GetTests
-//        [Test]
-//        public void GetAll_WhenRoutesExist_ReturnsOkObjectResult()
-//        {
-//            var result = _routesController.GetAll();
+        #region GetTests
+        [Test]
+        public async Task GetAll_WhenRoutesExist_ReturnsOkObjectResult()
+        {
+            var result = await _routesController.GetAllRoutes();
 
-//            Assert.IsInstanceOf<IActionResult>(result);
-//            Assert.IsInstanceOf<OkObjectResult>(result);
-//        }
+            Assert.IsInstanceOf<IActionResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
 
-//        [Test]
-//        public void GetAll_WhenRoutesExist_ReturnListOfRoutes()
-//        {
-//            var okResult = _routesController.GetAll() as OkObjectResult;
-//            var result = okResult.Value as List<Route>;
+        [Test]
+        public async Task GetAll_WhenRoutesExist_ReturnListOfRoutes()
+        {
+            var okResult = await _routesController.GetAllRoutes() as OkObjectResult;
+            var result = okResult.Value as List<RoutesRouteDto>;
 
-//            Assert.IsInstanceOf<List<Route>>(result);
-//        }
+            Assert.IsInstanceOf<List<RoutesRouteDto>>(result);
+        }
 
-//        [Test]
-//        public void GetAll_WhenRoutesDontExist_ReturnsBadRequest()
-//        {
-//            var result = _routesControllerEmpty.GetAll();
+        [Test]
+        public async Task GetAll_WhenRoutesDontExist_ReturnsBadRequest()
+        {
+            var result = await _routesControllerEmpty.GetAllRoutes();
 
-//            Assert.IsInstanceOf<IActionResult>(result);
-//            Assert.IsInstanceOf<NotFoundResult>(result);
-//        }
+            Assert.IsInstanceOf<IActionResult>(result);
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
 
-//        [Test]
-//        public void GetRoute_WhenRouteUnderIdExist_ReturnOkResult()
-//        {
-//            var result = _routesController.GetRoute(1);
+        [Test]
+        public async Task GetRoute_WhenRouteUnderIdExist_ReturnOkResult()
+        {
+            var result = await _routesController.GetRoute(1);
 
-//            Assert.IsInstanceOf<OkObjectResult>(result);
-//        }
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
 
-//        [Test]
-//        public void GetRoute_WhenRouteUnderIdExist_ReturnRoute()
-//        {
-//            var okResult = _routesController.GetRoute(1) as OkObjectResult;
-//            var result = okResult.Value as Route;
+        [Test]
+        public async Task GetRoute_WhenRouteUnderIdExist_ReturnRoute()
+        {
+            var okResult = await _routesController.GetRoute(1) as OkObjectResult;
+            var result = okResult.Value as RoutesRouteDto;
 
-//            Assert.IsInstanceOf<Route>(result);
-//        }
+            Assert.IsInstanceOf<RoutesRouteDto>(result);
+        }
 
-//        [Test]
-//        public void GetRoute_WhenRouteUnderIdDontExist_ReturnsNotFound()
-//        {
-//            var result = _routesController.GetRoute(111);
+        [Test]
+        public async Task GetRoute_WhenRouteUnderIdDontExist_ReturnsNotFound()
+        {
+            var result = await _routesController.GetRoute(111);
 
-//            Assert.IsInstanceOf<NotFoundResult>(result);
-//        }
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
 
-//        #endregion
+        #endregion
 
-//        #region Post
+        #region Post
 
-//        [Test]
-//        public void PostRoute_ObjectIsValid_ReturnsCreatedResponse()
-//        {
-//            var routeToPost = new Route
-//            {
-//                Id = 5,
-//                Name = "NewRoute",
-//                CarrierId = 1
-//            };
+        [Test]
+        public async Task PostRoute_ObjectIsValid_ReturnsCreatedResponse()
+        {
+            var routeToPost = new Route
+            {
+                Id = 5,
+                Name = "NewRoute",
+                CarrierId = 1
+            };
 
-//            var result = _routesController.PostRoute(routeToPost);
+            var result = await _routesController.PostRoute(routeToPost);
 
-//            Assert.IsInstanceOf<CreatedAtActionResult>(result);
-//        }
+            Assert.IsInstanceOf<CreatedAtActionResult>(result);
+        }
 
-//        [Ignore("Returning Created at, but in real use throwing exception")]
-//        [Test]
-//        public void PostRoute_WithoutRouteId_ReturningBadRequest()
-//        {
-//            var routeToPost = new Route
-//            {
-//                Id = 5,
-//                Name = "NewRoute"
-//            };
+        [Ignore("Returning Created at, but in real use throwing exception")]
+        [Test]
+        public async Task PostRoute_WithoutRouteId_ReturningBadRequest()
+        {
+            var routeToPost = new Route
+            {
+                Id = 5,
+                Name = "NewRoute"
+            };
 
-//            var result = _routesController.PostRoute(routeToPost);
+            var result = await _routesController.PostRoute(routeToPost);
 
-//            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-//        }
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
 
-//        #endregion
+        #endregion
 
-//        #region Delete
+        #region Delete
 
-//        [Test]
-//        public void DeleteRoute_WhenRouteExist_ReturnsOkResult()
-//        {
-//            var result = _routesController.DeleteRoute(1); 
+        [Test]
+        public async Task DeleteRoute_WhenRouteExist_ReturnsOkResult()
+        {
+            var result = await _routesController.DeleteRoute(1);
 
-//            Assert.IsInstanceOf<OkResult>(result);
-//        }
+            Assert.IsInstanceOf<OkResult>(result);
+        }
 
-//        [Test]
-//        public void DeleteRoute_WhenRouteDontExist_ReturnsNotFound()
-//        {
-//            var result = _routesController.DeleteRoute(1920);
+        [Test]
+        public async Task DeleteRoute_WhenRouteDontExist_ReturnsNotFound()
+        {
+            var result = await _routesController.DeleteRoute(1920);
 
-//            Assert.IsInstanceOf<NotFoundResult>(result);
-//        }
-        
-
-//        #endregion
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
 
 
-//    }
-//}
+        #endregion
+
+
+    }
+}
