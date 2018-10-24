@@ -32,7 +32,7 @@ namespace BusMap.Mobile.UnitTests
                 }
             };
 
-            var result = busStopList.ConvertToMapPins();
+            var result = busStopList.ToMapPins();
 
             Assert.IsInstanceOf<ObservableCollection<Pin>>(result);
             Assert.IsTrue(result[0].Address.Equals("Address"));
@@ -43,7 +43,7 @@ namespace BusMap.Mobile.UnitTests
         {
             List<BusStop> busStopList = null;
 
-            Assert.Throws<NullReferenceException>(() => busStopList.ConvertToMapPins());
+            Assert.Throws<NullReferenceException>(() => busStopList.ToMapPins());
         }
 
 

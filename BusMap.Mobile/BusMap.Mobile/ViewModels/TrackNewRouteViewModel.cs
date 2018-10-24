@@ -2,136 +2,233 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Annotations;
+using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.Views;
+using Microsoft.EntityFrameworkCore.Internal;
+using Prism;
+using Prism.Commands;
+using Prism.Navigation;
+using Prism.Services;
+using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
-using Xamarin.Forms.Maps;
+using Xamarin.Forms.GoogleMaps;
 
 namespace BusMap.Mobile.ViewModels
 {
-    public class TrackNewRouteViewModel : INotifyPropertyChanged
+    public class TrackNewRouteViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
+        private readonly IPageDialogService _pageDialogService;
+
         private ObservableCollection<Pin> _mapPins;
-        private Position _mapPosition;
-        private List<BusStop> _busStops;
+        private MapSpan _mapPosition;
+        private ObservableCollection<BusStop> _busStops;
+        private Carrier _carrier;
+
+        private int _editingElementIndex = -1;
+        private bool _saveButtonEnabled;
 
         public ObservableCollection<Pin> MapPins
         {
             get => _mapPins;
-            set
-            {
-                _mapPins = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _mapPins, value);
         }
 
-        public Position MapPosition
+        public MapSpan MapPosition
         {
             get => _mapPosition;
-            set
-            {
-                _mapPosition = value;
-                OnPropertyChanged();
-            } 
+            set => SetProperty(ref _mapPosition, value);
         }
 
-        public List<BusStop> BusStops
+        public ObservableCollection<BusStop> BusStops
         {
             get => _busStops;
-            set
-            {
-                _busStops = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _busStops, value);
+        }
+
+        public Carrier Carrier
+        {
+            get => _carrier;
+            set => SetProperty(ref _carrier, value);
+        }
+
+        public bool SaveButtonEnabled
+        {
+            get => _saveButtonEnabled;
+            set => SetProperty(ref _saveButtonEnabled, value);
         }
 
 
-        public TrackNewRouteViewModel(IDataService dataService)
+        public TrackNewRouteViewModel(IDataService dataService, INavigationService navigationService,
+            IPageDialogService pageDialogService)
+            : base (navigationService)
         {
             _dataService = dataService;
+            _pageDialogService = pageDialogService;
+            Title = "Add route";
             MapPins = new ObservableCollection<Pin>();
-            BusStops = new List<BusStop>
+            BusStops = new ObservableCollection<BusStop>();
+
+            Carrier = new Carrier
             {
-                new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },
-                new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },
-                new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },
-                new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                },new BusStop
-                {
-                    Address = "Address1",
-                    Id = 1,
-                    Label = "Label1",
-                    Latitude = 1,
-                    Longitude = 1
-                }
+                Name = "Placeholder carrier",
+                Id = 2  //Todo: get id carrier checked on list
             };
         }
 
 
+        public ICommand PopupCommand => new DelegateCommand(async () =>
+        {            
+            await NavigationService.NavigateAsync(nameof(AddNewBusStopPage));
+        });
 
-
-
-
-
-
-
-
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public ICommand MapAppearingCommand => new DelegateCommand(async () =>
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            try
+            {
+                var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(true);
+                MapPosition = null;
+                MapPosition = MapSpan.FromCenterAndRadius(currentPosition.ToGoogleMapsPosition(), Distance.FromKilometers(10));
+                if (MapPins == null || MapPins.Count < 1)
+                    MapPins.AddRange(BusStops.ToGoogleMapsPins());
+            }
+            catch (TaskCanceledException)
+            {
+                MessagingHelper.Toast("Unable to get position.", ToastTime.ShortTime);
+            }
+
+        });
+
+        public ICommand EditBusStopCommand => new DelegateCommand<BusStop>(async busStop =>
+        {
+            var navigationParameters = new NavigationParameters();
+            navigationParameters.Add("busStopToEdit", busStop);
+            _editingElementIndex = BusStops.IndexOf(busStop);
+
+            await NavigationService.NavigateAsync(nameof(EditBusStopPage), navigationParameters);
+        });
+
+        public ICommand SaveButtonCommand => new DelegateCommand(async () =>
+        {
+            var busStopsReversed = BusStops.Reverse().ToList();
+
+            var route = new Route
+            {
+                BusStops = busStopsReversed,
+                CarrierId = Carrier.Id,
+                Name = DateTime.Now.ToShortTimeString() //TODO: From Entry
+            };
+
+            var dialogAnswer = await _pageDialogService
+                .DisplayAlertAsync("Are you sure?", "You would not edit route after it.", "Yes", "No");
+            if (dialogAnswer)
+            {
+                await PostDataAsync(route);
+            }
+
+            
+        });
+
+        public ICommand CreateNewCarrierCommand => new DelegateCommand(async () =>
+        {
+            var dialogAnswer = await _pageDialogService
+                .DisplayAlertAsync("Are you sure?", "Before creating new carrier please be sure, " +
+                    "if carrier which You want add not exist in our database.", "Yes", "No");
+            if (dialogAnswer)
+                await NavigationService.NavigateAsync(nameof(AddNewCarrierPage));
+        });
+
+        private async Task PostDataAsync(Route route)
+        {
+            MessagingHelper.Toast("Uploading new route...", ToastTime.ShortTime);
+            var result = await _dataService.PostRouteAsync(route);
+            if (result)
+            {
+                //MessagingHelper.Toast("Upload successful!", ToastTime.LongTime);
+                await NavigationService.GoBackAsync();
+                await _pageDialogService.DisplayAlertAsync("Success!",
+                    "Route added successfully.\nYou can find it in new routes queue.", "Ok");
+            }
+            else
+            {
+                MessagingHelper.Toast("Upload failed!", ToastTime.ShortTime);
+            }
         }
+
+
+
+        public override async void OnNavigatedTo(NavigationParameters parameters)
+        {
+            if (parameters.ContainsKey("newBusStop"))
+            {
+                AddBusStopToLists(parameters["newBusStop"] as BusStop);
+                if (BusStops.Count > 1)
+                {
+                    SaveButtonEnabled = true;
+                }
+            }
+                
+            if (parameters.ContainsKey("busStopFromEdit"))
+            {
+                var busStopFromEdit = parameters["busStopFromEdit"] as BusStop;
+                AddEditedBusStopToLists(busStopFromEdit, ref _editingElementIndex);
+            }
+
+            if (parameters.ContainsKey("removeBusStopAddress") && parameters.ContainsKey("removeBusStopLabel"))
+            {
+                var busStopToRemoveLabel = parameters["removeBusStopLabel"] as string;
+                var busStopToRemoveAddress = parameters["removeBusStopAddress"] as string;
+                await RemoveBusStop(busStopToRemoveAddress, busStopToRemoveLabel);
+                if (BusStops.Count < 2)
+                {
+                    SaveButtonEnabled = false;
+                }
+            }
+
+            if (parameters.ContainsKey("addedCarrier"))
+            {
+                Carrier = parameters["addedCarrier"] as Carrier;
+            }
+        }
+
+        private void AddBusStopToLists(BusStop busStop)
+        {
+            BusStops.Insert(0, busStop);
+            MapPins.Insert(0, busStop.ToGoogleMapsPin());
+        }
+
+        private void AddEditedBusStopToLists(BusStop busStop, ref int index)
+        {
+            BusStops[index] = busStop;
+            MapPins.RemoveAt(index);
+            MapPins.Insert(index, busStop.ToGoogleMapsPin());
+            index = -1;
+        }
+
+        private async Task RemoveBusStop(string address, string label)
+        {
+            var busStopToRemove = BusStops
+                .Where(b => b.Address.Equals(address))
+                .SingleOrDefault(b => b.Label.Equals(label));
+
+            if (busStopToRemove != null)
+            {
+                BusStops.Remove(busStopToRemove);
+                MapPins.Remove(busStopToRemove.ToGoogleMapsPin());
+            }
+            else
+            {
+                await _pageDialogService.DisplayAlertAsync("Alert!", "Could not remove busStop.\nPlease try again.", "Ok");
+            }
+        }
+
     }
 }

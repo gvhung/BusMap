@@ -11,7 +11,7 @@ using Xamarin.Forms.Xaml;
 namespace BusMap.Mobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class TrackNewRoutePage : ContentPage
+    public partial class TrackNewRoutePage : TabbedPage
     {
         public TrackNewRoutePage()
         {
@@ -29,5 +29,10 @@ namespace BusMap.Mobile.Views
             StackLayout stackItem = menuItem.Parent as StackLayout;
             var busStop = stackItem.BindingContext as BusStop;
         }
+
+        //private void Page_OnAppearing(object sender, EventArgs e)
+        //{
+        //    MessagingHelper.Toast("test", ToastTime.ShortTime);
+        //}
     }
 }

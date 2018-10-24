@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Dto.Routes;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,12 @@ namespace BusMap.WebApi.Controllers
     public class RoutesController : ControllerBase
     {
         private readonly IRouteService _routeService;
+        private IMapper _mapper;
 
-        public RoutesController(IRouteService routeService)
+        public RoutesController(IRouteService routeService, IMapper mapper)
         {
             _routeService = routeService;
+            _mapper = mapper;
         }
 
 
@@ -103,8 +106,9 @@ namespace BusMap.WebApi.Controllers
             {
                 return BadRequest("Route object is incomplete or contains wrong data.");
             }
-            
-            return CreatedAtAction("GetRoute", new {id = route.Id}, route);
+
+            var routeDto = _mapper.Map<Route, RoutesRouteDto>(route);
+            return CreatedAtAction("GetRoute", new {id = routeDto.Id}, routeDto);
         }
 
         [HttpDelete("{id}")]

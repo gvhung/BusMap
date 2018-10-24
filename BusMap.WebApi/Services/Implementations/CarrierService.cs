@@ -57,6 +57,9 @@ namespace BusMap.WebApi.Services.Implementations
             return _mapper.Map<IEnumerable<Carrier>, IEnumerable<CarriersCarrierDto>>(carriers);
         }
 
+        public async Task<bool> CheckIfCarrierExistAsync(string name)
+            => await _carrierRepository.CheckIfCarrierExistAsync(name);
+
         public async Task AddCarrierAsync(Carrier carrier)
             => await _carrierRepository.AddCarrierAsync(carrier);
 

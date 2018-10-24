@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.EditBusStopPage"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Title="{Binding Title}">
+
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout Margin="15,5,15,0">
+                <StackLayout Orientation="Horizontal">
+                    <StackLayout HorizontalOptions="FillAndExpand"
+                                 >
+                        <Entry Placeholder="City name"
+                               Text="{Binding CityNameEntry}"/>
+                        <Entry Placeholder="Bus stop name"
+                               Text="{Binding StopNameEntry}"/>
+                        <TimePicker Time="{Binding Time}"
+                                    Format="HH:mm"/>
+                    </StackLayout>
+                    <StackLayout HorizontalOptions="Fill">
+                        <Button Text="Save Bus Stop"
+                                FontSize="Micro"
+                                Command="{Binding SaveButtonCommand}"/>
+                        <Button Text="Set current location" 
+                                FontSize="Micro"
+                                Command="{Binding SetCurrentLocationButtonCommand}"/>
+                        <Button Text="Remove"
+                                FontSize="Micro"
+                                Command="{Binding RemoveButtonCommand}"/>
+                    </StackLayout>
+                </StackLayout>
+            </StackLayout>
+            <googleMaps:Map MyLocationEnabled="True">
+                <googleMaps:Map.Behaviors>
+                    <googleMapsBindings:BindingPinsBehavior Value="{Binding MapPins}"/>
+                    <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                    <googleMapsBindings:PinDragEndToCommandBehavior Command="{Binding PinDraggingEndCommand}"/>
+                </googleMaps:Map.Behaviors>
+            </googleMaps:Map>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

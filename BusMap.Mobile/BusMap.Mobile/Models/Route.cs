@@ -22,6 +22,7 @@ namespace BusMap.Mobile.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public Carrier Carrier { get; set; }
+        public int CarrierId { get; set; }
         public List<BusStop> BusStops { get; set; }
         public BusStop StartingBusStop => BusStops.First();
         public BusStop DestinationBusStop => BusStops.Last();

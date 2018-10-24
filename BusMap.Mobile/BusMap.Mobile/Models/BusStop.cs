@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Prism.Mvvm;
 using Xamarin.Forms.Maps;
 
 namespace BusMap.Mobile.Models
 {
-    public class BusStop
+    public class BusStop : BindableBase
     {
         public int Id { get; set; }
         public double Latitude { get; set; }
@@ -35,8 +36,6 @@ namespace BusMap.Mobile.Models
 
             return result;
         }
-
-
 
     }
 }

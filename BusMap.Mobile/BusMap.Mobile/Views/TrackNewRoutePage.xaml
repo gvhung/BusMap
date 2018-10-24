@@ -1,36 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:customControls="clr-namespace:BusMap.Mobile.CustomControls;assembly=BusMap.Mobile"
              x:Class="BusMap.Mobile.Views.TrackNewRoutePage"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:converters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
-             prism:ViewModelLocator.AutowireViewModel="True">
+             xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Title="{Binding Title}">
 
-    <ContentPage.Content>
-        <ScrollView>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="8*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+    <!--AddingPage-->
+    <ContentPage Title="Add bus stops">
+        <ContentPage.Content>
+            <StackLayout>
                 <StackLayout Orientation="Horizontal"
-                             HorizontalOptions="Center"
-                             Grid.Row="0"
-                             Grid.Column="0">
-                    <Button Text="Add bus stop"/>
-                    <Button Text="Save route"/>
+                             HorizontalOptions="Center">
+                    <Button Text="Add bus stop"
+                            Command="{Binding PopupCommand}"/>
+                    <Button Text="Create new carrier"
+                            Command="{Binding CreateNewCarrierCommand}"/>
                 </StackLayout>
-                <Label Text="Carrier: CarrierName"
-                       HorizontalOptions="Center"
-                       Grid.Row="1"
-                       Grid.Column="0"/> 
-                <ListView ItemsSource="{Binding BusStops}"
-                          Grid.Row="2"
-                          Grid.Column="0">
+                <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
+                       HorizontalOptions="Center"/>
+                <ListView ItemsSource="{Binding BusStops}">
+                    <ListView.Behaviors>
+                        <b:EventToCommandBehavior EventName="ItemTapped"
+                                                  Command="{Binding EditBusStopCommand}"
+                                                  EventArgsConverter="{converters:ItemTappedEventArgsConverter}"/>
+                    </ListView.Behaviors>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -46,7 +44,31 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-            </Grid>
-        </ScrollView>
-    </ContentPage.Content>
-</ContentPage>
+                <Button Text="Save route"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="End"
+                        IsEnabled="{Binding SaveButtonEnabled}"
+                        Command="{Binding SaveButtonCommand}"/>
+            </StackLayout>
+        </ContentPage.Content>
+    </ContentPage>
+
+    <!--MapPage-->
+    <ContentPage Title="MapPage">
+        <ContentPage.Behaviors>
+            <b:EventToCommandBehavior EventName="Appearing"
+                                      Command="{Binding MapAppearingCommand}"
+                                      EventArgsConverter="ContentPageApearingConverter"/>
+        </ContentPage.Behaviors>
+        <StackLayout>
+            <googleMaps:Map Margin="15,10,15,10"
+                            MyLocationEnabled="True">
+                <googleMaps:Map.Behaviors>
+                    <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                    <googleMapsBindings:BindingPinsBehavior Value="{Binding MapPins}"/>
+                </googleMaps:Map.Behaviors>
+            </googleMaps:Map>
+        </StackLayout>
+    </ContentPage>
+
+</TabbedPage>

@@ -19,7 +19,7 @@ namespace BusMap.Mobile.Services
         private const string Uri = "http://192.168.0.108:5003/api/";
 
 
-        public async Task<List<BusStop>> GetBusStops()
+        public async Task<List<BusStop>> GetBusStopsAsync()
         {
             var httpClient = new HttpClient();
 
@@ -27,6 +27,16 @@ namespace BusMap.Mobile.Services
             var busStops = JsonConvert.DeserializeObject<List<BusStop>>(json);
 
             return busStops;
+        }
+
+        public async Task<int> GetBusStopLastIdAsync()
+        {
+            var httpClient = new HttpClient();
+
+            var json = await httpClient.GetStringAsync(Uri + "/busStops/lastId");
+            int lastId = JsonConvert.DeserializeObject<int>(json);
+
+            return lastId;
         }
 
         public async Task PostBusStop(BusStop busStop)
@@ -49,7 +59,7 @@ namespace BusMap.Mobile.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<Route>> FindRoutes(string startCity, string destinationCity)
+        public async Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity)
         {
             var result = new List<Route>();
 
@@ -81,6 +91,40 @@ namespace BusMap.Mobile.Services
             }
 
             return result;
+        }
+
+        public async Task<bool> PostRouteAsync(Route route)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(route);
+            var stringContent = new StringContent(json);
+            stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var result = await httpClient.PostAsync(Uri + "/routes", stringContent);
+            return result.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> CheckIfCarrierExistAsync(string name)
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync($"{Uri}carriers/carrierExist?name={name}");
+            var result = JsonConvert.DeserializeObject<bool>(json);
+
+            return result;
+        }
+
+        public async Task<Carrier> PostCarrierAsync(Carrier carrier)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(carrier);
+            var stringContent = new StringContent(json);
+            stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var result = await httpClient.PostAsync(Uri + "carriers", stringContent);
+            var resultObject = await result.Content.ReadAsStringAsync();
+            var resultResponse = JsonConvert.DeserializeObject<Carrier>(resultObject);
+
+            return resultResponse;
         }
     }
 }

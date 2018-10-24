@@ -5,18 +5,18 @@ using System.Text;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace BusMap.Mobile.Helpers
+namespace BusMap.Mobile.EventArgsConverters
 {
-    public class ItemTappedEventArgsConverter : IValueConverter, IMarkupExtension
+    public class ContentPageApearingConverter : IValueConverter, IMarkupExtension
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var itemTappedEventArgs = value as ItemTappedEventArgs;
+            var itemTappedEventArgs = value as ContentPage;
             if (itemTappedEventArgs == null)
             {
                 throw new ArgumentException("Expected value to be of type ItemTappedEventArgs", nameof(value));
             }
-            return itemTappedEventArgs.Item;
+            return itemTappedEventArgs.Content;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -29,5 +29,4 @@ namespace BusMap.Mobile.Helpers
             return this;
         }
     }
-
 }

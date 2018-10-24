@@ -5,7 +5,7 @@
              x:Class="BusMap.Mobile.Views.RoutesListPage" 
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
-             xmlns:helpers="clr-namespace:BusMap.Mobile.Helpers;assembly=BusMap.Mobile"
+             xmlns:converters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
              prism:ViewModelLocator.AutowireViewModel="True"
              Title="{Binding Title}">
 
@@ -20,7 +20,7 @@
                 <ListView.Behaviors>
                     <b:EventToCommandBehavior EventName="ItemTapped"
                                               Command="{Binding SelectedRouteCommand}"
-                                              EventArgsConverter="{helpers:ItemTappedEventArgsConverter}"/>
+                                              EventArgsConverter="{converters:ItemTappedEventArgsConverter}"/>
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>

@@ -33,12 +33,15 @@ namespace BusMap.Mobile
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<NavigationPage>();  //v
-            containerRegistry.RegisterForNavigation<MainPage>();    //v
-            containerRegistry.RegisterForNavigation<NearestStopsMapPage>();  //v
-            containerRegistry.RegisterForNavigation<RoutesListPage>();  //v
-            containerRegistry.RegisterForNavigation<BusStopsMapPage>(); //v
-            containerRegistry.RegisterForNavigation<TrackNewRoutePage>();
+            containerRegistry.RegisterForNavigation<NavigationPage>(); 
+            containerRegistry.RegisterForNavigation<MainPage>();   
+            containerRegistry.RegisterForNavigation<NearestStopsMapPage>();
+            containerRegistry.RegisterForNavigation<RoutesListPage>(); 
+            containerRegistry.RegisterForNavigation<BusStopsMapPage>();
+            containerRegistry.RegisterForNavigation<TrackNewRoutePage, TrackNewRouteViewModel>();
+            containerRegistry.RegisterForNavigation<AddNewBusStopPage, AddNewBusStopViewModel>();
+            containerRegistry.RegisterForNavigation<EditBusStopPage, EditBusStopPageViewModel>();
+            containerRegistry.RegisterForNavigation<AddNewCarrierPage, AddNewCarrierViewModel>();
 
             containerRegistry.Register<IDataService, ApiDataService>();
         }

@@ -74,6 +74,16 @@ namespace BusMap.WebApi.Controllers
             return Ok(route);
         }
 
+        [HttpGet("carrierExist")]
+        public async Task<IActionResult> CheckIfCarrierExist([FromQuery] string name)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var containsCarrier = await _carrierService.CheckIfCarrierExistAsync(name);
+
+            return Ok(containsCarrier);
+        }
 
 
         [HttpPost]

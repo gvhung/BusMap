@@ -9,16 +9,16 @@ using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using Prism.Mvvm;
 using Prism.Navigation;
-using Xamarin.Forms.Maps;
+using Xamarin.Forms.GoogleMaps;
 
 namespace BusMap.Mobile.ViewModels
 {
     public class BusStopsMapPageViewModel : ViewModelBase
     {
         private ObservableCollection<Pin> _pins;
-        private Position _mapPosition;
+        private MapSpan _mapPosition;
 
-        public Position MapPosition
+        public MapSpan MapPosition
         {
             get => _mapPosition;
             set => SetProperty(ref _mapPosition, value);
@@ -30,16 +30,6 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _pins, value);
         }
 
-
-
-
-        //public BusStopsMapViewModel(Route route)
-        //{
-        //    Pins = route.BusStops.ConvertToMapPins();
-        //    MapPosition = Pins[0].Position;
-        //    PageTitle = route.Name;
-        //}
-
         public BusStopsMapPageViewModel(INavigationService navigationService)
             : base(navigationService)
         {
@@ -49,8 +39,8 @@ namespace BusMap.Mobile.ViewModels
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
             var route = parameters["route"] as Route;
-            Pins = route.BusStops.ConvertToMapPins();
-            MapPosition = Pins[0].Position;
+            Pins.AddRange(route.BusStops.ToGoogleMapsPins());
+            MapPosition = MapSpan.FromCenterAndRadius(Pins[0].Position, Distance.FromKilometers(10));
 
             Title = $"{route.StartingBusStop.Address} - {route.DestinationBusStop.Address}";
         }
