@@ -9,4 +9,5 @@ namespace BusMap.WebApi.DatabaseModels
     {
         public ICollection<RouteQueued> RoutesQueued { get; set; }
     }
+
 }

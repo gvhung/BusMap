@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Dto.Queues;
 using BusMap.WebApi.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusMap.WebApi.Controllers
 {
@@ -13,6 +17,7 @@ namespace BusMap.WebApi.Controllers
     public class QueuesController : ControllerBase
     {
         private readonly IQueueService _service;
+        private readonly IMapper _mapper;
 
         public QueuesController(IQueueService service)
         {
@@ -42,6 +47,42 @@ namespace BusMap.WebApi.Controllers
             var nOfQueuedROutes = await _service.GetNumberOfQueuedRoutesAsync();
 
             return Ok(nOfQueuedROutes);
+        }
+
+        [HttpPost("routes")]
+        public async Task<IActionResult> PostRouteToQueue([FromBody] RouteQueued routeQueued)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _service.AddRouteToQueueAsync(routeQueued);
+            }
+            catch(DbUpdateException)
+            {
+                return BadRequest("Route queued object is incomplete or contains wrong data.");
+            }
+
+            return StatusCode(201);
+        }
+
+        [HttpPut("routes/{id:int}")]
+        public async Task<IActionResult> PutRoute([FromRoute] int id, [FromBody] RouteQueued routeQueued)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _service.UpdateRouteAsync(id, routeQueued);
+            }
+            catch(Exception)
+            {
+                return BadRequest("Wrong body data");
+            }
+
+            return StatusCode(202);
         }
 
     }

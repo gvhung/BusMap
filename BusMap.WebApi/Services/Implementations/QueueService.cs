@@ -34,5 +34,11 @@ namespace BusMap.WebApi.Services.Implementations
             var nOfRoutes = await _repository.GetNumberOfQueuedRoutesAsync();
             return nOfRoutes;
         }
+
+        public async Task AddRouteToQueueAsync(RouteQueued routeQueued)
+            => await _repository.AddRouteToQueueAsync(routeQueued);
+
+        public async Task UpdateRouteAsync(int id, RouteQueued routeQueued)
+            => await _repository.UpdateRouteAsync(id, routeQueued);
     }
 }

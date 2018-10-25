@@ -7,6 +7,7 @@ namespace BusMap.WebApi.DatabaseModels
 {
     public class BusStopQueued : BusStopBase
     {
+        public int RouteQueuedId { get; set; }
         public RouteQueued RouteQueued { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace BusMap.WebApi.DatabaseModels
 {
     public class RouteQueued : RouteBase
     {
+        public int CarrierQueuedId { get; set; }
         public CarrierQueued CarrierQueued { get; set; }
 
         public ICollection<BusStopQueued> BusStopsQueued { get; set; }
