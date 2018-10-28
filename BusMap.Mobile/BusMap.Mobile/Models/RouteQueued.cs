@@ -31,5 +31,19 @@ namespace BusMap.Mobile.Models
             get => _negativeVotes;
             set => SetProperty(ref _negativeVotes, value);
         }
+
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            foreach (var stop in BusStopsQueued)
+            {
+                stringBuilder.Append(string.IsNullOrEmpty(stop.Label)
+                    ? $"{stop.Address}\n"
+                    : $"{stop.Address}, {stop.Label}\n");
+            }
+
+            return stringBuilder.ToString();
+        }
+
     }
 }

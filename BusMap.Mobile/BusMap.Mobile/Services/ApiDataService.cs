@@ -133,6 +133,14 @@ namespace BusMap.Mobile.Services
             return queuedRoutes;
         }
 
+        public async Task<int> GetNumberOfQueuedRoutes()
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync(Uri + "queues/routes/count");
+            var nOfQueuedRoutes = JsonConvert.DeserializeObject<int>(json);
+            return nOfQueuedRoutes;
+        }
+
         public async Task<bool> UpdateQueuedRoute(int id, RouteQueued updatedRouteQueued)
         {
             var httpClient = new HttpClient();

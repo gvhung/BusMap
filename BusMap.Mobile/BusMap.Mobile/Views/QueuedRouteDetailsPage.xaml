@@ -28,7 +28,9 @@
                        FontSize="Large"/>
                 <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
                        FontSize="Medium"/>
-                <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"/>
+                <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"
+                       FontSize="Medium"/>
+                <Label Text="{Binding RouteQueued.BusStopsQueued}"/>
                 <Label Text="{Binding RouteQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
                 <Label Text="{Binding RouteQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
                 <StackLayout Orientation="Horizontal">
