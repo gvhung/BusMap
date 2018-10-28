@@ -7,6 +7,7 @@ namespace BusMap.WebApi.Dto.Queues
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int CarrierQueuedId { get; set; }
         public QueuesCarrierDto CarrierQueued { get; set; }
 
         public ICollection<QueuesBusStopDto> BusStopsQueued { get; set; }

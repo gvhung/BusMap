@@ -1,21 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Prism.Mvvm;
 
 namespace BusMap.Mobile.Models
 {
-    public class RouteQueued
+    public class RouteQueued : BindableBase
     {
+        private int _positiveVotes;
+        private int _negativeVotes;
+
         public int Id { get; set; }
         public string Name { get; set; }
         public CarrierQueued CarrierQueued { get; set; }
-        public int CarrierId { get; set; }
+        public int CarrierQueuedId { get; set; }
         public List<BusStopQueued> BusStopsQueued { get; set; }
 
         public DateTime CreatedDatetime { get; set; }
         public DateTime? VotingStartedDatetime { get; set; }
         public DateTime? VotingEndedDateTime { get; set; }
-        public int PositiveVotes { get; set; }
-        public int NegativeVotes { get; set; }
+
+        public int PositiveVotes
+        {
+            get => _positiveVotes;
+            set => SetProperty(ref _positiveVotes, value);
+        }
+
+        public int NegativeVotes
+        {
+            get => _negativeVotes;
+            set => SetProperty(ref _negativeVotes, value);
+        }
     }
 }

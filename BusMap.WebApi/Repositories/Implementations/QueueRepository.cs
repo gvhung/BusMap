@@ -42,30 +42,30 @@ namespace BusMap.WebApi.Repositories.Implementations
 
             routeQueued.Id = routeFromDb.Id;
 
-            if (routeFromDb.CarrierQueued == null && routeQueued.CarrierQueued != null)
-            {
-                _context.CarriersQueued.Add(routeQueued.CarrierQueued);
-                _context.Entry(routeFromDb).CurrentValues.SetValues(routeQueued);
-                routeFromDb.CarrierQueuedId = routeQueued.CarrierQueued.Id;
-            }
-            
-            if (routeFromDb.CarrierQueued != null && routeQueued.CarrierQueued != null)
-            {
+            //if (routeFromDb.CarrierQueued == null && routeQueued.CarrierQueued != null)
+            //{
+            //    _context.CarriersQueued.Add(routeQueued.CarrierQueued);
+            //    _context.Entry(routeFromDb).CurrentValues.SetValues(routeQueued);
+            //    routeFromDb.CarrierQueuedId = routeQueued.CarrierQueued.Id;
+            //}
 
-                var carrierFromDb = _context.CarriersQueued
-                    .SingleOrDefault(c => c.Id == routeFromDb.CarrierQueued.Id);
+            //if (routeFromDb.CarrierQueued != null && routeQueued.CarrierQueued != null)
+            //{
 
-                //_context.Entry(carrierFromDb).CurrentValues.SetValues(routeQueued.CarrierQueued);
-                carrierFromDb.Name = routeQueued.CarrierQueued.Name;
-                _context.Entry(carrierFromDb).State = EntityState.Modified;
+            //    var carrierFromDb = _context.CarriersQueued
+            //        .SingleOrDefault(c => c.Id == routeFromDb.CarrierQueued.Id);
 
-                //_context.Entry(routeFromDb).CurrentValues.SetValues(routeQueued);
-                //routeFromDb.CarrierQueued.Name = routeQueued.CarrierQueued.Name;
-            }
+            //    //_context.Entry(carrierFromDb).CurrentValues.SetValues(routeQueued.CarrierQueued);
+            //    carrierFromDb.Name = routeQueued.CarrierQueued.Name;
+            //    _context.Entry(carrierFromDb).State = EntityState.Modified;
+
+            //    //_context.Entry(routeFromDb).CurrentValues.SetValues(routeQueued);
+            //    //routeFromDb.CarrierQueued.Name = routeQueued.CarrierQueued.Name;
+            //}
 
 
-            
 
+            _context.Entry(routeFromDb).CurrentValues.SetValues(routeQueued);
             _context.Entry(routeFromDb).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }

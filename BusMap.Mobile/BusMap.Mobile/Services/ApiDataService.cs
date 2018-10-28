@@ -133,6 +133,16 @@ namespace BusMap.Mobile.Services
             return queuedRoutes;
         }
 
+        public async Task<bool> UpdateQueuedRoute(int id, RouteQueued updatedRouteQueued)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(updatedRouteQueued);
+
+            var result = await httpClient.PutAsync($"{Uri}queues/routes/{id}", AddMediaTypeHeaderValueToJson(json));
+            return result.IsSuccessStatusCode;
+        }
+
+
 
 
         public StringContent AddMediaTypeHeaderValueToJson(string json)

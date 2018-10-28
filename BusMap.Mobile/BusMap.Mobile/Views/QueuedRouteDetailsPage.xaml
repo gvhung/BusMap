@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.QueuedRouteDetailsPage"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
+             Title="{Binding Title}">
+
+    <!--<ContentPage.BindingContext>
+        <viewModels:QueuedRouteDetailsViewModel
+    </ContentPage.BindingContext>-->
+
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackLayout Grid.Row="0" Grid.Column="0">
+                <Label HorizontalOptions="Center"
+                       Text="{Binding RouteQueued.Name, StringFormat='{0} details'}"
+                       FontSize="Large"/>
+                <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
+                       FontSize="Medium"/>
+                <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"/>
+                <Label Text="{Binding RouteQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
+                <Label Text="{Binding RouteQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="+" 
+                            FontAttributes="Bold"
+                            IsEnabled="{Binding VotingButtonsEnabled}"
+                            Command="{Binding PlusClickedCommand}"/>
+                    <Button Text="-"
+                            FontAttributes="Bold"
+                            IsEnabled="{Binding VotingButtonsEnabled}"
+                            Command="{Binding MinusClickedCommand}"/>
+                </StackLayout>
+            </StackLayout>
+            <googleMaps:Map Grid.Row="1" Grid.Column="0"
+                            MapType="Street"
+                            MyLocationEnabled="True">
+                <googleMaps:Map.Behaviors>
+                    <googleMapsBindings:BindingPinsBehavior Value="{Binding Pins}"/>
+                    <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                </googleMaps:Map.Behaviors>
+            </googleMaps:Map>
+        </Grid>
+        
+    </ContentPage.Content>
+</ContentPage>
