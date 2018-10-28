@@ -49,6 +49,21 @@ namespace BusMap.WebApi.Controllers
             return Ok(nOfQueuedROutes);
         }
 
+        [HttpGet("carriers/{id:int}")]
+        public async Task<IActionResult> GetQueuedCarrier(int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var carrier = await _service.GetCarrierQueued(id);
+
+            if (carrier == null)
+                return NotFound();
+
+            return Ok(carrier);
+        }
+
+
         [HttpPost("routes")]
         public async Task<IActionResult> PostRouteToQueue([FromBody] RouteQueued routeQueued)
         {
@@ -59,12 +74,29 @@ namespace BusMap.WebApi.Controllers
             {
                 await _service.AddRouteToQueueAsync(routeQueued);
             }
-            catch(DbUpdateException)
+            catch (DbUpdateException)
             {
                 return BadRequest("Route queued object is incomplete or contains wrong data.");
             }
 
             return StatusCode(201);
+        }
+
+        [HttpPost("carriers")]
+        public async Task<IActionResult> PostCarrierToQueue([FromBody] CarrierQueued carrierQueued)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                await _service.AddCarrierToQueueAsync(carrierQueued);
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest("Carrier object is incomplete or contains wrong data.");
+            }
+
+            return CreatedAtAction("GetQueuedCarrier", new {id = carrierQueued.Id}, carrierQueued);
         }
 
         [HttpPut("routes/{id:int}")]

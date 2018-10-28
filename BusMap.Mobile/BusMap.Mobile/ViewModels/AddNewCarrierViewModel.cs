@@ -40,8 +40,15 @@ namespace BusMap.Mobile.ViewModels
 
             if (!carrierExist)
             {
-                var carrierToAdd = new Carrier{ Name = CarrierName };
-                var successfullyAddedCarrier = await _dataService.PostCarrierAsync(carrierToAdd);
+                var carrierToAdd = new CarrierQueued{ Name = CarrierName };
+                var successfullyAddedCarrier = await _dataService.PostCarrierQueuedAsync(carrierToAdd);
+
+                if (successfullyAddedCarrier != null)
+                    MessagingHelper.Toast("Carrier uploaded successfully!", ToastTime.LongTime);
+                else
+                {
+                    return;
+                }
 
                 var navParameters = new NavigationParameters();
                 navParameters.Add("addedCarrier", successfullyAddedCarrier);

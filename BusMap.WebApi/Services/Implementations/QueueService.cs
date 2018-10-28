@@ -35,8 +35,18 @@ namespace BusMap.WebApi.Services.Implementations
             return nOfRoutes;
         }
 
+        public async Task<QueuesCarrierDto> GetCarrierQueued(int id)
+        {
+            var carrier = await _repository.GetCarrierQueued(id);
+            var result = _mapper.Map<CarrierQueued, QueuesCarrierDto>(carrier);
+            return result;
+        }
+
         public async Task AddRouteToQueueAsync(RouteQueued routeQueued)
             => await _repository.AddRouteToQueueAsync(routeQueued);
+
+        public async Task AddCarrierToQueueAsync(CarrierQueued carrierQueued)
+            => await _repository.AddCarrierToQueueAsync(carrierQueued);
 
         public async Task UpdateRouteAsync(int id, RouteQueued routeQueued)
             => await _repository.UpdateRouteAsync(id, routeQueued);

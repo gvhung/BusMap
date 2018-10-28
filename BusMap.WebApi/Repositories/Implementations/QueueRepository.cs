@@ -27,9 +27,19 @@ namespace BusMap.WebApi.Repositories.Implementations
         public async Task<int> GetNumberOfQueuedRoutesAsync()
             => await _context.RoutesQueued.CountAsync();
 
+        public async Task<CarrierQueued> GetCarrierQueued(int id)
+            => await _context.CarriersQueued
+                .FirstOrDefaultAsync(c => c.Id == id);
+
         public async Task AddRouteToQueueAsync(RouteQueued routeQueued)
         {
             await _context.RoutesQueued.AddAsync(routeQueued);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddCarrierToQueueAsync(CarrierQueued carrierQueued)
+        {
+            await _context.CarriersQueued.AddAsync(carrierQueued);
             await _context.SaveChangesAsync();
         }
 

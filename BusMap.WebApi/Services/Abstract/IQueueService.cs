@@ -12,7 +12,9 @@ namespace BusMap.WebApi.Services.Abstract
     {
         Task<IEnumerable<QueuesRouteDto>> GetRoutesQueueAsync();
         Task<int> GetNumberOfQueuedRoutesAsync();
+        Task<QueuesCarrierDto> GetCarrierQueued(int id);
         Task AddRouteToQueueAsync(RouteQueued routeQueued);
+        Task AddCarrierToQueueAsync(CarrierQueued carrierQueued);
         Task UpdateRouteAsync(int id, RouteQueued routeQueued);
     }
 }

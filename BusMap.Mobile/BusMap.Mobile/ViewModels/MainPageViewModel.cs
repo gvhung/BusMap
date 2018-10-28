@@ -144,7 +144,7 @@ namespace BusMap.Mobile.ViewModels
 
         public async override void OnNavigatedTo(NavigationParameters parameters)
         {
-            var nOfNewRoutes = await _dataService.GetNumberOfQueuedRoutes();
+            var nOfNewRoutes = await _dataService.GetNumberOfQueuedRoutesAsync();
             QueueButtonText = $"New routes queue ({nOfNewRoutes})";
         }
     }

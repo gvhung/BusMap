@@ -30,8 +30,8 @@ namespace BusMap.Mobile.ViewModels
 
         private ObservableCollection<Pin> _mapPins;
         private MapSpan _mapPosition;
-        private ObservableCollection<BusStop> _busStops;
-        private Carrier _carrier;
+        private ObservableCollection<BusStopQueued> _busStops;
+        private CarrierQueued _carrier;
 
         private int _editingElementIndex = -1;
         private bool _saveButtonEnabled;
@@ -48,13 +48,13 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _mapPosition, value);
         }
 
-        public ObservableCollection<BusStop> BusStops
+        public ObservableCollection<BusStopQueued> BusStops
         {
             get => _busStops;
             set => SetProperty(ref _busStops, value);
         }
 
-        public Carrier Carrier
+        public CarrierQueued Carrier
         {
             get => _carrier;
             set => SetProperty(ref _carrier, value);
@@ -75,9 +75,9 @@ namespace BusMap.Mobile.ViewModels
             _pageDialogService = pageDialogService;
             Title = "Add route";
             MapPins = new ObservableCollection<Pin>();
-            BusStops = new ObservableCollection<BusStop>();
+            BusStops = new ObservableCollection<BusStopQueued>();
 
-            Carrier = new Carrier
+            Carrier = new CarrierQueued
             {
                 Name = "Placeholder carrier",
                 Id = 2  //Todo: get id carrier checked on list
@@ -107,7 +107,7 @@ namespace BusMap.Mobile.ViewModels
 
         });
 
-        public ICommand EditBusStopCommand => new DelegateCommand<BusStop>(async busStop =>
+        public ICommand EditBusStopCommand => new DelegateCommand<BusStopQueued>(async busStop =>
         {
             var navigationParameters = new NavigationParameters();
             navigationParameters.Add("busStopToEdit", busStop);
@@ -120,10 +120,10 @@ namespace BusMap.Mobile.ViewModels
         {
             var busStopsReversed = BusStops.Reverse().ToList();
 
-            var route = new Route
+            var route = new RouteQueued()
             {
-                BusStops = busStopsReversed,
-                CarrierId = Carrier.Id,
+                BusStopsQueued = busStopsReversed,
+                CarrierQueuedId = Carrier.Id,
                 Name = DateTime.Now.ToShortTimeString() //TODO: From Entry
             };
 
@@ -146,10 +146,10 @@ namespace BusMap.Mobile.ViewModels
                 await NavigationService.NavigateAsync(nameof(AddNewCarrierPage));
         });
 
-        private async Task PostDataAsync(Route route)
+        private async Task PostDataAsync(RouteQueued route)
         {
             MessagingHelper.Toast("Uploading new route...", ToastTime.ShortTime);
-            var result = await _dataService.PostRouteAsync(route);
+            var result = await _dataService.PostRouteQueuedAsync(route);
             if (result)
             {
                 //MessagingHelper.Toast("Upload successful!", ToastTime.LongTime);
@@ -169,7 +169,7 @@ namespace BusMap.Mobile.ViewModels
         {
             if (parameters.ContainsKey("newBusStop"))
             {
-                AddBusStopToLists(parameters["newBusStop"] as BusStop);
+                AddBusStopToLists(parameters["newBusStop"] as BusStopQueued);
                 if (BusStops.Count > 1)
                 {
                     SaveButtonEnabled = true;
@@ -178,7 +178,7 @@ namespace BusMap.Mobile.ViewModels
                 
             if (parameters.ContainsKey("busStopFromEdit"))
             {
-                var busStopFromEdit = parameters["busStopFromEdit"] as BusStop;
+                var busStopFromEdit = parameters["busStopFromEdit"] as BusStopQueued;
                 AddEditedBusStopToLists(busStopFromEdit, ref _editingElementIndex);
             }
 
@@ -195,17 +195,17 @@ namespace BusMap.Mobile.ViewModels
 
             if (parameters.ContainsKey("addedCarrier"))
             {
-                Carrier = parameters["addedCarrier"] as Carrier;
+                Carrier = parameters["addedCarrier"] as CarrierQueued;
             }
         }
 
-        private void AddBusStopToLists(BusStop busStop)
+        private void AddBusStopToLists(BusStopQueued busStop)
         {
             BusStops.Insert(0, busStop);
             MapPins.Insert(0, busStop.ToGoogleMapsPin());
         }
 
-        private void AddEditedBusStopToLists(BusStop busStop, ref int index)
+        private void AddEditedBusStopToLists(BusStopQueued busStop, ref int index)
         {
             BusStops[index] = busStop;
             MapPins.RemoveAt(index);

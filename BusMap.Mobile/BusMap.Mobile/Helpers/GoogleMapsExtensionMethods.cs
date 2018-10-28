@@ -62,5 +62,13 @@ namespace BusMap.Mobile.Helpers
                 Position = new Position(busStop.Latitude, busStop.Longitude)
             };
 
+        public static Pin ToGoogleMapsPin(this BusStopQueued busStopQueued)
+            => new Pin
+            {
+                Label = busStopQueued.Label,
+                Address = busStopQueued.Address,
+                Position = new Position(busStopQueued.Latitude, busStopQueued.Longitude)
+            };
+
     }
 }

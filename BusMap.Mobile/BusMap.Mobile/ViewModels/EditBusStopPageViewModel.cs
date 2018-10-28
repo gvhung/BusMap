@@ -15,7 +15,7 @@ namespace BusMap.Mobile.ViewModels
 {
     public class EditBusStopPageViewModel : ViewModelBase
     {
-        private BusStop _busStopToEdit;
+        private BusStopQueued _busStopToEdit;
         private string _cityNameEntry;
         private string _stopNameEntry;
         private TimeSpan _time;
@@ -24,7 +24,7 @@ namespace BusMap.Mobile.ViewModels
         private ObservableCollection<Pin> _mapPins;
 
 
-        public BusStop BusStopToEdit
+        public BusStopQueued BusStopToEdit
         {
             get => _busStopToEdit;
             set => SetProperty(ref _busStopToEdit, value);
@@ -77,7 +77,7 @@ namespace BusMap.Mobile.ViewModels
         public ICommand SaveButtonCommand => new DelegateCommand(async () =>
         {
             var navigationParams = new NavigationParameters();
-            var updatedBusStop = new BusStop
+            var updatedBusStop = new BusStopQueued()
             {
                 Address = CityNameEntry,
                 Label = StopNameEntry,
@@ -128,7 +128,7 @@ namespace BusMap.Mobile.ViewModels
         {
             if (parameters.ContainsKey("busStopToEdit"))
             {
-                BusStopToEdit = parameters["busStopToEdit"] as BusStop;
+                BusStopToEdit = parameters["busStopToEdit"] as BusStopQueued;
                 SetBusStopToChilds(BusStopToEdit);
 
                 Title = $"{BusStopToEdit.Address}, {BusStopToEdit.Label}";
@@ -139,7 +139,7 @@ namespace BusMap.Mobile.ViewModels
             }
         }
 
-        private void SetBusStopToChilds(BusStop busStop)
+        private void SetBusStopToChilds(BusStopQueued busStop)
         {
             CityNameEntry = busStop.Address;
             StopNameEntry = busStop.Label;

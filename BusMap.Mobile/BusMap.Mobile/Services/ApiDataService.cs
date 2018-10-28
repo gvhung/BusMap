@@ -133,12 +133,33 @@ namespace BusMap.Mobile.Services
             return queuedRoutes;
         }
 
-        public async Task<int> GetNumberOfQueuedRoutes()
+        public async Task<int> GetNumberOfQueuedRoutesAsync()
         {
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync(Uri + "queues/routes/count");
             var nOfQueuedRoutes = JsonConvert.DeserializeObject<int>(json);
             return nOfQueuedRoutes;
+        }
+
+        public async Task<bool> PostRouteQueuedAsync(RouteQueued routeQueued)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(routeQueued);
+
+            var result = await httpClient.PostAsync(Uri + "/queues/routes", AddMediaTypeHeaderValueToJson(json));
+            return result.IsSuccessStatusCode;
+        }
+
+        public async Task<CarrierQueued> PostCarrierQueuedAsync(CarrierQueued carrierQueued)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(carrierQueued);
+
+            var result = await httpClient.PostAsync(Uri + "/queues/carriers", AddMediaTypeHeaderValueToJson(json));
+            var resultJson = await result.Content.ReadAsStringAsync();
+            var resultObject = JsonConvert.DeserializeObject<CarrierQueued>(resultJson);
+
+            return resultObject;
         }
 
         public async Task<bool> UpdateQueuedRoute(int id, RouteQueued updatedRouteQueued)

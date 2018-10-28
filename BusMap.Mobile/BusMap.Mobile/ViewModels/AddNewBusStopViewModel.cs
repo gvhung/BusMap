@@ -73,7 +73,7 @@ namespace BusMap.Mobile.ViewModels
 
         public ICommand SaveButtonCommand => new DelegateCommand(async () =>
         {
-            var newBusStop = new BusStop
+            var newBusStop = new BusStopQueued()
             {
                 Address = CityNameEntry,
                 Label = StopNameEntry,
