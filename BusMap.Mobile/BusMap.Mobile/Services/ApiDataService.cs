@@ -98,9 +98,8 @@ namespace BusMap.Mobile.Services
             var httpClient = new HttpClient();
             var json = JsonConvert.SerializeObject(route);
             var stringContent = new StringContent(json);
-            stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var result = await httpClient.PostAsync(Uri + "/routes", stringContent);
+            var result = await httpClient.PostAsync(Uri + "/routes", AddMediaTypeHeaderValueToJson(json));
             return result.IsSuccessStatusCode;
         }
 
@@ -118,13 +117,29 @@ namespace BusMap.Mobile.Services
             var httpClient = new HttpClient();
             var json = JsonConvert.SerializeObject(carrier);
             var stringContent = new StringContent(json);
-            stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var result = await httpClient.PostAsync(Uri + "carriers", stringContent);
+            var result = await httpClient.PostAsync(Uri + "carriers", AddMediaTypeHeaderValueToJson(json));
             var resultObject = await result.Content.ReadAsStringAsync();
             var resultResponse = JsonConvert.DeserializeObject<Carrier>(resultObject);
 
             return resultResponse;
+        }
+
+        public async Task<IEnumerable<RouteQueued>> GetQueuedRoutesAsync()
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync(Uri + "queues/routes/");
+            var queuedRoutes = JsonConvert.DeserializeObject<IEnumerable<RouteQueued>>(json);
+            return queuedRoutes;
+        }
+
+
+
+        public StringContent AddMediaTypeHeaderValueToJson(string json)
+        {
+            var stringContent = new StringContent(json);
+            stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            return stringContent;
         }
     }
 }

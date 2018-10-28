@@ -35,6 +35,9 @@
     <Compile Update="Views\BusStopsMapPage.xaml.cs">
       <DependentUpon>BusStopsMapPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\RoutesQueuePage.xaml.cs">
+      <DependentUpon>RoutesQueuePage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +57,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\PopupEditRouteView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\RoutesQueuePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\RoutesListPage.xaml">

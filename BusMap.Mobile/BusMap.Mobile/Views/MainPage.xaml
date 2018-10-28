@@ -65,6 +65,8 @@
                     AutomationId="MainPage_NearestStopsButton"/>
             <Button Text="Track new route"
                     Command="{Binding NavigateToTrackNewRouteCommand}"/>
+            <Button Text="Queue"
+                    Command="{Binding NavigateToQueueCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 

@@ -126,6 +126,9 @@ namespace BusMap.Mobile.ViewModels
         public ICommand NavigateToTrackNewRouteCommand => new DelegateCommand(async () => 
             await NavigationService.NavigateAsync(nameof(TrackNewRoutePage)));
 
+        public ICommand NavigateToQueueCommand => new DelegateCommand(async () =>
+            await NavigationService.NavigateAsync(nameof(RoutesQueuePage)));
+
 
         public ICommand AdvancedButtonCommand => new Command(async () =>
         {
