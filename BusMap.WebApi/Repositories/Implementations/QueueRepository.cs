@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Helpers;
+using BusMap.WebApi.Models;
 using BusMap.WebApi.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 
@@ -78,6 +80,23 @@ namespace BusMap.WebApi.Repositories.Implementations
             _context.Entry(routeFromDb).CurrentValues.SetValues(routeQueued);
             _context.Entry(routeFromDb).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<RouteQueued>> GetRoutesInRangeAsync(string yourLocation, int range)
+        {
+            var result = new List<RouteQueued>();
+            var routes = await GetRoutesQueueAsync();
+            var geoPosition = new GeoPosition(yourLocation);
+
+            foreach (var route in routes)
+            {
+                if (route.BusStopsQueued.AnyInRange(geoPosition, range))
+                {
+                    result.Add(route);
+                }
+            }
+
+            return result;
         }
 
     }

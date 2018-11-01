@@ -12,7 +12,7 @@ namespace BusMap.WebApi.Dto.Routes
         public int Id { get; set; }
         public string Name { get; set; }
         public RoutesCarrierDto Carrier { get; set; }
-        public ICollection<BusStopModel> BusStops { get; set; }
+        public ICollection<RoutesBusStopDto> BusStops { get; set; }
 
 
     }
