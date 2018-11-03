@@ -22,5 +22,7 @@ namespace BusMap.WebApi.DatabaseModels
 
         [MaxLength(50)]
         public string Label { get; set; }
+
+        public TimeSpan Hour { get; set; }
     }
 }

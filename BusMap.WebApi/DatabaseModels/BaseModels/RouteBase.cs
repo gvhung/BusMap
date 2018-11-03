@@ -13,5 +13,7 @@ namespace BusMap.WebApi.DatabaseModels.BaseModels
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
+
+        public int DayOfTheWeek { get; set; }
     }
 }

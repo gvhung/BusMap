@@ -59,19 +59,22 @@ namespace BusMap.WebApi.Data
                 {
                     Id = 1,
                     Name = "Gorlice - Rzeszów",
-                    CarrierId = 1
+                    CarrierId = 1,
+                    DayOfTheWeek = (int)DayOfWeek.Monday
                 },
                 new Route
                 {
                     Id = 2,
                     Name = "Rzeszów - Gorlice",
-                    CarrierId = 1
+                    CarrierId = 1,
+                    DayOfTheWeek = (int)DayOfWeek.Monday
                 },
                 new Route
                 {
                     Id = 3,
                     Name = "Frysztak - Rzeszów",
-                    CarrierId = 2
+                    CarrierId = 2,
+                    DayOfTheWeek = (int)DayOfWeek.Tuesday
                 }
             );
 
@@ -84,7 +87,8 @@ namespace BusMap.WebApi.Data
                     Address = "Gorlice",
                     Label = "Gorlice DA",
                     Latitude = 49.662932,
-                    Longitude = 21.159447
+                    Longitude = 21.159447,
+                    Hour = new TimeSpan(10,00,00)
                 },
                 new BusStop
                 {
@@ -93,7 +97,8 @@ namespace BusMap.WebApi.Data
                     Address = "Jasło",
                     Label = "Jasło DA",
                     Latitude = 49.743750,
-                    Longitude = 21.473399
+                    Longitude = 21.473399,
+                    Hour = new TimeSpan(10, 20, 00)
                 },
                 new BusStop
                 {
@@ -101,7 +106,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 1,
                     Address = "Frysztak",
                     Latitude = 49.845480,
-                    Longitude = 21.612531
+                    Longitude = 21.612531,
+                    Hour = new TimeSpan(10, 30, 00)
                 },
                 new BusStop
                 {
@@ -109,7 +115,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 1,
                     Address = "Wiśniowa",
                     Latitude = 49.869611,
-                    Longitude = 21.659950
+                    Longitude = 21.659950,
+                    Hour = new TimeSpan(10, 40, 00)
                 },
                 new BusStop
                 {
@@ -117,7 +124,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 1,
                     Address = "Dobrzechów",
                     Latitude = 49.876198,
-                    Longitude = 21.753990
+                    Longitude = 21.753990,
+                    Hour = new TimeSpan(10, 50, 00)
                 },
                 new BusStop
                 {
@@ -126,7 +134,8 @@ namespace BusMap.WebApi.Data
                     Address = "Strzyżów",
                     Label = "Strzyżów DA",
                     Latitude = 49.869992,
-                    Longitude = 21.800657
+                    Longitude = 21.800657,
+                    Hour = new TimeSpan(11, 00, 00)
                 },
                 new BusStop
                 {
@@ -135,7 +144,8 @@ namespace BusMap.WebApi.Data
                     Address = "Czudec",
                     Label = "Czudec DA",
                     Latitude = 49.945855,
-                    Longitude = 21.837562
+                    Longitude = 21.837562,
+                    Hour = new TimeSpan(11, 10, 00)
                 },
                 new BusStop
                 {
@@ -143,7 +153,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 1,
                     Address = "Boguchwała",
                     Latitude = 49.983775,
-                    Longitude = 21.942793
+                    Longitude = 21.942793,
+                    Hour = new TimeSpan(11, 20, 00)
                 },
                 new BusStop
                 {
@@ -152,7 +163,8 @@ namespace BusMap.WebApi.Data
                     Address = "Rzeszów",
                     Label = "Podkarpacka",
                     Latitude = 50.020076,
-                    Longitude = 21.980312
+                    Longitude = 21.980312,
+                    Hour = new TimeSpan(11, 30, 00)
                 },
                 new BusStop
                 {
@@ -161,7 +173,8 @@ namespace BusMap.WebApi.Data
                     Address = "Rzeszów",
                     Label = "Rzeszów DA",
                     Latitude = 50.042131,
-                    Longitude = 22.003429
+                    Longitude = 22.003429,
+                    Hour = new TimeSpan(11, 40, 00)
                 },
                 new BusStop
                 {
@@ -170,7 +183,8 @@ namespace BusMap.WebApi.Data
                     Address = "Rzeszów",
                     Label = "Rejtana",
                     Latitude = 50.031346,
-                    Longitude = 22.016653
+                    Longitude = 22.016653,
+                    Hour = new TimeSpan(11, 50, 00)
                 }
             );
 
@@ -183,7 +197,8 @@ namespace BusMap.WebApi.Data
                     Address = "Rzeszów",
                     Label = "Rejtana",
                     Latitude = 50.030767,
-                    Longitude = 22.017088
+                    Longitude = 22.017088,
+                    Hour = new TimeSpan(11, 00, 00)
                 },
                 new BusStop
                 {
@@ -192,7 +207,8 @@ namespace BusMap.WebApi.Data
                     Address = "Rzeszów",
                     Label = "Rzeszów DA",
                     Latitude = 50.042131,
-                    Longitude = 22.003429
+                    Longitude = 22.003429,
+                    Hour = new TimeSpan(11, 10, 00)
                 },
                 new BusStop
                 {
@@ -201,7 +217,8 @@ namespace BusMap.WebApi.Data
                     Address = "Rzeszów",
                     Label = "Podkarpacka",
                     Latitude = 50.020076,
-                    Longitude = 21.980312
+                    Longitude = 21.980312,
+                    Hour = new TimeSpan(11, 20, 00)
                 },
                 new BusStop
                 {
@@ -209,7 +226,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 2,
                     Address = "Boguchwała",
                     Latitude = 49.983775,
-                    Longitude = 21.942793
+                    Longitude = 21.942793,
+                    Hour = new TimeSpan(11, 30, 00)
                 },
                 new BusStop
                 {
@@ -218,7 +236,8 @@ namespace BusMap.WebApi.Data
                     Address = "Czudec",
                     Label = "Czudec DA",
                     Latitude = 49.945855,
-                    Longitude = 21.837562
+                    Longitude = 21.837562,
+                    Hour = new TimeSpan(11, 40, 00)
                 },
                 new BusStop
                 {
@@ -227,7 +246,8 @@ namespace BusMap.WebApi.Data
                     Address = "Strzyżów",
                     Label = "Strzyżów DA",
                     Latitude = 49.869992,
-                    Longitude = 21.800657
+                    Longitude = 21.800657,
+                    Hour = new TimeSpan(11, 50, 00)
                 },
                 new BusStop
                 {
@@ -235,7 +255,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 2,
                     Address = "Dobrzechów",
                     Latitude = 49.876198,
-                    Longitude = 21.753990
+                    Longitude = 21.753990,
+                    Hour = new TimeSpan(12, 00, 00)
                 },
                 new BusStop
                 {
@@ -243,7 +264,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 2,
                     Address = "Wiśniowa",
                     Latitude = 49.869611,
-                    Longitude = 21.659950
+                    Longitude = 21.659950,
+                    Hour = new TimeSpan(12, 10, 00)
                 },
                 new BusStop
                 {
@@ -251,7 +273,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 2,
                     Address = "Frysztak",
                     Latitude = 49.845480,
-                    Longitude = 21.612531
+                    Longitude = 21.612531,
+                    Hour = new TimeSpan(12, 20, 00)
                 },
                 new BusStop
                 {
@@ -260,7 +283,8 @@ namespace BusMap.WebApi.Data
                     Address = "Jasło",
                     Label = "Jasło DA",
                     Latitude = 49.743750,
-                    Longitude = 21.473399
+                    Longitude = 21.473399,
+                    Hour = new TimeSpan(12, 30, 00)
                 },
                 new BusStop
                 {
@@ -269,7 +293,8 @@ namespace BusMap.WebApi.Data
                     Address = "Gorlice",
                     Label = "Gorlice DA",
                     Latitude = 49.662932,
-                    Longitude = 21.159447
+                    Longitude = 21.159447,
+                    Hour = new TimeSpan(12, 40, 00)
                 }
             );
 
@@ -281,7 +306,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 3,
                     Address = "Frysztak",
                     Latitude = 49.845480,
-                    Longitude = 21.612531
+                    Longitude = 21.612531,
+                    Hour = new TimeSpan(8, 00, 00)
                 },
                 new BusStop
                 {
@@ -289,7 +315,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 3,
                     Address = "Wiśniowa",
                     Latitude = 49.869611,
-                    Longitude = 21.659950
+                    Longitude = 21.659950,
+                    Hour = new TimeSpan(8, 10, 00)
                 },
                 new BusStop
                 {
@@ -297,7 +324,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 3,
                     Address = "Dobrzechów",
                     Latitude = 49.876198,
-                    Longitude = 21.753990
+                    Longitude = 21.753990,
+                    Hour = new TimeSpan(8, 20, 00)
                 },
                 new BusStop
                 {
@@ -306,7 +334,8 @@ namespace BusMap.WebApi.Data
                     Address = "Strzyżów",
                     Label = "Strzyżów DA",
                     Latitude = 49.869992,
-                    Longitude = 21.800657
+                    Longitude = 21.800657,
+                    Hour = new TimeSpan(8, 30, 00)
                 },
                 new BusStop
                 {
@@ -314,7 +343,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 3,
                     Address = "Zaborów",
                     Latitude = 49.914127,
-                    Longitude = 21.827073
+                    Longitude = 21.827073,
+                    Hour = new TimeSpan(8, 40, 00)
                 },
                 new BusStop
                 {
@@ -323,7 +353,8 @@ namespace BusMap.WebApi.Data
                     Address = "Czudec",
                     Label = "Czudec DA",
                     Latitude = 49.945855,
-                    Longitude = 21.837562
+                    Longitude = 21.837562,
+                    Hour = new TimeSpan(8, 50, 00)
                 },
                 new BusStop
                 {
@@ -331,7 +362,8 @@ namespace BusMap.WebApi.Data
                     RouteId = 3,
                     Address = "Boguchwała",
                     Latitude = 49.983775,
-                    Longitude = 21.942793
+                    Longitude = 21.942793,
+                    Hour = new TimeSpan(9, 00, 00)
                 },
                 new BusStop
                 {
@@ -340,7 +372,8 @@ namespace BusMap.WebApi.Data
                     Address = "Rzeszów",
                     Label = "Podkarpacka",
                     Latitude = 50.020076,
-                    Longitude = 21.980312
+                    Longitude = 21.980312,
+                    Hour = new TimeSpan(9, 10, 00)
                 },
                 new BusStop
                 {
@@ -349,7 +382,8 @@ namespace BusMap.WebApi.Data
                     Address = "Rzeszów",
                     Label = "Rzeszów DA",
                     Latitude = 50.042131,
-                    Longitude = 22.003429
+                    Longitude = 22.003429,
+                    Hour = new TimeSpan(9, 20, 00)
                 }
             );
 
