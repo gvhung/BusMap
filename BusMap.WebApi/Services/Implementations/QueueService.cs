@@ -50,5 +50,12 @@ namespace BusMap.WebApi.Services.Implementations
 
         public async Task UpdateRouteAsync(int id, RouteQueued routeQueued)
             => await _repository.UpdateRouteAsync(id, routeQueued);
+
+        public async Task<IEnumerable<QueuesRouteDto>> GetRoutesInRangeAsync(string yourLocation, int range)
+        {
+            var routes = await _repository.GetRoutesInRangeAsync(yourLocation, range);
+            var result = _mapper.Map<IEnumerable<RouteQueued>, IEnumerable<QueuesRouteDto>>(routes);
+            return result;
+        }
     }
 }

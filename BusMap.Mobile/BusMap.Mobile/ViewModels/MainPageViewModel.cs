@@ -25,6 +25,7 @@ namespace BusMap.Mobile.ViewModels
         private string _destinationBusStopName;
         private bool _isBusy;
         private string _queueButtonText = "New routes queue";
+        private bool _queuedRoutesButtonIsVisible;
 
 
         public string StartBusStopName
@@ -49,6 +50,12 @@ namespace BusMap.Mobile.ViewModels
         {
             get => _queueButtonText;
             set => SetProperty(ref _queueButtonText, value);
+        }
+
+        public bool QueuedRoutesButtonIsVisible
+        {
+            get => _queuedRoutesButtonIsVisible;
+            set => SetProperty(ref _queuedRoutesButtonIsVisible, value);
         }
 
 
@@ -142,10 +149,17 @@ namespace BusMap.Mobile.ViewModels
             var test = await _dataService.GetBusStopsAsync();
         });
 
-        public async override void OnNavigatedTo(NavigationParameters parameters)
+        public override async void OnNavigatedTo(NavigationParameters parameters)
         {
-            var nOfNewRoutes = await _dataService.GetNumberOfQueuedRoutesAsync();
-            QueueButtonText = $"New routes queue ({nOfNewRoutes})";
+            var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
+            var nOfNewRoutesInRange = await _dataService.GetNumberOfQueuedRoutesInRangeAsync(currentPosition, StaticVariables.Range);
+            if (nOfNewRoutesInRange > 0)
+            {
+                QueuedRoutesButtonIsVisible = true;
+            }
+            
+            QueueButtonText = $"New routes queue ({nOfNewRoutesInRange})";
         }
+
     }
 }

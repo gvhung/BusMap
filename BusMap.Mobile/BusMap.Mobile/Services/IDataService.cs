@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BusMap.Mobile.Models;
 using Xamarin.Forms.Maps;
+using Position = Plugin.Geolocator.Abstractions.Position;
 
 namespace BusMap.Mobile.Services
 {
@@ -33,7 +34,9 @@ namespace BusMap.Mobile.Services
         Task<Carrier> PostCarrierAsync(Carrier carrier);
 
         Task<IEnumerable<RouteQueued>> GetQueuedRoutesAsync();    //TODO: download range using current localization
+        Task<IEnumerable<RouteQueued>> GetQueuedRoutesInRange(Position currentPosition, int range);
         Task<int> GetNumberOfQueuedRoutesAsync();    //TODO: download range using current localization
+        Task<int> GetNumberOfQueuedRoutesInRangeAsync(Position currentPosition, int range);
         Task<bool> PostRouteQueuedAsync(RouteQueued routeQueued);
         Task<CarrierQueued> PostCarrierQueuedAsync(CarrierQueued carrierQueued);
         Task<bool> UpdateQueuedRoute(int id, RouteQueued updatedRouteQueued);

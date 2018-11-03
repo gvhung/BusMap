@@ -11,6 +11,7 @@ using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using Newtonsoft.Json;
 using Xamarin.Forms.Maps;
+using Position = Plugin.Geolocator.Abstractions.Position;
 
 namespace BusMap.Mobile.Services
 {
@@ -133,12 +134,30 @@ namespace BusMap.Mobile.Services
             return queuedRoutes;
         }
 
+        public async Task<IEnumerable<RouteQueued>> GetQueuedRoutesInRange(Position currentPosition, int range)
+        {
+            var httpClient = new HttpClient();
+            var currentPositionString = $"{currentPosition.Latitude},{currentPosition.Longitude}";
+            var json = await httpClient.GetStringAsync($"{Uri}queues/routes/range?yourLocation={currentPositionString}&range={range}");
+            var queuedRoutesInRange = JsonConvert.DeserializeObject<IEnumerable<RouteQueued>>(json);
+            return queuedRoutesInRange;
+        }
+
         public async Task<int> GetNumberOfQueuedRoutesAsync()
         {
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync(Uri + "queues/routes/count");
             var nOfQueuedRoutes = JsonConvert.DeserializeObject<int>(json);
             return nOfQueuedRoutes;
+        }
+
+        public async Task<int> GetNumberOfQueuedRoutesInRangeAsync(Position currentPosition, int range)
+        {
+            var httpClient = new HttpClient();
+            var currentPositionString = $"{currentPosition.Latitude},{currentPosition.Longitude}";
+            var json = await httpClient.GetStringAsync($"{Uri}queues/routes/range/count?yourLocation={currentPositionString}&range={range}");
+            var nOfQueuedRoutesInRange = JsonConvert.DeserializeObject<int>(json);
+            return nOfQueuedRoutesInRange;
         }
 
         public async Task<bool> PostRouteQueuedAsync(RouteQueued routeQueued)

@@ -49,6 +49,7 @@ namespace BusMap.WebApi.Controllers
             return Ok(nOfQueuedROutes);
         }
 
+
         [HttpGet("carriers/{id:int}")]
         public async Task<IActionResult> GetQueuedCarrier(int id)
         {
@@ -62,6 +63,33 @@ namespace BusMap.WebApi.Controllers
 
             return Ok(carrier);
         }
+
+        [HttpGet("routes/range")]
+        public async Task<IActionResult> GetQueuedRoutesInRange(string yourLocation, int range)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var routesInRange = await _service.GetRoutesInRangeAsync(yourLocation, range);
+
+            if (routesInRange == null || routesInRange.ToList().Count < 1)
+                return NotFound("No queued routes in range.");
+
+            return Ok(routesInRange);
+        }
+
+        [HttpGet("routes/range/count")]
+        public async Task<IActionResult> GetNumberOfQueuedRoutesInRange(string yourLocation, int range)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var routesInRange = await _service.GetRoutesInRangeAsync(yourLocation, range);
+            var nOfRoutes = routesInRange.ToList().Count;
+
+            return Ok(nOfRoutes);
+        }
+
 
 
         [HttpPost("routes")]

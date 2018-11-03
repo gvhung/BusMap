@@ -98,6 +98,5 @@ namespace BusMap.WebApi.Repositories.Implementations
 
             return result;
         }
-
     }
 }

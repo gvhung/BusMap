@@ -64,6 +64,10 @@ namespace BusMap.Mobile.ViewModels
 
         //TODO: download range using current localization
         private async Task<IEnumerable<RouteQueued>> DownloadQueuedRoutesAsync()
-            => await _dataService.GetQueuedRoutesAsync();
+        {
+            var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
+            var routes = await _dataService.GetQueuedRoutesInRange(currentPosition, StaticVariables.Range);
+            return routes;
+        }
     }
 }
