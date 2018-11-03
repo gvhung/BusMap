@@ -28,6 +28,25 @@ namespace BusMap.Mobile.Helpers
             return result;
         }
 
+        public static ObservableCollection<Pin> ToGoogleMapsPins(
+            this IEnumerable<BusStopQueued> busStops)
+        {
+            var result = new ObservableCollection<Pin>();
+            foreach (var busStop in busStops)
+            {
+                if (string.IsNullOrEmpty(busStop.Label))
+                    busStop.Label = " ";
+                result.Add(new Pin
+                {
+                    Label = busStop.Label,
+                    Address = busStop.Address,
+                    Position = new Position(busStop.Latitude, busStop.Longitude),
+                });
+            }
+
+            return result;
+        }
+
         public static Position ToGoogleMapsPosition(
             this Plugin.Geolocator.Abstractions.Position geolocatorPosition)
             => new Position(geolocatorPosition.Latitude, geolocatorPosition.Longitude);
@@ -41,6 +60,14 @@ namespace BusMap.Mobile.Helpers
                 Label = busStop.Label,
                 Address = busStop.Address,
                 Position = new Position(busStop.Latitude, busStop.Longitude)
+            };
+
+        public static Pin ToGoogleMapsPin(this BusStopQueued busStopQueued)
+            => new Pin
+            {
+                Label = busStopQueued.Label,
+                Address = busStopQueued.Address,
+                Position = new Position(busStopQueued.Latitude, busStopQueued.Longitude)
             };
 
     }

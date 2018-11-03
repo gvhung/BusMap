@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace BusMap.WebApi.Data
 {
-    public class Connections
+    public static class Connections
     {
         public static string GeDbConnectionString()
         {
-            var databaseString = @"Data Source=DESKTOP-6TBR12R\SQLEXPRESS;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;Database=BusMap";
+            var databaseString = @"";
             if (String.IsNullOrEmpty(databaseString))
             {
                 throw new Exception("Please insert database connection string!");
@@ -17,5 +17,17 @@ namespace BusMap.WebApi.Data
 
             return databaseString;
         }
+
+        public static string GetAzureMapsKey()
+        {
+            var key = "";
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new Exception("Please insert azure maps public key!");
+            }
+
+            return key;
+        }
+
     }
 }

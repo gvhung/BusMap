@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
-using BusMap.WebApi.Models;
 
-namespace BusMap.WebApi.Dto.Routes
+namespace BusMap.WebApi.Dto.Queues
 {
-    public class RoutesRouteDto
+    public class QueuesCarrierDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public RoutesCarrierDto Carrier { get; set; }
-        public ICollection<RoutesBusStopDto> BusStops { get; set; }
-
-
     }
 }

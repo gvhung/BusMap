@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BusMap.WebApi.Migrations
@@ -18,6 +19,19 @@ namespace BusMap.WebApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Carriers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CarriersQueued",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CarriersQueued", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -41,6 +55,31 @@ namespace BusMap.WebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RoutesQueued",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 100, nullable: false),
+                    CarrierQueuedId = table.Column<int>(nullable: true),
+                    CreatedDatetime = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    VotingStartedDatetime = table.Column<DateTime>(nullable: true),
+                    VotingEndedDateTime = table.Column<DateTime>(nullable: true),
+                    PositiveVotes = table.Column<int>(nullable: false, defaultValue: 0),
+                    NegativeVotes = table.Column<int>(nullable: false, defaultValue: 0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoutesQueued", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RoutesQueued_CarriersQueued_CarrierQueuedId",
+                        column: x => x.CarrierQueuedId,
+                        principalTable: "CarriersQueued",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BusStops",
                 columns: table => new
                 {
@@ -61,6 +100,29 @@ namespace BusMap.WebApi.Migrations
                         principalTable: "Routes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BusStopsQueued",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Latitude = table.Column<double>(nullable: false),
+                    Longitude = table.Column<double>(nullable: false),
+                    Address = table.Column<string>(maxLength: 50, nullable: false),
+                    Label = table.Column<string>(maxLength: 50, nullable: true),
+                    RouteQueuedId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BusStopsQueued", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BusStopsQueued_RoutesQueued_RouteQueuedId",
+                        column: x => x.RouteQueuedId,
+                        principalTable: "RoutesQueued",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -132,9 +194,19 @@ namespace BusMap.WebApi.Migrations
                 column: "RouteId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BusStopsQueued_RouteQueuedId",
+                table: "BusStopsQueued",
+                column: "RouteQueuedId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Routes_CarrierId",
                 table: "Routes",
                 column: "CarrierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoutesQueued_CarrierQueuedId",
+                table: "RoutesQueued",
+                column: "CarrierQueuedId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -143,10 +215,19 @@ namespace BusMap.WebApi.Migrations
                 name: "BusStops");
 
             migrationBuilder.DropTable(
+                name: "BusStopsQueued");
+
+            migrationBuilder.DropTable(
                 name: "Routes");
 
             migrationBuilder.DropTable(
+                name: "RoutesQueued");
+
+            migrationBuilder.DropTable(
                 name: "Carriers");
+
+            migrationBuilder.DropTable(
+                name: "CarriersQueued");
         }
     }
 }
