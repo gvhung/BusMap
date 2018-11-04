@@ -11,6 +11,7 @@ namespace BusMap.WebApi.Dto.Routes
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int DayOfTheWeek { get; set; }
         public RoutesCarrierDto Carrier { get; set; }
         public ICollection<RoutesBusStopDto> BusStops { get; set; }
 

@@ -17,5 +17,6 @@ namespace BusMap.WebApi.Dto.Queues
         public DateTime? VotingEndedDateTime { get; set; }
         public int PositiveVotes { get; set; }
         public int NegativeVotes { get; set; }
+        public int DayOfTheWeek { get; set; }
     }
 }
