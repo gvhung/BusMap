@@ -44,6 +44,7 @@ namespace BusMap.Mobile
             containerRegistry.RegisterForNavigation<AddNewCarrierPage, AddNewCarrierViewModel>();
             containerRegistry.RegisterForNavigation<RoutesQueuePage, RoutesQueueViewModel>();
             containerRegistry.RegisterForNavigation<QueuedRouteDetailsPage, QueuedRouteDetailsViewModel>();
+            containerRegistry.RegisterForNavigation<RouteDetailsPage, RouteDetailsPageViewModel>();
 
             containerRegistry.Register<IDataService, ApiDataService>();
         }

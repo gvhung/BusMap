@@ -26,6 +26,7 @@ namespace BusMap.Mobile.Models
         public List<BusStop> BusStops { get; set; }
         public BusStop StartingBusStop => BusStops.First();
         public BusStop DestinationBusStop => BusStops.Last();
+        public int DayOfTheWeek { get; set; }
 
         public string BusStopsString => ToString();
 

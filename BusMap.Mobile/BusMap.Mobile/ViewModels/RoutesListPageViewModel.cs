@@ -55,7 +55,8 @@ namespace BusMap.Mobile.ViewModels
             var parameters = new NavigationParameters();
             parameters.Add("route", route);
 
-            await NavigationService.NavigateAsync(nameof(BusStopsMapPage), parameters);
+            //await NavigationService.NavigateAsync(nameof(BusStopsMapPage), parameters);
+            await NavigationService.NavigateAsync(nameof(RouteDetailsPage), parameters);
         });
 
         public ICommand SelectedRouteCommand2 => new DelegateCommand<Route>(async route =>
