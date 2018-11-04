@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using BusMap.Mobile.Views;
 using Plugin.Geolocator;
 using Prism.Commands;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace BusMap.Mobile.ViewModels
@@ -20,6 +22,7 @@ namespace BusMap.Mobile.ViewModels
     public class MainPageViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
+        private readonly IPageDialogService _pageDialogService;
 
         private string _startBusStopName;
         private string _destinationBusStopName;
@@ -59,9 +62,11 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        public MainPageViewModel(IDataService dataService, INavigationService navigationService) 
+        public MainPageViewModel(IDataService dataService, INavigationService navigationService, 
+            IPageDialogService pageDialogService) 
             : base(navigationService)
         {
+            _pageDialogService = pageDialogService;
             _dataService = dataService;
             LocalizationAlert();
         }
@@ -152,13 +157,40 @@ namespace BusMap.Mobile.ViewModels
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
             var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
-            var nOfNewRoutesInRange = await _dataService.GetNumberOfQueuedRoutesInRangeAsync(currentPosition, StaticVariables.Range);
+            var nOfNewRoutesInRange = 0;
+
+            try
+            {
+                nOfNewRoutesInRange = await _dataService.GetNumberOfQueuedRoutesInRangeAsync(currentPosition, StaticVariables.Range);
+            }
+            catch (HttpRequestException ex)
+            {
+                await DialogWhenHttpRequestException();
+            }
+
+
             if (nOfNewRoutesInRange > 0)
             {
                 QueuedRoutesButtonIsVisible = true;
             }
             
             QueueButtonText = $"New routes queue ({nOfNewRoutesInRange})";
+        }
+
+        public async Task DialogWhenHttpRequestException()
+        {
+            var dialogResult = await _pageDialogService.DisplayAlertAsync("Connection with server failed",
+                "Please enable internet connection in your device.", "Done", "Close app");
+            if (dialogResult)
+            {
+                OnNavigatedTo(new NavigationParameters());
+            }
+            else
+            {
+                //Closing app
+                System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
+            }
+            
         }
 
     }
