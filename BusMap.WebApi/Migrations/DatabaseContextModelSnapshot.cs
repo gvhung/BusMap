@@ -109,6 +109,23 @@ namespace BusMap.WebApi.Migrations
                     b.ToTable("BusStopsQueued");
                 });
 
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.BusStopTrace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BusStopId");
+
+                    b.Property<TimeSpan>("Hour");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusStopId");
+
+                    b.ToTable("BusStopTraces");
+                });
+
             modelBuilder.Entity("BusMap.WebApi.DatabaseModels.Carrier", b =>
                 {
                     b.Property<int>("Id")
@@ -221,6 +238,14 @@ namespace BusMap.WebApi.Migrations
                     b.HasOne("BusMap.WebApi.DatabaseModels.RouteQueued", "RouteQueued")
                         .WithMany("BusStopsQueued")
                         .HasForeignKey("RouteQueuedId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.BusStopTrace", b =>
+                {
+                    b.HasOne("BusMap.WebApi.DatabaseModels.BusStop", "BusStop")
+                        .WithMany("BusStopTraces")
+                        .HasForeignKey("BusStopId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

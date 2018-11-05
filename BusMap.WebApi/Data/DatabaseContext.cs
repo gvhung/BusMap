@@ -26,6 +26,7 @@ namespace BusMap.WebApi.Data
         public DbSet<BusStopQueued> BusStopsQueued { get; set; }
         public DbSet<RouteQueued> RoutesQueued { get; set; }
         public DbSet<CarrierQueued> CarriersQueued { get; set; }
+        public DbSet<BusStopTrace> BusStopTraces { get; set; }
 
 
 
@@ -40,6 +41,7 @@ namespace BusMap.WebApi.Data
             modelBuilder.Entity<RouteQueued>()
                 .Property(r => r.CreatedDatetime)
                 .HasDefaultValueSql("GETDATE()");
+            
 
             modelBuilder.Entity<Carrier>().HasData(
                 new Carrier

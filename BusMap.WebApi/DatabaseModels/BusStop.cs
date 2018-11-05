@@ -11,5 +11,6 @@ namespace BusMap.WebApi.DatabaseModels
         public int RouteId { get; set; }
 
         public Route Route { get; set; }
+        public ICollection<BusStopTrace> BusStopTraces { get; set; }
     }
 }
