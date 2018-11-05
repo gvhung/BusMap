@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Models;
+using BusMap.Mobile.Services;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 using Prism.Commands;
@@ -16,14 +17,21 @@ namespace BusMap.Mobile.ViewModels
 {
     public class TraceTrackingPageViewModel : ViewModelBase
     {
+        private readonly IDataService _dataService;
         private Route _route;
         private bool _isTrackingStarted;
         private string _testLabelText;
 
+        private List<BusStop> _busStops;
+
         public Route Route
         {
             get => _route;
-            set => SetProperty(ref _route, value);
+            set
+            {
+                SetProperty(ref _route, value);
+                _busStops.AddRange(_route.BusStops);
+            }
         }
 
         public bool IsTrackingStarted
@@ -39,9 +47,11 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        public TraceTrackingPageViewModel(INavigationService navigationService) 
+        public TraceTrackingPageViewModel(INavigationService navigationService, IDataService dataService) 
             : base(navigationService)
         {
+            _dataService = dataService;
+            _busStops = new List<BusStop>();
         }
 
 
@@ -57,6 +67,7 @@ namespace BusMap.Mobile.ViewModels
             }
             else
             {
+                await CrossGeolocator.Current.StopListeningAsync();
                 CrossGeolocator.Current.PositionChanged -= Current_PositionChanged;
                 IsTrackingStarted = false;
             }
@@ -87,20 +98,27 @@ namespace BusMap.Mobile.ViewModels
             {
                 var position = e.Position;
 
-                TestLabelText = $"{position.Latitude}, {position.Longitude}";
+                //TestLabelText = $"{position.Latitude}, {position.Longitude}";
 
                 var distanceArray = new double[Route.BusStops.Count];
 
-                for (int i = 0; i < Route.BusStops.Count; i++)
+                for (int i = 0; i < _busStops.Count; i++)
                 {
-                    var busStop = Route.BusStops[i];
+                    var busStop = _busStops[i];
                     var busStopPosition = new Plugin.Geolocator.Abstractions.Position(busStop.Latitude, busStop.Longitude);
                     var distance = position.CalculateDistance(busStopPosition);
                     distanceArray[i] = distance;
 
                     if (distance < 0.05)
                     {
-                        TestLabelText = $"{Route.BusStops[i].Address}, {Route.BusStops[i].Label}";
+                        TestLabelText = $"{busStop.Address}, {busStop.Label}";
+                        _busStops.Remove(busStop);
+                        var currentHour = DateTime.Now;
+                        _dataService.PostBusStopTraceAsync(new BusStopTrace
+                        {
+                            BusStopId = busStop.Id,
+                            Hour = new TimeSpan(currentHour.Hour, currentHour.Minute, 0)
+                        });
                         return;
                     }
 
@@ -120,6 +138,11 @@ namespace BusMap.Mobile.ViewModels
                 Route = parameters["route"] as Route;
                 Title = $"New Track for {Route.Name}";
             }
+        }
+
+        public override async void OnNavigatedFrom(NavigationParameters parameters)
+        {
+            await CrossGeolocator.Current.StopListeningAsync();
         }
 
     }
