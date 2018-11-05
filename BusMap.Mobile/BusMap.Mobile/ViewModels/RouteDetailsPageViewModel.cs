@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Input;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
+using BusMap.Mobile.Views;
 using Prism.Commands;
 using Prism.Navigation;
 using Xamarin.Forms.GoogleMaps;
@@ -50,7 +51,7 @@ namespace BusMap.Mobile.ViewModels
             var navParams = new NavigationParameters();
             navParams.Add("route", Route);
 
-            await NavigationService.NavigateAsync("", navParams);
+            await NavigationService.NavigateAsync(nameof(TraceTrackingPage), navParams);
         });
 
 

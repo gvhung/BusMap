@@ -38,6 +38,9 @@
     <Compile Update="Views\RoutesQueuePage.xaml.cs">
       <DependentUpon>RoutesQueuePage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\TraceTrackingPage.xaml.cs">
+      <DependentUpon>TraceTrackingPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -72,6 +75,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\TrackNewRoutePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\TraceTrackingPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

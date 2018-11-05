@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -190,7 +191,14 @@ namespace BusMap.Mobile.Services
             return result.IsSuccessStatusCode;
         }
 
+        public async Task<bool> PostBusStopTraceAsync(BusStopTrace busStopTrace)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(busStopTrace);
 
+            var result = await httpClient.PostAsync(Uri + "traces/busStop", AddMediaTypeHeaderValueToJson(json));
+            return result.StatusCode.Equals(HttpStatusCode.Created);
+        }
 
 
         public StringContent AddMediaTypeHeaderValueToJson(string json)

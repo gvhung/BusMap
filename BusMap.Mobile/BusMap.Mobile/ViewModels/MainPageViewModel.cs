@@ -149,9 +149,18 @@ namespace BusMap.Mobile.ViewModels
             await NavigationService.NavigateAsync(nameof(RoutesQueuePage)));
 
 
+        //Button for simple tests
         public ICommand AdvancedButtonCommand => new Command(async () =>
         {
-            var test = await _dataService.GetBusStopsAsync();
+            var busStopTrace = new BusStopTrace
+            {
+                BusStopId = 1,
+                Hour = DateTime.Now.TimeOfDay
+            };
+            var result = await _dataService.PostBusStopTraceAsync(busStopTrace);
+            if (result)
+                MessagingHelper.Toast("Success", ToastTime.LongTime);
+            else MessagingHelper.Toast("Failed", ToastTime.LongTime);
         });
 
         public override async void OnNavigatedTo(NavigationParameters parameters)
@@ -163,7 +172,7 @@ namespace BusMap.Mobile.ViewModels
             {
                 nOfNewRoutesInRange = await _dataService.GetNumberOfQueuedRoutesInRangeAsync(currentPosition, StaticVariables.Range);
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 await DialogWhenHttpRequestException();
             }

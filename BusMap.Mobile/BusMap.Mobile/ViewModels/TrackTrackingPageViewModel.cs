@@ -1,0 +1,126 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using BusMap.Mobile.Models;
+using Plugin.Geolocator;
+using Plugin.Geolocator.Abstractions;
+using Prism.Commands;
+using Prism.Navigation;
+using Xamarin.Forms;
+using Xamarin.Forms.GoogleMaps;
+
+namespace BusMap.Mobile.ViewModels
+{
+    public class TraceTrackingPageViewModel : ViewModelBase
+    {
+        private Route _route;
+        private bool _isTrackingStarted;
+        private string _testLabelText;
+
+        public Route Route
+        {
+            get => _route;
+            set => SetProperty(ref _route, value);
+        }
+
+        public bool IsTrackingStarted
+        {
+            get => _isTrackingStarted;
+            set => SetProperty(ref _isTrackingStarted, value);
+        }
+
+        public string TestLabelText
+        {
+            get => _testLabelText;
+            set => SetProperty(ref _testLabelText, value);
+        }
+
+
+        public TraceTrackingPageViewModel(INavigationService navigationService) 
+            : base(navigationService)
+        {
+        }
+
+
+        public ICommand StartTrackingCommand => new DelegateCommand(async () =>
+        {
+            if (!IsTrackingStarted)
+            {
+                IsTrackingStarted = true;
+                await Task.Run(async () =>
+                {
+                    await StartListening();
+                });
+            }
+            else
+            {
+                CrossGeolocator.Current.PositionChanged -= Current_PositionChanged;
+                IsTrackingStarted = false;
+            }
+
+            
+        });
+
+        private async Task StartListening()
+        {
+            await CrossGeolocator.Current.StartListeningAsync(TimeSpan.FromSeconds(5), 10, true,
+                new ListenerSettings
+                {
+                    ActivityType = ActivityType.AutomotiveNavigation,
+                    AllowBackgroundUpdates = true,
+                    DeferLocationUpdates = true,
+                    DeferralDistanceMeters = 1,
+                    DeferralTime = TimeSpan.FromSeconds(1),
+                    ListenForSignificantChanges = true,
+                    PauseLocationUpdatesAutomatically = false
+                });
+
+            CrossGeolocator.Current.PositionChanged += Current_PositionChanged;
+        }
+
+        private void Current_PositionChanged(object sender, PositionEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var position = e.Position;
+
+                TestLabelText = $"{position.Latitude}, {position.Longitude}";
+
+                var distanceArray = new double[Route.BusStops.Count];
+
+                for (int i = 0; i < Route.BusStops.Count; i++)
+                {
+                    var busStop = Route.BusStops[i];
+                    var busStopPosition = new Plugin.Geolocator.Abstractions.Position(busStop.Latitude, busStop.Longitude);
+                    var distance = position.CalculateDistance(busStopPosition);
+                    distanceArray[i] = distance;
+
+                    if (distance < 0.05)
+                    {
+                        TestLabelText = $"{Route.BusStops[i].Address}, {Route.BusStops[i].Label}";
+                        return;
+                    }
+
+                }
+
+            });
+        }
+
+
+
+
+        //--NAVIGATION--
+        public override void OnNavigatingTo(NavigationParameters parameters)
+        {
+            if (parameters.ContainsKey("route"))
+            {
+                Route = parameters["route"] as Route;
+                Title = $"New Track for {Route.Name}";
+            }
+        }
+
+    }
+}
