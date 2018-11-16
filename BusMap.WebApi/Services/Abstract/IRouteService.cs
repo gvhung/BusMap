@@ -11,11 +11,14 @@ namespace BusMap.WebApi.Services.Abstract
         Task<RoutesRouteDto> GetRouteIncludeBusStopsAsync(int id);
         Task<RoutesRouteDto> GetRouteIncludeCarrierAsync(int id);
         Task<RoutesRouteDto> GetRouteIncludeBusStopsCarrierAsync(int id);
+        Task<RoutesRouteDto> GetRouteIncludeAllAsync(int id);
 
         Task<IEnumerable<RoutesRouteDto>> GetAllRoutesAsync();
         Task<IEnumerable<RoutesRouteDto>> GetAllRoutesIncludeBusStopsAsync();
         Task<IEnumerable<RoutesRouteDto>> GetAllRoutesIncludeCarrierAsync();
         Task<IEnumerable<RoutesRouteDto>> GetAllRoutesIncludeBusStopsCarrierAsync();
+        Task<IEnumerable<RoutesRouteDto>> GetAllRoutesIncludeAllAsync();
+
         Task AddRouteAsync(Route route);
         Task AddRouteRangeAsync(IEnumerable<Route> routes);
         Task RemoveRouteAsync(RoutesRouteDto route);

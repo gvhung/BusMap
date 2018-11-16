@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusMap.WebApi.Controllers;
@@ -88,6 +89,29 @@ namespace BusMap.WebApiTests.ControllerTests
             var result = await _routesController.GetRoute(111);
 
             Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task GetRouteIncludeAll_WhenTracesExist_ReturnsRouteWith83Percentage()
+        {
+            var result = await _routesController.GetRouteIncludeAll(1);
+            var okResult = result as OkObjectResult;
+            var resultRoute = okResult.Value as RoutesRouteDto;
+
+            Assert.AreEqual("83%", resultRoute.Punctuality);
+        }
+
+        [Test]
+        public async Task GetRouteIncludeAll_WhenTracesDontExist_ReturnsRoute0PercentageString()
+        {
+            Context.BusStopTraces.RemoveRange(Context.BusStopTraces);
+            Context.SaveChanges();
+            var result = await _routesController.GetRouteIncludeAll(1);
+            var test = Context.BusStopTraces.ToList();
+            var okResult = result as OkObjectResult;
+            var resultRoute = okResult.Value as RoutesRouteDto;
+
+            Assert.AreEqual("0%", resultRoute.Punctuality);
         }
 
         #endregion

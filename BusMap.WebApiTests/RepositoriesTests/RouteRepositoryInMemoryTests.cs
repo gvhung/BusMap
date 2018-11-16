@@ -76,6 +76,20 @@ namespace BusMap.WebApiTests.RepositoriesTests
             Assert.AreEqual(nOfRoutesFromContext, result.ToList().Count);
         }
 
+        [Test]
+        public async Task GetRouteIncludeAllAsync_WhenTracesExist_Returning6Traces()
+        {
+            var route = await routeRepository.GetRouteIncludeAllAsync(1);
+            var result = new List<BusStopTrace>();
+
+            foreach (var busStop in route.BusStops)
+            {
+                result.AddRange(busStop.BusStopTraces);
+            }
+
+            Assert.AreEqual(6, result.Count);
+        }
+
         #endregion
 
         #region AddRouteTests

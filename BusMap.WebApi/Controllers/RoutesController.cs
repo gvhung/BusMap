@@ -76,6 +76,10 @@ namespace BusMap.WebApi.Controllers
         public async Task<IActionResult> GetRouteIncludeBusStopsCarriers([FromRoute] int id)
             => await GetRouteFunc(id, async x => await _routeService.GetRouteIncludeBusStopsCarrierAsync(id));
 
+        [HttpGet("{id:int}/all")]
+        public async Task<IActionResult> GetRouteIncludeAll(int id)
+            => await GetRouteFunc(id, async x => await _routeService.GetRouteIncludeAllAsync(id));
+
 
         public async Task<IActionResult> GetRouteFunc(int id, Func<int, Task<RoutesRouteDto>> getRouteFunc)
         {

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Dto.Routes;
+using BusMap.WebApi.Helpers;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Services.Abstract;
 
@@ -46,6 +48,17 @@ namespace BusMap.WebApi.Services.Implementations
             return _mapper.Map<Route, RoutesRouteDto>(route);
         }
 
+        public async Task<RoutesRouteDto> GetRouteIncludeAllAsync(int id)
+        {
+            var route = await _repository.GetRouteIncludeAllAsync(id);
+            var punctuality = PunctualityConverter.BusStopsTracesPunctualityPercentage(route.BusStops);
+            var routeDto = new RoutesRouteDto
+            {
+                Punctuality = punctuality
+            };
+            return _mapper.Map<Route, RoutesRouteDto>(route, routeDto);
+        }
+
         public async Task<IEnumerable<RoutesRouteDto>> GetAllRoutesAsync()
         {
             var routes = await _repository.GetAllRoutesAsync();
@@ -67,6 +80,12 @@ namespace BusMap.WebApi.Services.Implementations
         public async Task<IEnumerable<RoutesRouteDto>> GetAllRoutesIncludeBusStopsCarrierAsync()
         {
             var routes = await _repository.GetAllRoutesIncludeBusStopsCarrierAsync();
+            return _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes);
+        }
+
+        public async Task<IEnumerable<RoutesRouteDto>> GetAllRoutesIncludeAllAsync()
+        {
+            var routes = await _repository.GetAllRoutesIncludeAllAsync();
             return _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes);
         }
 
