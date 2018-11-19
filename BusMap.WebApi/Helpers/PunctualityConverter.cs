@@ -9,21 +9,28 @@ namespace BusMap.WebApi.Helpers
 {
     public static class PunctualityConverter
     {
-        public static string BusStopsTracesPunctualityPercentage(IEnumerable<BusStop> busStops)
+        public static string RoutePunctualityPercentage(Route route)
         {
             var punctualitySum = 0.0;
 
-            foreach (var busStop in busStops)
+            foreach (var busStop in route.BusStops)
             {
                 punctualitySum += BusStopPercentageOfPunctuality(busStop);
             }
 
             //var result = Convert.ToDouble(punctualitySum / busStops.Count());
-            var result = Math.Round(punctualitySum / busStops.Count(), 0);
+            var result = Math.Round(punctualitySum / route.BusStops.Count(), 0);
             return $"{result}%";
         }
 
-        public static double BusStopPercentageOfPunctuality(BusStop busStop) //Todo: timespan in parameter
+        public static string BusStopPunctualityPercentage(BusStop busStop)
+        {
+            var punctualitySum = BusStopPercentageOfPunctuality(busStop);
+            var result = Math.Round(punctualitySum, 0);
+            return $"{result}%";
+        }
+
+        private static double BusStopPercentageOfPunctuality(BusStop busStop) //Todo: timespan in parameter
         {
             var result = 0.0;
             var nOfMatchingTraces = 0;

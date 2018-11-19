@@ -12,6 +12,7 @@ namespace BusMap.WebApiTests.HelpersTests
     public class PunctualityConverterTests
     {
         private List<BusStop> _busStops;
+        private List<Route> _routes;
 
 
         [SetUp]
@@ -137,34 +138,74 @@ namespace BusMap.WebApiTests.HelpersTests
             _busStops = new List<BusStop>();
             _busStops.Add(busStop1);
             _busStops.Add(busStop2);
-            //_busStops.AddRange(new[ ] {busStop1, busStop2});
+            _routes = new List<Route>
+            {
+                new Route
+                {
+                    BusStops = _busStops,
+                }
+            };
         }
 
 
-        [Test]
-        public void PercentageOfPunctuality_FromBusStop1_Returning50()
-        {
-            var result = PunctualityConverter.BusStopPercentageOfPunctuality(_busStops[0]);
+        //[Test]
+        //public void PercentageOfPunctuality_FromBusStop1_Returning50()
+        //{
+        //    var result = PunctualityConverter.BusStopPercentageOfPunctuality(_busStops[0]);
             
-            Assert.AreEqual(50.0, result);
-        }
+        //    Assert.AreEqual(50.0, result);
+        //}
+
+        //[Test]
+        //public void PercentageOfPunctuality_FromBusStop2_Returning62()
+        //{
+        //    var result = PunctualityConverter.BusStopPercentageOfPunctuality(_busStops[1]);
+        //    int x = 1;
+        //    Assert.AreEqual(62, result);
+        //}
 
         [Test]
-        public void PercentageOfPunctuality_FromBusStop2_Returning62()
-        {
-            var result = PunctualityConverter.BusStopPercentageOfPunctuality(_busStops[1]);
-            int x = 1;
-            Assert.AreEqual(62, result);
-        }
-
-        [Test]
-        public void ConvertTracesToPunctualityPercentage_Returning56Percent()
+        public void RoutePunctualityPercentage_Returning56Percent()
 
         {
-            var result = PunctualityConverter.BusStopsTracesPunctualityPercentage(_busStops);
+            var result = PunctualityConverter.RoutePunctualityPercentage(_routes[0]);
             
             Assert.AreEqual("56%", result);
         }
+
+        [Test]
+        public void BusStopPunctualityPercentage_FromBusStops0_Returning50Percent()
+        {
+            var result = PunctualityConverter.BusStopPunctualityPercentage(_busStops[0]);
+
+            Assert.AreEqual("50%", result);
+        }
+
+        [Test]
+        public void BusStopPunctualityPercentage_WenBusStopHavntTraces_Returning0Percent()
+        {
+            var busStop1 = new BusStop
+            {
+                Id = 1,
+                Address = "Address",
+                Label = "Label"
+            };
+
+            var busStop2 = new BusStop
+            {
+                Id = 1,
+                Address = "Address",
+                Label = "Label",
+                BusStopTraces = new List<BusStopTrace>()
+            };
+
+            //var result1 = PunctualityConverter.BusStopPunctualityPercentage(busStop1);
+            var result2 = PunctualityConverter.BusStopPunctualityPercentage(busStop2);
+
+            //Assert.AreEqual("0%", result1);
+            Assert.AreEqual("0%", result2);
+        }
+
 
         [Test]
         public void ConvertToAverageArrivedHour_FromBusStops0_Returning12_28()
@@ -245,6 +286,8 @@ namespace BusMap.WebApiTests.HelpersTests
 
             Assert.AreEqual(-7, result);
         }
+
+        
 
     }
 }

@@ -51,10 +51,10 @@ namespace BusMap.WebApi.Services.Implementations
         public async Task<RoutesRouteDto> GetRouteIncludeAllAsync(int id)
         {
             var route = await _repository.GetRouteIncludeAllAsync(id);
-            var punctuality = PunctualityConverter.BusStopsTracesPunctualityPercentage(route.BusStops);
+            var punctuality = PunctualityConverter.RoutePunctualityPercentage(route);
             var routeDto = new RoutesRouteDto
             {
-                Punctuality = punctuality
+                PunctualityPercentage = punctuality
             };
             return _mapper.Map<Route, RoutesRouteDto>(route, routeDto);
         }
@@ -83,10 +83,18 @@ namespace BusMap.WebApi.Services.Implementations
             return _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes);
         }
 
-        public async Task<IEnumerable<RoutesRouteDto>> GetAllRoutesIncludeAllAsync()
+        public async Task<IEnumerable<RoutesRouteDto>> GetAllRoutesIncludeAllAsync()    //Todo
         {
             var routes = await _repository.GetAllRoutesIncludeAllAsync();
-            return _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes);
+            var routeDtoList = new List<RoutesRouteDto>();
+            var result = _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes).ToList();
+
+            for (int i = 0; i < result.Count(); i++)
+                result[i].PunctualityPercentage =
+                    PunctualityConverter.RoutePunctualityPercentage(routes.ElementAt(i));
+            
+
+            return result;
         }
 
         public async Task AddRouteAsync(Route route)

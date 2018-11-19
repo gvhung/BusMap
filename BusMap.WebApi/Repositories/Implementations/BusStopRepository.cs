@@ -33,6 +33,13 @@ namespace BusMap.WebApi.Repositories.Implementations
                 .ThenInclude(r => r.Carrier)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
+        public async Task<BusStop> GetBusStopIncludeAllAsync(int id)
+            => await _context.BusStops
+                .Include(b => b.BusStopTraces)
+                .Include(b => b.Route)
+                .ThenInclude(r => r.Carrier)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
         public async Task<IEnumerable<BusStop>> GetAllBusStopsAsync()
             => await _context.BusStops.ToListAsync();
 
@@ -43,6 +50,13 @@ namespace BusMap.WebApi.Repositories.Implementations
 
         public async Task<IEnumerable<BusStop>> GetAllBusStopsIncludeRouteCarrierAsync()
             => await _context.BusStops
+                .Include(b => b.Route)
+                .ThenInclude(r => r.Carrier)
+                .ToListAsync();
+
+        public async Task<IEnumerable<BusStop>> GetAllBusStopsIncludeAllAsync()
+            => await _context.BusStops
+                .Include(b => b.BusStopTraces)
                 .Include(b => b.Route)
                 .ThenInclude(r => r.Carrier)
                 .ToListAsync();

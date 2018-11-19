@@ -98,7 +98,7 @@ namespace BusMap.WebApiTests.ControllerTests
             var okResult = result as OkObjectResult;
             var resultRoute = okResult.Value as RoutesRouteDto;
 
-            Assert.AreEqual("83%", resultRoute.Punctuality);
+            Assert.AreEqual("83%", resultRoute.PunctualityPercentage);
         }
 
         [Test]
@@ -107,11 +107,51 @@ namespace BusMap.WebApiTests.ControllerTests
             Context.BusStopTraces.RemoveRange(Context.BusStopTraces);
             Context.SaveChanges();
             var result = await _routesController.GetRouteIncludeAll(1);
-            var test = Context.BusStopTraces.ToList();
             var okResult = result as OkObjectResult;
             var resultRoute = okResult.Value as RoutesRouteDto;
 
-            Assert.AreEqual("0%", resultRoute.Punctuality);
+            Assert.AreEqual("0%", resultRoute.PunctualityPercentage);
+        }
+
+        [Test]
+        public async Task GetAllRoutesIncludeAll_WhenTracesExist_ReturnsRoutes()
+        {
+            Context.Routes.Add(new Route
+            {
+                Id = 2,
+                Name = "RouteTest",
+                CarrierId = 1
+            });
+            Context.BusStops.Add(new BusStop
+            {
+                Id = 10,
+                Hour = new TimeSpan(14, 0, 0),
+                RouteId = 2,
+                BusStopTraces = new List<BusStopTrace>
+                {
+                    new BusStopTrace
+                    {
+                        Id = 50,
+                        BusStopId = 4,
+                        Hour = new TimeSpan(14,2,0)
+                    },
+                    new BusStopTrace
+                    {
+                        Id = 51,
+                        BusStopId = 4,
+                        Hour = new TimeSpan(14,30,0)
+                    }
+                }
+            });
+            Context.SaveChanges();
+
+            var result = await _routesController.GetAllRoutesIncludeAll();
+            var okResult = result as OkObjectResult;
+            var resultObject = okResult.Value as List<RoutesRouteDto>;
+
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.AreEqual("83%", resultObject[0].PunctualityPercentage);
+            Assert.AreEqual("50%", resultObject[1].PunctualityPercentage);
         }
 
         #endregion
