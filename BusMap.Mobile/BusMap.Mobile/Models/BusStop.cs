@@ -18,6 +18,7 @@ namespace BusMap.Mobile.Models
 
 
         public Route Route { get; set; }
+        public string PunctualityPercentage { get; set; }
 
         //[Obsolete("Don't use this", true)]
         //public new Position Position { get; set; }

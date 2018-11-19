@@ -56,7 +56,15 @@ namespace BusMap.WebApi.Services.Implementations
             {
                 PunctualityPercentage = punctuality
             };
-            return _mapper.Map<Route, RoutesRouteDto>(route, routeDto);
+            var result = _mapper.Map<Route, RoutesRouteDto>(route, routeDto);
+
+            for (int i = 0; i < route.BusStops.Count; i++)
+            {
+                routeDto.BusStops.ElementAt(i).PunctualityPercentage
+                    = PunctualityConverter.BusStopPunctualityPercentage(route.BusStops.ElementAt(i));
+            }
+
+            return result;
         }
 
         public async Task<IEnumerable<RoutesRouteDto>> GetAllRoutesAsync()
@@ -93,7 +101,6 @@ namespace BusMap.WebApi.Services.Implementations
                 result[i].PunctualityPercentage =
                     PunctualityConverter.RoutePunctualityPercentage(routes.ElementAt(i));
             
-
             return result;
         }
 

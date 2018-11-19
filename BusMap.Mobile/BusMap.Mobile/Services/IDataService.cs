@@ -28,6 +28,7 @@ namespace BusMap.Mobile.Services
 
         Task<List<BusStop>> GetBusStopsAsync();
         Task<List<Route>> GetRoutes();
+        Task<Route> GetRouteAsync(int routeId);
         Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity);
         Task<bool> PostRouteAsync(Route route);
         Task<bool> CheckIfCarrierExistAsync(string name);

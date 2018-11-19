@@ -39,6 +39,7 @@
                                                FontSize="Medium"/>
                                     <Label Text="{Binding Name, StringFormat='Route name: {0}'}"
                                                FontSize="Small"/>
+                                    <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
                                     <Label Text="{Binding BusStops.Count, StringFormat='Number of stops: {0}'}"
                                                TextColor="Blue">
                                         <Label.GestureRecognizers>

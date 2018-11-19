@@ -364,7 +364,7 @@ namespace BusMap.WebApiTests.HelpersTests
         }
 
         [Test]
-        public void BusStopPunctualityHourAvgBeforeAvgAfterTime_WhenBusStopHaveNotTraces_ReturnsTuble00()
+        public void BusStopPunctualityHourAvgBeforeAvgAfterTime_WhenBusStopHaveNotTraces_ReturnsTuple00()
         {
             var busStop1 = new BusStop()
             {

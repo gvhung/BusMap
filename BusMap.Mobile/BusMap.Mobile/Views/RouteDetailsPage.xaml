@@ -29,6 +29,7 @@
                     <Label Text="{Binding Route.BusStops.Count, StringFormat='Number of bus stops: {0}'}"
                            FontSize="Medium"/>
                     <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0:N}'}"/>
+                    <Label Text="{Binding Route.PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
                     <Button Text="Track"
                             FontSize="Large"
                             HorizontalOptions="CenterAndExpand"
@@ -52,26 +53,16 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <StackLayout>
-                                            <StackLayout Orientation="Horizontal"
-                                                     Grid.Row="0" Grid.Column="0">
-                                                <Label Text="{Binding Address, StringFormat='{0}, '}"
-                                                   FontSize="Medium"/>
-                                                <Label Text="{Binding Label}"
-                                                   FontSize="Medium"/>
-                                            </StackLayout>
-                                            <Label Grid.Row="1" Grid.Column="0" 
-                                               Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"/>
+                                    <StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Address, StringFormat='{0}, '}"
+                                               FontSize="Medium"/>
+                                            <Label Text="{Binding Label}"
+                                               FontSize="Medium"/>
                                         </StackLayout>
-                                    </Grid>
+                                        <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"/>
+                                        <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
+                                    </StackLayout>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>

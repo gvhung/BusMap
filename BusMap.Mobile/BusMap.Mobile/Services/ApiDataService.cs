@@ -56,9 +56,13 @@ namespace BusMap.Mobile.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Route> GetRoute(int routeId)
+        public async Task<Route> GetRouteAsync(int routeId)
         {
-            throw new NotImplementedException();
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync($"{Uri}routes/{routeId}/all");
+            var route = JsonConvert.DeserializeObject<Route>(json);
+
+            return route;
         }
 
         public async Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity)
@@ -67,7 +71,7 @@ namespace BusMap.Mobile.Services
 
             var httpClient = new HttpClient();
 
-            var json = await httpClient.GetStringAsync(Uri + "/routes/busStopsCarrier");
+            var json = await httpClient.GetStringAsync(Uri + "/routes/all");
             var routes = JsonConvert.DeserializeObject<List<Route>>(json);
 
             var routesToTest = routes

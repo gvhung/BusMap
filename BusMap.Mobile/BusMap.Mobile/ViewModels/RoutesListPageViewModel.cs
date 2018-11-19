@@ -53,10 +53,10 @@ namespace BusMap.Mobile.ViewModels
         public ICommand SelectedRouteCommand => new DelegateCommand<Route>(async route =>
         {
             var parameters = new NavigationParameters();
-            parameters.Add("route", route);
-
-            //await NavigationService.NavigateAsync(nameof(BusStopsMapPage), parameters);
+            var routeToSend = await _dataService.GetRouteAsync(route.Id);
+            parameters.Add("route", routeToSend);
             await NavigationService.NavigateAsync(nameof(RouteDetailsPage), parameters);
+            //TODO: Add activity indicator at the middle
         });
 
         public ICommand SelectedRouteCommand2 => new DelegateCommand<Route>(async route =>

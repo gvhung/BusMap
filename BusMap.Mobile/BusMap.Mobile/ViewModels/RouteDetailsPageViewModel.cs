@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Input;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
+using BusMap.Mobile.Services;
 using BusMap.Mobile.Views;
 using Prism.Commands;
 using Prism.Navigation;
@@ -14,6 +15,8 @@ namespace BusMap.Mobile.ViewModels
 {
     public class RouteDetailsPageViewModel : ViewModelBase
     {
+        private readonly IDataService _dataService;
+
         private Route _route;
         private ObservableCollection<Pin> _pins;
         private MapSpan _mapPosition;
@@ -37,9 +40,10 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        public RouteDetailsPageViewModel(INavigationService navigationService) 
+        public RouteDetailsPageViewModel(INavigationService navigationService, IDataService dataService) 
             : base(navigationService)
         {
+            _dataService = dataService;
             Route = new Route();
             Pins = new ObservableCollection<Pin>();
         }
@@ -73,11 +77,12 @@ namespace BusMap.Mobile.ViewModels
 
 
         //--NAVIGATION--
-        public override void OnNavigatingTo(NavigationParameters parameters)
+        public override async void OnNavigatingTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("route"))
             {
                 Route = parameters["route"] as Route;
+                //Route = await _dataService.GetRouteAsync(routeParam.Id);
                 Title = Route.Name;
                 Pins.AddRange(Route.BusStops.ToGoogleMapsPins());   //Freezing thread?
             }
