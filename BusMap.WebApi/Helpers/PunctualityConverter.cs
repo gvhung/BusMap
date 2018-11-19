@@ -30,6 +30,52 @@ namespace BusMap.WebApi.Helpers
             return $"{result}%";
         }
 
+        public static TimeSpan BusStopPunctualityHourMode(BusStop busStop) //Most frequent hour
+        {
+            var traces = busStop.BusStopTraces;
+            if (traces == null || traces.Count < 1)
+            {
+                return busStop.Hour;
+            }
+
+            var tracesHourList = traces.Select(t => t.Hour).ToList();
+
+            var mode = tracesHourList.GroupBy(t => t)
+                .OrderByDescending(t => t.Count())
+                .First()
+                .Key;
+
+            return mode;
+        }
+
+        public static (int avgTimeBefore, int avgTimeAfter) BusStopPunctualityHourAvgBeforeAvgAfterTime(BusStop busStop)
+        {
+            //If busStop have not traces, then just return (0,0)
+            if (busStop.BusStopTraces == null || busStop.BusStopTraces.Count < 1)
+                return (0, 0);
+
+            var hours = busStop.BusStopTraces.Select(t => t.Hour).ToList();
+            var hoursAfter = hours.Where(h => h > busStop.Hour && (h - busStop.Hour) < TimeSpan.FromHours(1));
+            var hoursBefore = hours.Where(h => h < busStop.Hour && (h - busStop.Hour) > TimeSpan.FromHours(-1));
+            var avgMin = hoursBefore.AverageTimespan();
+            var avgMax = hoursAfter.AverageTimespan();
+
+            var resultMin = (busStop.Hour - avgMin).Minutes;    //timespan always under 1hr
+            var resultMax = (avgMax - busStop.Hour).Minutes;
+
+            return (resultMin, resultMax);
+        }
+
+
+
+        public static TimeSpan AverageTimespan(this IEnumerable<TimeSpan> timeSpans)
+        {
+            double avgTicks = timeSpans.Average(ts => ts.Ticks);
+            long longAvgTicks = Convert.ToInt64(avgTicks);
+
+            return new TimeSpan(longAvgTicks);
+        }
+
         private static double BusStopPercentageOfPunctuality(BusStop busStop) //Todo: timespan in parameter
         {
             var result = 0.0;

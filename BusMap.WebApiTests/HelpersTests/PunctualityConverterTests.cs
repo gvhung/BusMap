@@ -287,7 +287,101 @@ namespace BusMap.WebApiTests.HelpersTests
             Assert.AreEqual(-7, result);
         }
 
-        
+        [Test]
+        public void BusStopPunctualityHourMode_WhenTracesExist_ReturnsModeAsTimespan()
+        {
+            _busStops[0].BusStopTraces.Add(new BusStopTrace //two traces at 11:55
+            {
+                Id = 10000,
+                Hour = new TimeSpan(11, 55, 0),
+                BusStopId = 1
+            });
+
+            var result = PunctualityConverter.BusStopPunctualityHourMode(_busStops[0]);
+
+            Assert.IsInstanceOf<TimeSpan>(result);
+            Assert.AreEqual(new TimeSpan(11, 55, 0), result);
+        }
+
+        [Test]
+        public void BusStopPunctualityHourMode_WhenTracesDontExistOrNull_ReturnBusStopHour()
+        {
+            var busStop1 = new BusStop()
+            {
+                Id = 1,
+                Address = "Address",
+                Hour = new TimeSpan(12,0,0)
+            };
+            var busStop2 = new BusStop()
+            {
+                Id = 1,
+                Address = "Address",
+                BusStopTraces = new List<BusStopTrace>(),
+                Hour = new TimeSpan(14, 0, 0)
+            };
+
+            var result1 = PunctualityConverter.BusStopPunctualityHourMode(busStop1);
+            var result2 = PunctualityConverter.BusStopPunctualityHourMode(busStop2);
+
+            Assert.AreEqual(new TimeSpan(12, 0, 0), result1);
+            Assert.AreEqual(new TimeSpan(14, 0, 0), result2);
+        }
+
+        [Test]
+        public void AverageTimespan_WhenListIsNotEmptyAndCorrect_ReturnsTimespan()
+        {
+            var list = new List<TimeSpan>
+            {
+                new TimeSpan(12,0,0),
+                new TimeSpan(12,30,0),
+            };
+
+            var result = list.AverageTimespan();
+
+            Assert.AreEqual(new TimeSpan(12,15,0), result);
+        }
+
+        [Test]
+        public void AverageTimespan_WhenListIsEmpty_ThrowsInvalidOperationException()
+        {
+            var list = new List<TimeSpan>();
+            Assert.Throws<InvalidOperationException>(() => list.AverageTimespan());
+        }
+
+        [Test]
+        public void AverageTimespan_WhenListIsNull_ThrowsArgumentNullException()
+        {
+            List<TimeSpan> list = null;
+            Assert.Throws<ArgumentNullException>(() => list.AverageTimespan());
+        }
+
+        [Test]
+        public void BusStopPunctualityHourAvgBeforeAvgAfterTime_WhenBusStopHaveTraces_ReturnsTuple()
+        {
+            var result = PunctualityConverter.BusStopPunctualityHourAvgBeforeAvgAfterTime(_busStops[0]);
+            
+            Assert.AreEqual((4, 9), result);
+        }
+
+        [Test]
+        public void BusStopPunctualityHourAvgBeforeAvgAfterTime_WhenBusStopHaveNotTraces_ReturnsTuble00()
+        {
+            var busStop1 = new BusStop()
+            {
+                BusStopTraces = new List<BusStopTrace>()
+            };
+            var busStop2 = new BusStop()
+            {
+                BusStopTraces = new List<BusStopTrace>()
+            };
+
+            var result1 = PunctualityConverter.BusStopPunctualityHourAvgBeforeAvgAfterTime(busStop1);
+            var result2 = PunctualityConverter.BusStopPunctualityHourAvgBeforeAvgAfterTime(busStop2);
+
+            Assert.AreEqual((0,0), result1);
+            Assert.AreEqual((0, 0), result2);
+        }
+
 
     }
 }
