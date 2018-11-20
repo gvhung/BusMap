@@ -19,5 +19,6 @@ namespace BusMap.WebApi.Dto.Routes
         public TimeSpan Hour { get; set; }
         public ICollection<RoutesBusStopTraceDto> BusStopTraces { get; set; }
         public string PunctualityPercentage { get; set; }
+        public string PunctualityMode { get; set; }
     }
 }

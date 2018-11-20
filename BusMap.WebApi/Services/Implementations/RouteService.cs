@@ -62,6 +62,8 @@ namespace BusMap.WebApi.Services.Implementations
             {
                 routeDto.BusStops.ElementAt(i).PunctualityPercentage
                     = PunctualityConverter.BusStopPunctualityPercentage(route.BusStops.ElementAt(i));
+                routeDto.BusStops.ElementAt(i).PunctualityMode
+                    = PunctualityConverter.BusStopPunctualityHourMode(route.BusStops.ElementAt(i)).ToString(@"hh\:mm");
             }
 
             return result;
