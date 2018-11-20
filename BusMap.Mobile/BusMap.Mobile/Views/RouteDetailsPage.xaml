@@ -30,6 +30,13 @@
                            FontSize="Medium"/>
                     <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0:N}'}"/>
                     <Label Text="{Binding Route.PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{Binding Route.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
+                               TextColor="ForestGreen"/>
+                        <Label Text=":"/>
+                        <Label Text="{Binding Route.PunctualityAvgAfterTime, StringFormat='{0} After'}"
+                               TextColor="DarkRed"/>
+                    </StackLayout>
                     <Button Text="Track"
                             FontSize="Large"
                             HorizontalOptions="CenterAndExpand"

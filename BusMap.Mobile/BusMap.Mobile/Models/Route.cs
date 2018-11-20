@@ -27,7 +27,10 @@ namespace BusMap.Mobile.Models
         public BusStop StartingBusStop => BusStops.First();
         public BusStop DestinationBusStop => BusStops.Last();
         public int DayOfTheWeek { get; set; }
+
         public string PunctualityPercentage { get; set; }
+        public string PunctualityAvgBeforeTime { get; set; }
+        public string PunctualityAvgAfterTime { get; set; }
 
 
         public string BusStopsString => ToString();

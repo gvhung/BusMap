@@ -58,19 +58,7 @@ namespace BusMap.WebApi.Services.Implementations
             };
             var result = _mapper.Map<Route, RoutesRouteDto>(route, routeDto);
 
-            for (int i = 0; i < route.BusStops.Count; i++)
-            {
-                routeDto.BusStops.ElementAt(i).PunctualityPercentage
-                    = PunctualityConverter.BusStopPunctualityPercentage(route.BusStops.ElementAt(i));
-                routeDto.BusStops.ElementAt(i).PunctualityMode
-                    = PunctualityConverter.BusStopPunctualityHourMode(route.BusStops.ElementAt(i)).ToString(@"hh\:mm");
-
-                var avgTuple = PunctualityConverter
-                    .BusStopPunctualityHourAvgBeforeAvgAfterTime(route.BusStops.ElementAt(i));
-                routeDto.BusStops.ElementAt(i).PunctualityAvgBeforeTime = avgTuple.avgTimeBefore.ToString();
-                routeDto.BusStops.ElementAt(i).PunctualityAvgAfterTime = avgTuple.avgTimeAfter.ToString();
-
-            }
+            SetPunctualityForRoute(route, ref result);
 
             return result;
         }
@@ -106,8 +94,11 @@ namespace BusMap.WebApi.Services.Implementations
             var result = _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes).ToList();
 
             for (int i = 0; i < result.Count(); i++)
-                result[i].PunctualityPercentage =
-                    PunctualityConverter.RoutePunctualityPercentage(routes.ElementAt(i));
+            {
+                result[i].PunctualityPercentage 
+                    = PunctualityConverter.RoutePunctualityPercentage(routes.ElementAt(i));
+            }
+                
             
             return result;
         }
@@ -123,5 +114,28 @@ namespace BusMap.WebApi.Services.Implementations
             var routeToRemove = await _repository.GetRouteAsync(route.Id);
             await _repository.RemoveRouteAsync(routeToRemove);
         }
+
+
+        private static void SetPunctualityForRoute(Route route, ref RoutesRouteDto routeDto)
+        {
+            for (int i = 0; i < route.BusStops.Count; i++)
+            {
+                routeDto.BusStops.ElementAt(i).PunctualityPercentage
+                    = PunctualityConverter.BusStopPunctualityPercentage(route.BusStops.ElementAt(i));
+                routeDto.BusStops.ElementAt(i).PunctualityMode
+                    = PunctualityConverter.BusStopPunctualityHourMode(route.BusStops.ElementAt(i)).ToString(@"hh\:mm");
+
+                var avgTuple = PunctualityConverter
+                    .BusStopPunctualityHourAvgBeforeAvgAfterTime(route.BusStops.ElementAt(i));
+                routeDto.BusStops.ElementAt(i).PunctualityAvgBeforeTime = avgTuple.avgTimeBefore.ToString();
+                routeDto.BusStops.ElementAt(i).PunctualityAvgAfterTime = avgTuple.avgTimeAfter.ToString();
+            }
+
+            var avgPunctuality =
+                PunctualityConverter.RoutePunctualityHourAvgBeforeAvgAfterTime(route);
+            routeDto.PunctualityAvgBeforeTime = avgPunctuality.avgTimeBefore.ToString();
+            routeDto.PunctualityAvgAfterTime = avgPunctuality.avgTimeAfter.ToString();
+        }
+
     }
 }

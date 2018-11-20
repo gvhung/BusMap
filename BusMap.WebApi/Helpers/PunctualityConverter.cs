@@ -70,6 +70,32 @@ namespace BusMap.WebApi.Helpers
             return (resultMin, resultMax);
         }
 
+        public static (int avgTimeBefore, int avgTimeAfter) RoutePunctualityHourAvgBeforeAvgAfterTime(Route route)
+        {
+            var avgList = new List<(int avgTimeBefore, int avgTimeAfter)>();
+            foreach (var busStop in route.BusStops)
+            {
+                avgList.Add(BusStopPunctualityHourAvgBeforeAvgAfterTime(busStop));
+            }
+
+            var resultBefore = 0;
+            foreach (var item in avgList)
+            {
+                resultBefore += item.avgTimeBefore;
+            }
+            resultBefore = resultBefore / avgList.Count;
+
+            var resultAfter = 0;
+            foreach (var item in avgList)
+            {
+                resultAfter += item.avgTimeAfter;
+            }
+
+            resultAfter = resultAfter / avgList.Count;
+
+            return (resultBefore, resultAfter);
+        }
+
 
 
         public static TimeSpan AverageTimespan(this IEnumerable<TimeSpan> timeSpans)

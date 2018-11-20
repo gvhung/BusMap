@@ -382,6 +382,83 @@ namespace BusMap.WebApiTests.HelpersTests
             Assert.AreEqual((0, 0), result2);
         }
 
+        [Test]
+        public void BusStopPunctualityHourAvgBeforeAvgAfterTime_WhenHaveOnlyAfterTraces_ReturnsTuple03()
+        {
+            var busStop = new BusStop()
+            {
+                Hour = new TimeSpan(12, 0, 0),
+                BusStopTraces = new List<BusStopTrace>
+                {
+                    new BusStopTrace()
+                    {
+                        Hour = new TimeSpan(12, 2, 0)
+                    },
+                    new BusStopTrace()
+                    {
+                        Hour = new TimeSpan(12, 5, 0)
+                    }
+                }
+            };
+
+            var result = PunctualityConverter.BusStopPunctualityHourAvgBeforeAvgAfterTime(busStop);
+            Assert.AreEqual((0,3), result);
+        }
+
+        [Test]
+        public void BusStopPunctualityHourAvgBeforeAvgAfterTime_WhenHaveOnlyAfterTraces_ReturnsTuple30()
+        {
+            var busStop = new BusStop
+            {
+                Hour = new TimeSpan(12, 0, 0),
+                BusStopTraces = new List<BusStopTrace>
+                {
+                    new BusStopTrace
+                    {
+                        Hour = new TimeSpan(11, 58, 0)
+                    },
+                    new BusStopTrace
+                    {
+                        Hour = new TimeSpan(11, 55, 0)
+                    }
+                }
+            };
+
+            var result = PunctualityConverter.BusStopPunctualityHourAvgBeforeAvgAfterTime(busStop);
+            Assert.AreEqual((3, 0), result);
+        }
+
+        [Test]
+        public void RoutePunctualityHourAvgBeforeAvgAfterTime_WhenRouteHaveTraces_ReturnsTuple()
+        {
+            var result = PunctualityConverter.RoutePunctualityHourAvgBeforeAvgAfterTime(_routes[0]);
+
+            Assert.AreEqual((4,8), result);
+        }
+
+        [Test]
+        public void RoutePunctualityHourAvgBeforeAvgAfterTime_WhenRouteHaveNotTraces_ReturnsTuple00()
+        {
+            var route = new Route
+            {
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        BusStopTraces = new List<BusStopTrace>()
+                    },
+                    new BusStop
+                    {
+                        BusStopTraces = new List<BusStopTrace>()
+                    }
+                }
+            };
+
+            var result = PunctualityConverter.RoutePunctualityHourAvgBeforeAvgAfterTime(route);
+
+            Assert.AreEqual((0, 0), result);
+        }
+
 
     }
 }

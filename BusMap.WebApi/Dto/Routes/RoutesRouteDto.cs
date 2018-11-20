@@ -13,7 +13,10 @@ namespace BusMap.WebApi.Dto.Routes
         public int DayOfTheWeek { get; set; }
         public RoutesCarrierDto Carrier { get; set; }
         public ICollection<RoutesBusStopDto> BusStops { get; set; }
+
         public string PunctualityPercentage { get; set; }
+        public string PunctualityAvgBeforeTime { get; set; }
+        public string PunctualityAvgAfterTime { get; set; }
 
     }
 }
