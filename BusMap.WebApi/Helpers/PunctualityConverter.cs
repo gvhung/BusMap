@@ -55,8 +55,12 @@ namespace BusMap.WebApi.Helpers
                 return (0, 0);
 
             var hours = busStop.BusStopTraces.Select(t => t.Hour).ToList();
-            var hoursAfter = hours.Where(h => h > busStop.Hour && (h - busStop.Hour) < TimeSpan.FromHours(1));
-            var hoursBefore = hours.Where(h => h < busStop.Hour && (h - busStop.Hour) > TimeSpan.FromHours(-1));
+            var hoursAfter = hours.Where(h => h > busStop.Hour && (h - busStop.Hour) < TimeSpan.FromHours(1)).ToList();
+            var hoursBefore = hours.Where(h => h < busStop.Hour && (h - busStop.Hour) > TimeSpan.FromHours(-1)).ToList();
+
+            if (hoursBefore.ToList().Count == 0) hoursBefore.Add(busStop.Hour);
+            if (hoursAfter.ToList().Count == 0) hoursAfter.Add(busStop.Hour);
+
             var avgMin = hoursBefore.AverageTimespan();
             var avgMax = hoursAfter.AverageTimespan();
 

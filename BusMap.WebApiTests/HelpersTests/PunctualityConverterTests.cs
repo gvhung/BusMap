@@ -378,7 +378,7 @@ namespace BusMap.WebApiTests.HelpersTests
             var result1 = PunctualityConverter.BusStopPunctualityHourAvgBeforeAvgAfterTime(busStop1);
             var result2 = PunctualityConverter.BusStopPunctualityHourAvgBeforeAvgAfterTime(busStop2);
 
-            Assert.AreEqual((0,0), result1);
+            Assert.AreEqual((0, 0), result1);
             Assert.AreEqual((0, 0), result2);
         }
 

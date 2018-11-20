@@ -61,6 +61,13 @@
                                                FontSize="Medium"/>
                                         </StackLayout>
                                         <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"/>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
+                                                   TextColor="ForestGreen"/>
+                                            <Label Text=":"/>
+                                            <Label Text="{Binding PunctualityAvgAfterTime, StringFormat='{0} After'}"
+                                                   TextColor="DarkRed"/>
+                                        </StackLayout>
                                         <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
                                         <Label Text="{Binding PunctualityMode, StringFormat='Punctuality mode: {0}'}"/>
                                     </StackLayout>

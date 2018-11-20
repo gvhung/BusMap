@@ -64,6 +64,12 @@ namespace BusMap.WebApi.Services.Implementations
                     = PunctualityConverter.BusStopPunctualityPercentage(route.BusStops.ElementAt(i));
                 routeDto.BusStops.ElementAt(i).PunctualityMode
                     = PunctualityConverter.BusStopPunctualityHourMode(route.BusStops.ElementAt(i)).ToString(@"hh\:mm");
+
+                var avgTuple = PunctualityConverter
+                    .BusStopPunctualityHourAvgBeforeAvgAfterTime(route.BusStops.ElementAt(i));
+                routeDto.BusStops.ElementAt(i).PunctualityAvgBeforeTime = avgTuple.avgTimeBefore.ToString();
+                routeDto.BusStops.ElementAt(i).PunctualityAvgAfterTime = avgTuple.avgTimeAfter.ToString();
+
             }
 
             return result;
