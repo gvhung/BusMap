@@ -37,11 +37,16 @@
                         <Label Text="{Binding Route.PunctualityAvgAfterTime, StringFormat='{0} After'}"
                                TextColor="DarkRed"/>
                     </StackLayout>
-                    <Button Text="Track"
-                            FontSize="Large"
-                            HorizontalOptions="CenterAndExpand"
-                            Command="{Binding TrackButtonCommand}"/>
-                </StackLayout>
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center">
+                        <Button Text="Track"
+                                FontSize="Large"
+                                Command="{Binding TrackButtonCommand}"/>
+                        <Button Text="Report"
+                                Command="{Binding ReportButtonCommand}"/>
+                    </StackLayout>
+
+                  </StackLayout>
             </ContentPage.Content>
         </ContentPage>
 

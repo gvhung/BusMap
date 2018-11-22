@@ -67,6 +67,12 @@ namespace BusMap.Mobile.ViewModels
             MapPosition = MapSpan.FromCenterAndRadius(positionFromBusStop, Distance.FromKilometers(20));
         });
 
+        public ICommand ReportButtonCommand => new DelegateCommand(async () =>
+        {
+            var parameters = new NavigationParameters {{"route", Route}};
+            await NavigationService.NavigateAsync(nameof(RouteReportPage), parameters);
+        });
+
 
         //--MapTab--
         public ICommand MapAppearingCommand => new DelegateCommand(async () =>

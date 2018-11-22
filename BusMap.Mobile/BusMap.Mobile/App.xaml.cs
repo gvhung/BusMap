@@ -46,6 +46,7 @@ namespace BusMap.Mobile
             containerRegistry.RegisterForNavigation<QueuedRouteDetailsPage, QueuedRouteDetailsViewModel>();
             containerRegistry.RegisterForNavigation<RouteDetailsPage, RouteDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<TraceTrackingPage, TraceTrackingPageViewModel>();
+            containerRegistry.RegisterForNavigation<RouteReportPage, RouteReportViewModel>();
 
             containerRegistry.Register<IDataService, ApiDataService>();
         }

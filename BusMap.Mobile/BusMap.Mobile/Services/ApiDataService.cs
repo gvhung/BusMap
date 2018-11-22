@@ -204,6 +204,15 @@ namespace BusMap.Mobile.Services
             return result.StatusCode.Equals(HttpStatusCode.Created);
         }
 
+        public async Task<bool> PostRouteReportAsync(RouteReport routeReport)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(routeReport);
+
+            var result = await httpClient.PostAsync(Uri + "reports/routes", AddMediaTypeHeaderValueToJson(json));
+            return result.StatusCode.Equals(HttpStatusCode.Created);
+        }
+
 
         public StringContent AddMediaTypeHeaderValueToJson(string json)
         {

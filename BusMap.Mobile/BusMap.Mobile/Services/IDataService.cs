@@ -43,5 +43,6 @@ namespace BusMap.Mobile.Services
         Task<bool> UpdateQueuedRoute(int id, RouteQueued updatedRouteQueued);
 
         Task<bool> PostBusStopTraceAsync(BusStopTrace busStopTrace);
+        Task<bool> PostRouteReportAsync(RouteReport routeReport);
     }
 }
