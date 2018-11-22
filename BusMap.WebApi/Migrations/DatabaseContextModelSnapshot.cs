@@ -225,6 +225,23 @@ namespace BusMap.WebApi.Migrations
                     b.ToTable("RoutesQueued");
                 });
 
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.RouteReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("RouteId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RouteId");
+
+                    b.ToTable("RouteReports");
+                });
+
             modelBuilder.Entity("BusMap.WebApi.DatabaseModels.BusStop", b =>
                 {
                     b.HasOne("BusMap.WebApi.DatabaseModels.Route", "Route")
@@ -262,6 +279,14 @@ namespace BusMap.WebApi.Migrations
                     b.HasOne("BusMap.WebApi.DatabaseModels.CarrierQueued", "CarrierQueued")
                         .WithMany("RoutesQueued")
                         .HasForeignKey("CarrierQueuedId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.RouteReport", b =>
+                {
+                    b.HasOne("BusMap.WebApi.DatabaseModels.Route", "Route")
+                        .WithMany()
+                        .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

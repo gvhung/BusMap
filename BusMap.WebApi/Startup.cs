@@ -42,12 +42,14 @@ namespace BusMap.WebApi
             services.AddScoped<ICarrierRepository, CarrierRepository>();
             services.AddScoped<IQueueRepository, QueueRepository>();
             services.AddScoped<ITraceRepository, TraceRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
 
             services.AddScoped<ICarrierService, CarrierService>();
             services.AddScoped<IBusStopService, BusStopService>();
             services.AddScoped<IRouteService, RouteService>();
             services.AddScoped<IQueueService, QueueService>();
             services.AddScoped<ITraceService, TraceService>();
+            services.AddScoped<IReportService, ReportService>();
 
             var config = new AutoMapper.MapperConfiguration(cfg =>
             {

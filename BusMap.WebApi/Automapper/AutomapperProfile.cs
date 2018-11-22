@@ -3,6 +3,7 @@ using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Dto.BusStops;
 using BusMap.WebApi.Dto.Carriers;
 using BusMap.WebApi.Dto.Queues;
+using BusMap.WebApi.Dto.Reports;
 using BusMap.WebApi.Dto.Routes;
 
 namespace BusMap.WebApi.Automapper
@@ -34,6 +35,7 @@ namespace BusMap.WebApi.Automapper
             CreateMap<BusStopQueued, QueuesBusStopDto>();
             CreateMap<CarrierQueued, QueuesCarrierDto>();
 
+            CreateMap<RouteReport, ReportsRouteReportDto>();
         }
     }
 }
