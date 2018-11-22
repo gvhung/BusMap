@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20181105103412_traces.cs" />
     <Compile Remove="Migrations\20181105103412_traces.Designer.cs" />
+    <Compile Remove="Migrations\20181122203411_DateInRouteReport.cs" />
+    <Compile Remove="Migrations\20181122203411_DateInRouteReport.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

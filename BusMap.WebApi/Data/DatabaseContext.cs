@@ -42,7 +42,10 @@ namespace BusMap.WebApi.Data
             modelBuilder.Entity<RouteQueued>()
                 .Property(r => r.CreatedDatetime)
                 .HasDefaultValueSql("GETDATE()");
-            
+            modelBuilder.Entity<RouteReport>()
+                .Property(r => r.Date)
+                .HasDefaultValueSql("GETDATE()");
+
 
             modelBuilder.Entity<Carrier>().HasData(
                 new Carrier
