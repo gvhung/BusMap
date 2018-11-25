@@ -9,44 +9,74 @@
              xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
              xmlns:eventArgsConverters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
              prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
              Title="{Binding Title}">
     
     <!--<TabbedPage.BindingContext>
         <viewModels:RouteDetailsPageViewModel/>
     </TabbedPage.BindingContext>-->
-
+    <TabbedPage.ToolbarItems>
+        <iconize:IconToolbarItem Command="{Binding ReportButtonCommand}"
+                                 Icon="fas-exclamation-circle"
+                                 IconColor="White"/>
+    </TabbedPage.ToolbarItems>
     
     <TabbedPage.Children>
         <!--Details page - first page-->
         <ContentPage Title="Details">
             <ContentPage.Content>
-                <StackLayout>
-                    <Label Text="{Binding Route.Name, StringFormat='Name: {0}'}"
-                           FontSize="Medium"
-                           FontAttributes="Bold"/>
-                    <Label Text="{Binding Route.Carrier.Name, StringFormat='Carrier: {0}'}"
-                           FontSize="Medium"/>
-                    <Label Text="{Binding Route.BusStops.Count, StringFormat='Number of bus stops: {0}'}"
-                           FontSize="Medium"/>
-                    <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0:N}'}"/>
-                    <Label Text="{Binding Route.PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
+                <StackLayout Margin="20,10,20,0">
                     <StackLayout Orientation="Horizontal">
-                        <Label Text="{Binding Route.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
-                               TextColor="ForestGreen"/>
-                        <Label Text=":"/>
-                        <Label Text="{Binding Route.PunctualityAvgAfterTime, StringFormat='{0} After'}"
-                               TextColor="DarkRed"/>
+                        <iconize:IconImage Icon="fas-bus"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.Name, StringFormat='Name: {0}'}"
+                               FontSize="Medium"
+                               FontAttributes="Bold"/>
                     </StackLayout>
-                    <StackLayout Orientation="Horizontal"
-                                 HorizontalOptions="Center">
-                        <Button Text="Track"
-                                FontSize="Large"
-                                Command="{Binding TrackButtonCommand}"/>
-                        <Button Text="Report"
-                                Command="{Binding ReportButtonCommand}"/>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-user-tie"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.Carrier.Name, StringFormat='Carrier: {0}'}"
+                               FontSize="Medium"/>
                     </StackLayout>
-
-                  </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-hand-paper"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.BusStops.Count, StringFormat='Number of bus stops: {0}'}"
+                               FontSize="Medium"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-angle-double-right"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0:N}'}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-percentage"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-clock"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Route.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
+                                   TextColor="ForestGreen"/>
+                            <Label Text=":"/>
+                            <Label Text="{Binding Route.PunctualityAvgAfterTime, StringFormat='{0} After'}"
+                                   TextColor="DarkRed"/>
+                        </StackLayout>
+                    </StackLayout>
+                    <Button Text="Track"
+                            FontSize="Large"
+                            Command="{Binding TrackButtonCommand}"
+                            HorizontalOptions="Center"/>
+                </StackLayout>
             </ContentPage.Content>
         </ContentPage>
 
@@ -54,7 +84,7 @@
         <!--BusStops page - second page-->
         <ContentPage Title="Bus stops">
             <ContentPage.Content>
-                <StackLayout>
+                <StackLayout Padding="20,10,20,0">
                     <ListView ItemsSource="{Binding Route.BusStops}"
                           HasUnevenRows="True">
                         <ListView.Behaviors>

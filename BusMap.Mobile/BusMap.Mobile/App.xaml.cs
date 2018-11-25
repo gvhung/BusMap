@@ -1,13 +1,11 @@
-﻿using BusMap.Mobile.Views;
-using System;
+﻿using BusMap.Mobile.CustomControls;
+using BusMap.Mobile.Views;
 using BusMap.Mobile.Services;
 using BusMap.Mobile.ViewModels;
-using CommonServiceLocator;
+using Plugin.Iconize;
 using Prism;
 using Prism.Ioc;
 using Prism.Unity;
-using Unity;
-using Unity.ServiceLocation;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,10 +15,14 @@ namespace BusMap.Mobile
     public partial class App : PrismApplication
     {
 
-        public App() : this(null) { }
+        public App() : this(null)
+        {
+
+        }
 
         public App(IPlatformInitializer initializer) : base(initializer)
         {
+
         }
 
 
@@ -28,12 +30,14 @@ namespace BusMap.Mobile
         {
             InitializeComponent();
 
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            await NavigationService.NavigateAsync("CustomNavigationPage/MainPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<NavigationPage>(); 
+            containerRegistry.RegisterForNavigation<CustomNavigationPage>(nameof(CustomNavigationPage));
+            //containerRegistry.RegisterForNavigation<IconTabbedPage>(nameof(IconTabbedPage));
+            //containerRegistry.RegisterForNavigation<NavigationPage>(); 
             containerRegistry.RegisterForNavigation<MainPage>();   
             containerRegistry.RegisterForNavigation<NearestStopsMapPage>();
             containerRegistry.RegisterForNavigation<RoutesListPage>(); 
@@ -49,6 +53,11 @@ namespace BusMap.Mobile
             containerRegistry.RegisterForNavigation<RouteReportPage, RouteReportViewModel>();
 
             containerRegistry.Register<IDataService, ApiDataService>();
+        }
+
+        private void SetupIconize()
+        {
+            
         }
 
     }

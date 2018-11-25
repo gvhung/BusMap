@@ -73,6 +73,9 @@ namespace BusMap.Mobile.ViewModels
             await NavigationService.NavigateAsync(nameof(RouteReportPage), parameters);
         });
 
+        public ICommand TestCommand => new DelegateCommand(() => 
+            MessagingHelper.Toast("Juhu", ToastTime.LongTime));
+
 
         //--MapTab--
         public ICommand MapAppearingCommand => new DelegateCommand(async () =>
@@ -83,7 +86,7 @@ namespace BusMap.Mobile.ViewModels
 
 
         //--NAVIGATION--
-        public override async void OnNavigatingTo(NavigationParameters parameters)
+        public override void OnNavigatedTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("route"))
             {
