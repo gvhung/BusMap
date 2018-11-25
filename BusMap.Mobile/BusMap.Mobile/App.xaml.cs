@@ -1,6 +1,8 @@
 ﻿using BusMap.Mobile.CustomControls;
 using BusMap.Mobile.Views;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.SQLite;
+using BusMap.Mobile.SQLite.Repositories;
 using BusMap.Mobile.ViewModels;
 using Plugin.Iconize;
 using Prism;
@@ -53,6 +55,8 @@ namespace BusMap.Mobile
             containerRegistry.RegisterForNavigation<RouteReportPage, RouteReportViewModel>();
 
             containerRegistry.Register<IDataService, ApiDataService>();
+            containerRegistry.Register<ILocalDatabase, LocalDatabase>();
+            containerRegistry.Register<IFavoriteRoutesRepository, FavoriteRoutesRepository>();
         }
 
         private void SetupIconize()

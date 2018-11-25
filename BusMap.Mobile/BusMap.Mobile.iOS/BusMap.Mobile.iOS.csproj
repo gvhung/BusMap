@@ -94,6 +94,7 @@
     <EnvironmentVariables />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FileHelperiOS.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
@@ -164,6 +165,9 @@
     </PackageReference>
     <PackageReference Include="Rg.Plugins.Popup">
       <Version>1.1.4.168</Version>
+    </PackageReference>
+    <PackageReference Include="sqlite-net-pcl">
+      <Version>1.5.231</Version>
     </PackageReference>
     <PackageReference Include="Toast.iOS">
       <Version>1.2.0</Version>
