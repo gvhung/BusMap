@@ -68,6 +68,8 @@
             <Button Text="{Binding QueueButtonText}"
                     Command="{Binding NavigateToQueueCommand}"
                     IsEnabled="{Binding QueuedRoutesButtonIsVisible}"/>
+            <Button Text="Favorite routes"
+                    Command="{Binding NavigateToFavoritePage}"/>
         </StackLayout>
     </ContentPage.Content>
 

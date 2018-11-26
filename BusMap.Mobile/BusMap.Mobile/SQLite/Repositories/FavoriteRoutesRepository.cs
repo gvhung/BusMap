@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BusMap.Mobile.SQLite.Models;
 using SQLite;
 
 namespace BusMap.Mobile.SQLite.Repositories

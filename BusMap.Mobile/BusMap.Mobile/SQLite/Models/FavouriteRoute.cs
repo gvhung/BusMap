@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SQLite;
 
-namespace BusMap.Mobile.SQLite
+namespace BusMap.Mobile.SQLite.Models
 {
     public class FavoriteRoute
     {

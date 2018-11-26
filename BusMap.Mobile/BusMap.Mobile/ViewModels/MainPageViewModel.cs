@@ -163,6 +163,10 @@ namespace BusMap.Mobile.ViewModels
             else MessagingHelper.Toast("Failed", ToastTime.LongTime);
         });
 
+        public ICommand NavigateToFavoritePage => new DelegateCommand(async () => 
+            await NavigationService.NavigateAsync(nameof(FavoritesPage)));
+
+
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
             var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);

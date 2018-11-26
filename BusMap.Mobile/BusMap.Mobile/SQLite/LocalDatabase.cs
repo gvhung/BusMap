@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BusMap.Mobile.Helpers;
+using BusMap.Mobile.SQLite.Models;
 using SQLite;
 using Xamarin.Forms;
 
