@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using BusMap.Mobile.Models;
@@ -63,14 +64,14 @@ namespace BusMap.Mobile.ViewModels
 
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
-            var routes = new List<Route>();
+            //var routes = new List<Route>();
 
-            foreach (var favoriteRoute in FavoriteRoutes)
-            {
-                routes.Add(await _dataService.GetRouteAsync(favoriteRoute.Id));
-            }
-
-            Routes = routes;
+            //foreach (var favoriteRoute in FavoriteRoutes)
+            //{
+            //    routes.Add(await _dataService.GetRouteAsync(favoriteRoute.Id));
+            //}
+            var ids = FavoriteRoutes.Select(r => r.Id).ToList();
+            Routes = await _dataService.GetFavoriteRoutes(ids);
         }
 
     }

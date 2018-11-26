@@ -18,6 +18,7 @@ namespace BusMap.WebApi.Repositories.Abstract
         Task<IEnumerable<Route>> GetAllRoutesIncludeCarrierAsync();
         Task<IEnumerable<Route>> GetAllRoutesIncludeBusStopsCarrierAsync();
         Task<IEnumerable<Route>> GetAllRoutesIncludeAllAsync();
+        Task<IEnumerable<Route>> GetAllFavoriteRoutesAsync(IEnumerable<int> routesIds);
 
         Task AddRouteAsync(Route route);
         Task AddRouteRangeAsync(IEnumerable<Route> routes);

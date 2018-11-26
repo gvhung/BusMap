@@ -44,5 +44,6 @@ namespace BusMap.Mobile.Services
 
         Task<bool> PostBusStopTraceAsync(BusStopTrace busStopTrace);
         Task<bool> PostRouteReportAsync(RouteReport routeReport);
+        Task<IEnumerable<Route>> GetFavoriteRoutes(IEnumerable<int> ids);
     }
 }

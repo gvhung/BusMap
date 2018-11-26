@@ -47,6 +47,20 @@ namespace BusMap.WebApi.Controllers
         public async Task<IActionResult> GetAllRoutesIncludeAll()
             => await GetAllRoutesFunc(async () => await _routeService.GetAllRoutesIncludeAllAsync());
 
+        [HttpGet("favorites")]
+        public async Task<IActionResult> GetFavoriteRoutes(int[] id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var favoriteRoutes = await _routeService.GetAllFavoriteRoutesAsync(id);
+
+            if (favoriteRoutes == null || favoriteRoutes.ToList().Count == 0)
+                return NotFound();
+
+            return Ok(favoriteRoutes);
+        }
+
 
         public async Task<IActionResult> GetAllRoutesFunc(Func<Task<IEnumerable<RoutesRouteDto>>> getAllRoutesFunc)
         {
@@ -83,7 +97,6 @@ namespace BusMap.WebApi.Controllers
         [HttpGet("{id:int}/all")]
         public async Task<IActionResult> GetRouteIncludeAll(int id)
             => await GetRouteFunc(id, async x => await _routeService.GetRouteIncludeAllAsync(id));
-
 
         public async Task<IActionResult> GetRouteFunc(int id, Func<int, Task<RoutesRouteDto>> getRouteFunc)
         {

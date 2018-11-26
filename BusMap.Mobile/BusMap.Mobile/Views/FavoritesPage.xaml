@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:behaviors="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              xmlns:eventArgsConverters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
-             x:Class="BusMap.Mobile.Views.FavoritesPage">
+             x:Class="BusMap.Mobile.Views.FavoritesPage"
+             Title="Favorites">
 
     <ContentPage.Resources>
         <eventArgsConverters:PunctualityPercentageConverter x:Key="PercentageConverter"/>

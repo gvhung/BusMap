@@ -99,7 +99,21 @@ namespace BusMap.WebApi.Services.Implementations
                     = PunctualityConverter.RoutePunctualityPercentage(routes.ElementAt(i));
             }
                 
-            
+            return result;
+        }
+
+        public async Task<IEnumerable<RoutesRouteDto>> GetAllFavoriteRoutesAsync(IEnumerable<int> routesIds)
+        {
+            var routes = await _repository.GetAllFavoriteRoutesAsync(routesIds);
+            var routeDtoList = new List<RoutesRouteDto>();
+            var result = _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes).ToList();
+
+            for (int i = 0; i < result.Count(); i++)
+            {
+                result[i].PunctualityPercentage
+                    = PunctualityConverter.RoutePunctualityPercentage(routes.ElementAt(i));
+            }
+
             return result;
         }
 

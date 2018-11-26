@@ -213,8 +213,32 @@ namespace BusMap.Mobile.Services
             return result.StatusCode.Equals(HttpStatusCode.Created);
         }
 
+        public async Task<IEnumerable<Route>> GetFavoriteRoutes(IEnumerable<int> ids)
+        {
+            var httpClient = new HttpClient();
+            var idQuery = IdArrayToStringQuery(ids);
+            var json = await httpClient.GetStringAsync($"{Uri}routes/favorites?{idQuery}");
 
-        public StringContent AddMediaTypeHeaderValueToJson(string json)
+            var routes = JsonConvert.DeserializeObject<IEnumerable<Route>>(json);
+            return routes;
+        }
+
+        private string IdArrayToStringQuery(IEnumerable<int> ids)
+        {
+            //?id=1&id=3
+            var result = new StringBuilder();
+            foreach (var id in ids)
+            {
+                result.Append($"id={id}&");
+            }
+
+            result.Length--;
+            //result.Remove(result.Length - 2, 1);
+            return result.ToString();
+        }
+
+
+        private StringContent AddMediaTypeHeaderValueToJson(string json)
         {
             var stringContent = new StringContent(json);
             stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");

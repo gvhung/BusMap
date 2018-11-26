@@ -6,6 +6,7 @@ using BusMap.WebApi.Data;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BusMap.WebApi.Repositories.Implementations
 {
@@ -72,6 +73,14 @@ namespace BusMap.WebApi.Repositories.Implementations
                 .Include(r => r.Carrier)
                 .Include(r => r.BusStops)
                 .ThenInclude(b => b.BusStopTraces)
+                .ToListAsync();
+
+        public async Task<IEnumerable<Route>> GetAllFavoriteRoutesAsync(IEnumerable<int> routesIds)
+            => await _context.Routes
+                .Include(r => r.Carrier)
+                .Include(r => r.BusStops)
+                .ThenInclude(b => b.BusStopTraces)
+                .Where(r => routesIds.Contains(r.Id))
                 .ToListAsync();
 
         public async Task AddRouteAsync(Route route)
