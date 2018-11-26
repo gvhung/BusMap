@@ -60,10 +60,5 @@ namespace BusMap.Mobile
             containerRegistry.Register<IFavoriteRoutesRepository, FavoriteRoutesRepository>();
         }
 
-        private void SetupIconize()
-        {
-            
-        }
-
     }
 }

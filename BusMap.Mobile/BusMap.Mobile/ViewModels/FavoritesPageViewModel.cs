@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using BusMap.Mobile.SQLite.Models;
@@ -18,11 +20,11 @@ namespace BusMap.Mobile.ViewModels
         private readonly IFavoriteRoutesRepository _repository;
         private readonly IDataService _dataService;
 
-        private IEnumerable<Route> _routes;
+        private ObservableCollection<Route> _routes;
         private IEnumerable<FavoriteRoute> _favoriteRoutes;
 
 
-        public IEnumerable<Route> Routes
+        public ObservableCollection<Route> Routes
         {
             get => _routes;
             set => SetProperty(ref _routes, value);
@@ -40,6 +42,8 @@ namespace BusMap.Mobile.ViewModels
         {
             _repository = repository;
             _dataService = dataService;
+            FavoriteRoutes = new List<FavoriteRoute>();
+            Routes = new ObservableCollection<Route>();
         }
 
 
@@ -71,7 +75,8 @@ namespace BusMap.Mobile.ViewModels
             //    routes.Add(await _dataService.GetRouteAsync(favoriteRoute.Id));
             //}
             var ids = FavoriteRoutes.Select(r => r.Id).ToList();
-            Routes = await _dataService.GetFavoriteRoutes(ids);
+            if (ids.Count > 0)
+                Routes.AddRange(await _dataService.GetFavoriteRoutes(ids));
         }
 
     }

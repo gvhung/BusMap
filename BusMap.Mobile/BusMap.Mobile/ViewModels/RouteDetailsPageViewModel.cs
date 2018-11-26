@@ -6,9 +6,12 @@ using System.Windows.Input;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.SQLite.Models;
+using BusMap.Mobile.SQLite.Repositories;
 using BusMap.Mobile.Views;
 using Prism.Commands;
 using Prism.Navigation;
+using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
 namespace BusMap.Mobile.ViewModels
@@ -16,10 +19,13 @@ namespace BusMap.Mobile.ViewModels
     public class RouteDetailsPageViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
+        private readonly IFavoriteRoutesRepository _favoriteRoutesRepository;
+        private bool _isRouteInFavorites;
 
         private Route _route;
         private ObservableCollection<Pin> _pins;
         private MapSpan _mapPosition;
+        private Color _favoriteStarColor;
 
         public Route Route
         {
@@ -39,13 +45,24 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _mapPosition, value);
         }
 
+        public Color FavoriteStarColor
+        {
+            get => _favoriteStarColor;
+            set => SetProperty(ref _favoriteStarColor, value);
+        }
 
-        public RouteDetailsPageViewModel(INavigationService navigationService, IDataService dataService) 
+
+        public RouteDetailsPageViewModel(INavigationService navigationService, 
+            IDataService dataService,
+            IFavoriteRoutesRepository favoriteRoutesRepository) 
             : base(navigationService)
         {
             _dataService = dataService;
+            _favoriteRoutesRepository = favoriteRoutesRepository;
             Route = new Route();
             Pins = new ObservableCollection<Pin>();
+            FavoriteStarColor = Color.White;
+
         }
 
 
@@ -73,6 +90,26 @@ namespace BusMap.Mobile.ViewModels
             await NavigationService.NavigateAsync(nameof(RouteReportPage), parameters);
         });
 
+        public ICommand FavoritesButtonCommand => new DelegateCommand(() =>
+        {
+            if (_isRouteInFavorites)
+            {
+                _favoriteRoutesRepository.RemoveFavorite(Route.Id);
+                MessagingHelper.Toast("Route removed from favorites.", ToastTime.LongTime);
+                FavoriteStarColor = Color.White;
+            }
+            else
+            {
+                _favoriteRoutesRepository.AddFavorite(new FavoriteRoute
+                {
+                    Id = Route.Id,
+                    AddedDate = DateTime.Now
+                });
+                MessagingHelper.Toast("Route added to favorites.", ToastTime.LongTime);
+                FavoriteStarColor = Color.Gold;
+            }
+        });
+
         public ICommand TestCommand => new DelegateCommand(() => 
             MessagingHelper.Toast("Juhu", ToastTime.LongTime));
 
@@ -95,6 +132,17 @@ namespace BusMap.Mobile.ViewModels
                 Title = Route.Name;
                 Pins.AddRange(Route.BusStops.ToGoogleMapsPins());   //Freezing thread?
             }
+
+            _isRouteInFavorites = _favoriteRoutesRepository.IsRouteInFavorites(Route.Id);
+            if (_isRouteInFavorites)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    FavoriteStarColor = Color.Gold;
+                });
+            }
+                
+
         }
 
     }

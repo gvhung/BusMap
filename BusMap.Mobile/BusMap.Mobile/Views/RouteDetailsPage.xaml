@@ -19,9 +19,13 @@
         <iconize:IconToolbarItem Command="{Binding ReportButtonCommand}"
                                  Icon="fas-exclamation-circle"
                                  IconColor="White"/>
+        <iconize:IconToolbarItem Command="{Binding FavoritesButtonCommand}"
+                                 Icon="fas-star"
+                                 IconColor="{Binding FavoriteStarColor}"
+                                 IsEnabled="{Binding BoolTest}"/>
     </TabbedPage.ToolbarItems>
-    
-    <TabbedPage.Children>
+
+        <TabbedPage.Children>
         <!--Details page - first page-->
         <ContentPage Title="Details">
             <ContentPage.Content>

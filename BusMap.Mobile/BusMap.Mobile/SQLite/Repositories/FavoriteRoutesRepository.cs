@@ -22,7 +22,7 @@ namespace BusMap.Mobile.SQLite.Repositories
         }
 
         public void AddFavorite(FavoriteRoute favoriteRoute)
-            => _connection.Insert(new FavoriteRoute() { Id = 1, AddedDate = DateTime.Now });
+            => _connection.Insert(favoriteRoute);
 
         public FavoriteRoute GetFavorite(int id)
             => _connection.Table<FavoriteRoute>().First(f => f.Id == id);
@@ -32,7 +32,12 @@ namespace BusMap.Mobile.SQLite.Repositories
 
         public void RemoveFavorite(int id)
             => _connection.Table<FavoriteRoute>().Delete(f => f.Id == id);
-        
+
+        public bool IsRouteInFavorites(int id)
+            => _connection.Table<FavoriteRoute>().Any(f => f.Id == id);
+
+            
+
 
     }
 }

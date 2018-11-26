@@ -11,5 +11,6 @@ namespace BusMap.Mobile.SQLite.Repositories
         FavoriteRoute GetFavorite(int id);
         IEnumerable<FavoriteRoute> GetAllFavorites();
         void RemoveFavorite(int id);
+        bool IsRouteInFavorites(int id);
     }
 }
