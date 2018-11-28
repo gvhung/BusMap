@@ -16,7 +16,7 @@ namespace BusMap.Mobile.Views
         public MainPage()
         {
             InitializeComponent();
-            NavigationPage.SetHasNavigationBar(this, false);
+            //NavigationPage.SetHasNavigationBar(this, false);
         }
     }
 }

@@ -32,15 +32,16 @@ namespace BusMap.Mobile
         {
             InitializeComponent();
 
-            await NavigationService.NavigateAsync("CustomNavigationPage/MainPage");
+            await NavigationService.NavigateAsync("MainMasterDetailPage/CustomNavigationPage/MainPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<CustomNavigationPage>(nameof(CustomNavigationPage));
+            containerRegistry.RegisterForNavigation<MainMasterDetailPage, MainMasterDetailPageViewModel>();
+            containerRegistry.RegisterForNavigation<CustomNavigationPage>(nameof(CustomNavigationPage));           
             //containerRegistry.RegisterForNavigation<IconTabbedPage>(nameof(IconTabbedPage));
-            //containerRegistry.RegisterForNavigation<NavigationPage>(); 
-            containerRegistry.RegisterForNavigation<MainPage>();   
+
+            containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();   
             containerRegistry.RegisterForNavigation<NearestStopsMapPage>();
             containerRegistry.RegisterForNavigation<RoutesListPage>(); 
             containerRegistry.RegisterForNavigation<BusStopsMapPage>();

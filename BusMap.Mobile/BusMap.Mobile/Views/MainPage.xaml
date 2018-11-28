@@ -4,8 +4,7 @@
              xmlns:local="clr-namespace:BusMap.Mobile"
              xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
              x:Class="BusMap.Mobile.Views.MainPage"
-             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
-             prism:ViewModelLocator.AutowireViewModel="True">
+             Title="BusMap">
 
 
     <ContentPage.Padding>
