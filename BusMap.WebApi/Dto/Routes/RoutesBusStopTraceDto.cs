@@ -9,5 +9,6 @@ namespace BusMap.WebApi.Dto.Routes
     {
         public int Id { get; set; }
         public TimeSpan Hour { get; set; }
+        public DateTime Date { get; set; }
     }
 }

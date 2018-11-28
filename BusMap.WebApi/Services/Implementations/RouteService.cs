@@ -59,6 +59,7 @@ namespace BusMap.WebApi.Services.Implementations
             var result = _mapper.Map<Route, RoutesRouteDto>(route, routeDto);
 
             SetPunctualityForRoute(route, ref result);
+            result.CurrentLatency = await _repository.GetRouteCurrentLatencyAsync(route);
 
             return result;
         }

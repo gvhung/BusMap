@@ -17,6 +17,7 @@ namespace BusMap.WebApi.Dto.Routes
         public string PunctualityPercentage { get; set; }
         public string PunctualityAvgBeforeTime { get; set; }
         public string PunctualityAvgAfterTime { get; set; }
+        public string CurrentLatency { get; set; }
 
     }
 }

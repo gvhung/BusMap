@@ -100,5 +100,23 @@ namespace BusMap.WebApi.Repositories.Implementations
             _context.Routes.Remove(route);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<string> GetRouteCurrentLatencyAsync(Route route)
+        {
+            var result = "Nan";
+            var currentDate = DateTime.Now;
+            var lastTrace = await _context.BusStopTraces
+                .Where(x => x.Date.Equals(currentDate.Date))
+                .LastOrDefaultAsync(x => x.BusStop.RouteId == route.Id);
+
+            if (lastTrace != null)
+            {
+                result = (lastTrace.Hour - lastTrace.BusStop.Hour).Minutes.ToString();
+            }
+                
+
+            return result;
+        }
+
     }
 }

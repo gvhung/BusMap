@@ -23,5 +23,7 @@ namespace BusMap.WebApi.Repositories.Abstract
         Task AddRouteAsync(Route route);
         Task AddRouteRangeAsync(IEnumerable<Route> routes);
         Task RemoveRouteAsync(Route route);
+
+        Task<string> GetRouteCurrentLatencyAsync(Route route);
     }
 }
