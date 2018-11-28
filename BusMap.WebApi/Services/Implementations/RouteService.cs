@@ -130,6 +130,13 @@ namespace BusMap.WebApi.Services.Implementations
             await _repository.RemoveRouteAsync(routeToRemove);
         }
 
+        public async Task<RoutesBusStopDto> GetRouteRecentBusStopAsync(int routeId)
+        {
+            var currentBusStop = await _repository.GetRouteRecentBusStopAsync(routeId);
+            var result = _mapper.Map<BusStop, RoutesBusStopDto>(currentBusStop);
+            return result;
+        }
+
 
         private static void SetPunctualityForRoute(Route route, ref RoutesRouteDto routeDto)
         {

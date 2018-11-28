@@ -114,8 +114,18 @@ namespace BusMap.WebApi.Repositories.Implementations
                 result = (lastTrace.Hour - lastTrace.BusStop.Hour).Minutes.ToString();
             }
                 
-
             return result;
+        }
+
+        public async Task<BusStop> GetRouteRecentBusStopAsync(int routeId)
+        {
+            var currentDate = DateTime.Now;
+            var lastTrace = await _context.BusStopTraces
+                .Include(t => t.BusStop)
+                .Where(x => x.Date.Equals(currentDate.Date))
+                .LastOrDefaultAsync(x => x.BusStop.RouteId == routeId);
+
+            return lastTrace.BusStop;
         }
 
     }

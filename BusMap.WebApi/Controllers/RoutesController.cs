@@ -111,6 +111,19 @@ namespace BusMap.WebApi.Controllers
             return Ok(route);
         }
 
+        [HttpGet("{id:int}/recentBusStop")]
+        public async Task<IActionResult> GetRouteRecentBusStop(int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var currentBusStop = await _routeService.GetRouteRecentBusStopAsync(id);
+
+            if (currentBusStop == null)
+                return NotFound();
+
+            return Ok(currentBusStop);
+        }
         
 
         [HttpPost]

@@ -25,5 +25,6 @@ namespace BusMap.WebApi.Repositories.Abstract
         Task RemoveRouteAsync(Route route);
 
         Task<string> GetRouteCurrentLatencyAsync(Route route);
+        Task<BusStop> GetRouteRecentBusStopAsync(int routeId);
     }
 }
