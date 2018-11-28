@@ -41,10 +41,16 @@ namespace BusMap.WebApi.Data
                 .HasDefaultValue(0);
             modelBuilder.Entity<RouteQueued>()
                 .Property(r => r.CreatedDatetime)
-                .HasDefaultValueSql("GETDATE()");
+                .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
             modelBuilder.Entity<RouteReport>()
                 .Property(r => r.Date)
-                .HasDefaultValueSql("GETDATE()");
+                .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
+            modelBuilder.Entity<BusStopTrace>()
+                .Property(t => t.Date)
+                .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
+            modelBuilder.Entity<BusStopTrace>()
+                .Property(t => t.Hour)
+                .HasDefaultValueSql("Format(GETDATE(),'hh:mm')");
 
 
             modelBuilder.Entity<Carrier>().HasData(

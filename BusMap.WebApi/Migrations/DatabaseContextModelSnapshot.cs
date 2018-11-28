@@ -117,7 +117,13 @@ namespace BusMap.WebApi.Migrations
 
                     b.Property<int>("BusStopId");
 
-                    b.Property<TimeSpan>("Hour");
+                    b.Property<DateTime>("Date")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
+
+                    b.Property<TimeSpan>("Hour")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("Format(GETDATE(),'hh:mm')");
 
                     b.HasKey("Id");
 
@@ -198,7 +204,7 @@ namespace BusMap.WebApi.Migrations
 
                     b.Property<DateTime>("CreatedDatetime")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
 
                     b.Property<int>("DayOfTheWeek");
 
@@ -233,7 +239,7 @@ namespace BusMap.WebApi.Migrations
 
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
 
                     b.Property<string>("Description");
 
