@@ -223,6 +223,25 @@ namespace BusMap.Mobile.Services
             return routes;
         }
 
+        public async Task<int> GetRouteCurrentLatency(int routeId)
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync($"{Uri}routes/{routeId}/currentLatency");
+            var latency = JsonConvert.DeserializeObject<int>(json);
+            return latency;
+        }
+
+        public async Task<BusStop> GetRouteRecentBusStop(int routeId)
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync($"{Uri}routes/{routeId}/recentBusStop");
+            var recentBusStop = JsonConvert.DeserializeObject<BusStop>(json);
+            return recentBusStop;
+        }
+
+
+
+
         private string IdArrayToStringQuery(IEnumerable<int> ids)
         {
             //?id=1&id=3

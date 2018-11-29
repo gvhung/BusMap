@@ -9,6 +9,7 @@ namespace BusMap.Mobile.Models
 {
     public class BusStop : BindableBase
     {
+        private bool _isRecentBusStop;
         public int Id { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
@@ -23,6 +24,12 @@ namespace BusMap.Mobile.Models
         public string PunctualityMode { get; set; }
         public string PunctualityAvgBeforeTime { get; set; }
         public string PunctualityAvgAfterTime { get; set; }
+
+        public bool IsRecentBusStop
+        {
+            get => _isRecentBusStop;
+            set => SetProperty(ref _isRecentBusStop, value);
+        }
 
         //[Obsolete("Don't use this", true)]
         //public new Position Position { get; set; }

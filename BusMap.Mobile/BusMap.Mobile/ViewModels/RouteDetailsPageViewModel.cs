@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using BusMap.Mobile.Helpers;
@@ -26,6 +27,9 @@ namespace BusMap.Mobile.ViewModels
         private ObservableCollection<Pin> _pins;
         private MapSpan _mapPosition;
         private Color _favoriteStarColor;
+        private int _currentLatency;
+        private BusStop _recentBusStop;
+        private bool _currentLatencyIsVisible;
 
         public Route Route
         {
@@ -51,6 +55,27 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _favoriteStarColor, value);
         }
 
+        public int CurrentLatency
+        {
+            get => _currentLatency;
+            set
+            {
+                SetProperty(ref _currentLatency, value);
+                CurrentLatencyIsVisible = value != 0;
+            }
+        }
+
+        public bool CurrentLatencyIsVisible
+        {
+            get => _currentLatencyIsVisible;
+            set => SetProperty(ref _currentLatencyIsVisible, value);
+        }
+
+        public BusStop RecentBusStop
+        {
+            get => _recentBusStop;
+            set => SetProperty(ref _recentBusStop, value);
+        }
 
         public RouteDetailsPageViewModel(INavigationService navigationService, 
             IDataService dataService,
@@ -123,7 +148,7 @@ namespace BusMap.Mobile.ViewModels
 
 
         //--NAVIGATION--
-        public override void OnNavigatedTo(NavigationParameters parameters)
+        public override async void OnNavigatingTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("route"))
             {
@@ -141,8 +166,23 @@ namespace BusMap.Mobile.ViewModels
                     FavoriteStarColor = Color.Gold;
                 });
             }
-                
 
+            try
+            {
+                CurrentLatency = await _dataService.GetRouteCurrentLatency(Route.Id);
+                RecentBusStop = await _dataService.GetRouteRecentBusStop(Route.Id);
+                MarkRecentBusStop(RecentBusStop);
+            }
+            catch (System.Net.Http.HttpRequestException)
+            {
+                //Sorry for that :(
+            }
+            
+        }
+
+        private void MarkRecentBusStop(BusStop busStop)
+        {
+            Route.BusStops.FirstOrDefault(b => b.Id == busStop.Id).IsRecentBusStop = true;
         }
 
     }

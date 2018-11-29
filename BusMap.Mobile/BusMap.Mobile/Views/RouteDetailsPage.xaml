@@ -15,6 +15,7 @@
     <!--<TabbedPage.BindingContext>
         <viewModels:RouteDetailsPageViewModel/>
     </TabbedPage.BindingContext>-->
+
     <TabbedPage.ToolbarItems>
         <iconize:IconToolbarItem Command="{Binding ReportButtonCommand}"
                                  Icon="fas-exclamation-circle"
@@ -76,6 +77,9 @@
                                    TextColor="DarkRed"/>
                         </StackLayout>
                     </StackLayout>
+                    <Label Text="{Binding CurrentLatency, StringFormat='Current latency: {0}'}"
+                           IsVisible="{Binding CurrentLatencyIsVisible}"/>
+                    <Label Text="{Binding RecentBusStop.Address, StringFormat= 'Recent bus stop: {0}'}"/>
                     <Button Text="Track"
                             FontSize="Large"
                             Command="{Binding TrackButtonCommand}"
@@ -100,6 +104,11 @@
                             <DataTemplate>
                                 <ViewCell>
                                     <StackLayout>
+                                        <StackLayout.Triggers>
+                                            <DataTrigger TargetType="{x:Type StackLayout}" Binding="{Binding IsRecentBusStop}" Value="True">
+                                                <Setter Property="StackLayout.BackgroundColor" Value="AntiqueWhite"/>
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>
                                         <StackLayout Orientation="Horizontal">
                                             <Label Text="{Binding Address, StringFormat='{0}, '}"
                                                FontSize="Medium"/>
