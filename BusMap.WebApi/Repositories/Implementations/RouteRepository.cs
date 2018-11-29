@@ -101,17 +101,29 @@ namespace BusMap.WebApi.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task<string> GetRouteCurrentLatencyAsync(Route route)
+        public async Task<int> GetRouteCurrentLatencyAsync(int routeId)
         {
-            var result = "Nan";
-            var currentDate = DateTime.Now;
+            int result = 9999;
+            //var currentDate = DateTime.Now;
+            var currentDate = new DateTime(2018,11,29,10,52,0);
+
+            var route = await _context.Routes
+                .Include(r => r.BusStops)
+                .FirstOrDefaultAsync(r => r.Id == routeId);
             var lastTrace = await _context.BusStopTraces
-                .Where(x => x.Date.Equals(currentDate.Date))
-                .LastOrDefaultAsync(x => x.BusStop.RouteId == route.Id);
+                .Include(t => t.BusStop)
+                .Where(t => t.Date.Equals(currentDate.Date) 
+                            && t.Hour > route.BusStops
+                                .First()
+                                .Hour
+                                .Subtract(new TimeSpan(0, 10, 0)) 
+                            && t.Hour >= currentDate.TimeOfDay.Subtract(new TimeSpan(1, 0, 0)))
+                .LastOrDefaultAsync(t => t.BusStop.RouteId == routeId);
+
 
             if (lastTrace != null)
             {
-                result = (lastTrace.Hour - lastTrace.BusStop.Hour).Minutes.ToString();
+                result = (lastTrace.Hour - lastTrace.BusStop.Hour).Minutes;
             }
                 
             return result;
@@ -119,13 +131,29 @@ namespace BusMap.WebApi.Repositories.Implementations
 
         public async Task<BusStop> GetRouteRecentBusStopAsync(int routeId)
         {
-            var currentDate = DateTime.Now;
+            BusStop result = null;
+            //var currentDate = DateTime.Now;
+            var currentDate = new DateTime(2018, 11, 29, 10, 52, 0);
+
+            var route = await _context.Routes
+                .Include(r => r.BusStops)
+                .FirstOrDefaultAsync(r => r.Id == routeId);
             var lastTrace = await _context.BusStopTraces
                 .Include(t => t.BusStop)
-                .Where(x => x.Date.Equals(currentDate.Date))
-                .LastOrDefaultAsync(x => x.BusStop.RouteId == routeId);
+                .Where(t => t.Date.Equals(currentDate.Date)
+                            && t.Hour > route.BusStops
+                                .First()
+                                .Hour
+                                .Subtract(new TimeSpan(0, 10, 0))
+                            && t.Hour >= currentDate.TimeOfDay.Subtract(new TimeSpan(1, 0, 0)))
+                .LastOrDefaultAsync(t => t.BusStop.RouteId == routeId);
 
-            return lastTrace.BusStop;
+            if (lastTrace != null)
+            {
+                result = lastTrace.BusStop;
+            }
+
+            return result;
         }
 
     }

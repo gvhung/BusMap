@@ -111,6 +111,20 @@ namespace BusMap.WebApi.Controllers
             return Ok(route);
         }
 
+        [HttpGet("{id:int}/currentLatency")]
+        public async Task<IActionResult> GetRouteCurrentLatency(int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var latency = await _routeService.GetRouteCurrentLatencyAsync(id);
+
+            if (latency == 9999)
+                return NotFound("Latency not found.");
+
+            return Ok(latency);
+        }
+
         [HttpGet("{id:int}/recentBusStop")]
         public async Task<IActionResult> GetRouteRecentBusStop(int id)
         {
@@ -120,7 +134,7 @@ namespace BusMap.WebApi.Controllers
             var currentBusStop = await _routeService.GetRouteRecentBusStopAsync(id);
 
             if (currentBusStop == null)
-                return NotFound();
+                return NotFound("Recent bus stop not found.");
 
             return Ok(currentBusStop);
         }

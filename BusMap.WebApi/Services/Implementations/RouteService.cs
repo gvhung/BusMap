@@ -59,7 +59,6 @@ namespace BusMap.WebApi.Services.Implementations
             var result = _mapper.Map<Route, RoutesRouteDto>(route, routeDto);
 
             SetPunctualityForRoute(route, ref result);
-            result.CurrentLatency = await _repository.GetRouteCurrentLatencyAsync(route);
 
             return result;
         }
@@ -129,6 +128,10 @@ namespace BusMap.WebApi.Services.Implementations
             var routeToRemove = await _repository.GetRouteAsync(route.Id);
             await _repository.RemoveRouteAsync(routeToRemove);
         }
+
+        public async Task<int> GetRouteCurrentLatencyAsync(int routeId)
+            => await _repository.GetRouteCurrentLatencyAsync(routeId);
+
 
         public async Task<RoutesBusStopDto> GetRouteRecentBusStopAsync(int routeId)
         {
