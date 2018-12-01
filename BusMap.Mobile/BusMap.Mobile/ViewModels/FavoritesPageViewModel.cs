@@ -17,7 +17,7 @@ namespace BusMap.Mobile.ViewModels
 {
     public class FavoritesPageViewModel : ViewModelBase
     {
-        private readonly IFavoriteRoutesRepository _repository;
+        private readonly IFavoriteRoutesRepository _favoritesRepository;
         private readonly IDataService _dataService;
 
         private ObservableCollection<Route> _routes;
@@ -37,10 +37,10 @@ namespace BusMap.Mobile.ViewModels
         }
 
         public FavoritesPageViewModel(INavigationService navigationService, 
-            IFavoriteRoutesRepository repository,
+            IFavoriteRoutesRepository favoritesRepository,
             IDataService dataService) : base(navigationService)
         {
-            _repository = repository;
+            _favoritesRepository = favoritesRepository;
             _dataService = dataService;
             FavoriteRoutes = new List<FavoriteRoute>();
             Routes = new ObservableCollection<Route>();
@@ -63,20 +63,20 @@ namespace BusMap.Mobile.ViewModels
 
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
-            FavoriteRoutes = _repository.GetAllFavorites();
+            FavoriteRoutes = _favoritesRepository.GetAllFavorites();
         }
 
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
-            //var routes = new List<Route>();
+            if (Routes.Count > 0)
+                FavoriteRoutes = _favoritesRepository.GetAllFavorites();
 
-            //foreach (var favoriteRoute in FavoriteRoutes)
-            //{
-            //    routes.Add(await _dataService.GetRouteAsync(favoriteRoute.Id));
-            //}
-            var ids = FavoriteRoutes.Select(r => r.Id).ToList();
-            if (ids.Count > 0)
+            if (_favoritesRepository.GetAllFavorites().Count() < Routes.Count || Routes.Count == 0)
+            {
+                Routes.Clear();
+                var ids = FavoriteRoutes.Select(r => r.Id).ToList();
                 Routes.AddRange(await _dataService.GetFavoriteRoutes(ids));
+            }
         }
 
     }

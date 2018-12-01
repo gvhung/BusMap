@@ -13,9 +13,6 @@
     <ContentPage.Content>
         <StackLayout>
             <ListView ItemsSource="{Binding Routes}"
-                      IsPullToRefreshEnabled="True"
-                      RefreshCommand="{Binding RefreshCommand}"
-                      IsRefreshing="{Binding IsRefreshing}"
                       Header="Favorite routes"
                       HasUnevenRows="True">
                 <ListView.Behaviors>
