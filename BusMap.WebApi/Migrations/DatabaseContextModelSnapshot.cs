@@ -175,7 +175,7 @@ namespace BusMap.WebApi.Migrations
 
                     b.Property<int>("CarrierId");
 
-                    b.Property<int>("DayOfTheWeek");
+                    b.Property<string>("DayOfTheWeek");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -188,9 +188,9 @@ namespace BusMap.WebApi.Migrations
                     b.ToTable("Routes");
 
                     b.HasData(
-                        new { Id = 1, CarrierId = 1, DayOfTheWeek = 1, Name = "Gorlice - Rzeszów" },
-                        new { Id = 2, CarrierId = 1, DayOfTheWeek = 1, Name = "Rzeszów - Gorlice" },
-                        new { Id = 3, CarrierId = 2, DayOfTheWeek = 2, Name = "Frysztak - Rzeszów" }
+                        new { Id = 1, CarrierId = 1, DayOfTheWeek = "1,2,3", Name = "Gorlice - Rzeszów" },
+                        new { Id = 2, CarrierId = 1, DayOfTheWeek = "1,2,3", Name = "Rzeszów - Gorlice" },
+                        new { Id = 3, CarrierId = 2, DayOfTheWeek = "2", Name = "Frysztak - Rzeszów" }
                     );
                 });
 
@@ -206,7 +206,7 @@ namespace BusMap.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
 
-                    b.Property<int>("DayOfTheWeek");
+                    b.Property<string>("DayOfTheWeek");
 
                     b.Property<string>("Name")
                         .IsRequired()

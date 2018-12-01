@@ -72,21 +72,21 @@ namespace BusMap.WebApi.Data
                     Id = 1,
                     Name = "Gorlice - Rzeszów",
                     CarrierId = 1,
-                    DayOfTheWeek = (int)DayOfWeek.Monday
+                    DayOfTheWeek = "1,2,3"
                 },
                 new Route
                 {
                     Id = 2,
                     Name = "Rzeszów - Gorlice",
                     CarrierId = 1,
-                    DayOfTheWeek = (int)DayOfWeek.Monday
+                    DayOfTheWeek = "1,2,3"
                 },
                 new Route
                 {
                     Id = 3,
                     Name = "Frysztak - Rzeszów",
                     CarrierId = 2,
-                    DayOfTheWeek = (int)DayOfWeek.Tuesday
+                    DayOfTheWeek = "2"
                 }
             );
 

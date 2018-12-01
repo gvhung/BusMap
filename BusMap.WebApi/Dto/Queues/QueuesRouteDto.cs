@@ -7,6 +7,7 @@ namespace BusMap.WebApi.Dto.Queues
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string DayOfTheWeek { get; set; }
         public int CarrierQueuedId { get; set; }
         public QueuesCarrierDto CarrierQueued { get; set; }
 
@@ -17,6 +18,6 @@ namespace BusMap.WebApi.Dto.Queues
         public DateTime? VotingEndedDateTime { get; set; }
         public int PositiveVotes { get; set; }
         public int NegativeVotes { get; set; }
-        public int DayOfTheWeek { get; set; }
+        
     }
 }
