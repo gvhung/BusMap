@@ -12,6 +12,7 @@ using BusMap.Mobile.SQLite.Repositories;
 using BusMap.Mobile.Views;
 using Prism.Commands;
 using Prism.Navigation;
+using SQLite;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
@@ -122,16 +123,26 @@ namespace BusMap.Mobile.ViewModels
                 _favoriteRoutesRepository.RemoveFavorite(Route.Id);
                 MessagingHelper.Toast("Route removed from favorites.", ToastTime.LongTime);
                 FavoriteStarColor = Color.White;
+                _isRouteInFavorites = false;
             }
             else
             {
-                _favoriteRoutesRepository.AddFavorite(new FavoriteRoute
+                try
                 {
-                    Id = Route.Id,
-                    AddedDate = DateTime.Now
-                });
-                MessagingHelper.Toast("Route added to favorites.", ToastTime.LongTime);
-                FavoriteStarColor = Color.Gold;
+                    _favoriteRoutesRepository.AddFavorite(new FavoriteRoute
+                    {
+                        Id = Route.Id,
+                        AddedDate = DateTime.Now
+                    });
+                    MessagingHelper.Toast("Route added to favorites.", ToastTime.LongTime);
+                    FavoriteStarColor = Color.Gold;
+                    _isRouteInFavorites = true;
+                }
+                catch (SQLiteException)
+                {
+                    MessagingHelper.Toast("Route is already in favorites.", ToastTime.LongTime);
+                }
+                
             }
         });
 
