@@ -31,7 +31,7 @@ namespace BusMap.Mobile.ViewModels
 
         private int _editingElementIndex = -1;
         private bool _saveButtonEnabled;
-        private List<WeekDaySelectionModel> _weekDays;
+        private List<SelectableItem<DayOfWeek>> _weekDays;
 
         private ObservableCollection<Pin> _mapPins;
         private MapSpan _mapPosition;
@@ -213,8 +213,8 @@ namespace BusMap.Mobile.ViewModels
             }
         }
 
-        private List<WeekDaySelectionModel> AddDaysToCollection()
-            => new List<WeekDaySelectionModel>
+        private List<SelectableItem<DayOfWeek>> AddDaysToCollection()
+            => new List<SelectableItem<DayOfWeek>>
             {
                 //new WeekDaySelectionModel("Monday", "1"),
                 //new WeekDaySelectionModel("Tuesday", "2"),
@@ -223,44 +223,45 @@ namespace BusMap.Mobile.ViewModels
                 //new WeekDaySelectionModel("Friday", "5"),
                 //new WeekDaySelectionModel("Saturday", "6"),
                 //new WeekDaySelectionModel("Sunday", "7")
-                new WeekDaySelectionModel(DayOfWeek.Monday),
-                new WeekDaySelectionModel(DayOfWeek.Tuesday),
-                new WeekDaySelectionModel(DayOfWeek.Wednesday),
-                new WeekDaySelectionModel(DayOfWeek.Thursday),
-                new WeekDaySelectionModel(DayOfWeek.Friday),
-                new WeekDaySelectionModel(DayOfWeek.Saturday),
-                new WeekDaySelectionModel(DayOfWeek.Sunday),
+                new SelectableItem<DayOfWeek>(DayOfWeek.Monday),
+                new SelectableItem<DayOfWeek>(DayOfWeek.Tuesday),
+                new SelectableItem<DayOfWeek>(DayOfWeek.Wednesday),
+                new SelectableItem<DayOfWeek>(DayOfWeek.Thursday),
+                new SelectableItem<DayOfWeek>(DayOfWeek.Friday),
+                new SelectableItem<DayOfWeek>(DayOfWeek.Saturday),
+                new SelectableItem<DayOfWeek>(DayOfWeek.Sunday),
 
             };
 
-        private string DaysToString(IEnumerable<WeekDaySelectionModel> daysList)
+        private string DaysToString(IEnumerable<SelectableItem<DayOfWeek>> daysList)
         {
             var builder = new StringBuilder();
 
-            if (daysList.Any())
+            if (!daysList.Any())
                 return builder.ToString();
 
             foreach (var day in daysList)
             {
                 if (day.IsChecked)
-                    builder.Append(day.DayOfWeek.ToString() + ", ");
+                    builder.Append(day.TObject + ", ");
             }
 
             builder.Length -= 2;
             return builder.ToString();
         }
 
-        private string DaysToNumbersString(IEnumerable<WeekDaySelectionModel> daysList)
+        private string DaysToNumbersString(IEnumerable<SelectableItem<DayOfWeek>> daysList)
         {
             var builder = new StringBuilder();
 
             foreach (var day in daysList)
             {
                 if (day.IsChecked)
-                    builder.Append((int)day.DayOfWeek + ",");
+                    builder.Append((int)day.TObject + ",");
             }
 
-            return builder.ToString(0, builder.Length - 1);
+            builder.Length--;
+            return builder.ToString();
         }
 
 
@@ -300,7 +301,7 @@ namespace BusMap.Mobile.ViewModels
 
             if (parameters.ContainsKey("days"))
             {
-                _weekDays = parameters["days"] as List<WeekDaySelectionModel>;
+                _weekDays = parameters["days"] as List<SelectableItem<DayOfWeek>>;
                 WeekDaysString = DaysToString(_weekDays);
             }
 

@@ -13,7 +13,7 @@
                         <ViewCell>
                             <StackLayout Orientation="Horizontal">
                                 <Switch IsToggled="{Binding IsChecked}"/>
-                                <Label Text="{Binding DayOfWeek}"/>
+                                <Label Text="{Binding TObject}"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

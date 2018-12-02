@@ -4,18 +4,18 @@ using System.Text;
 
 namespace BusMap.Mobile.Models
 {
-    public class WeekDaySelectionModel
+    public class SelectableItem<T>
     {
-        public DayOfWeek DayOfWeek { get; set; }
+        public T TObject { get; set; }
         public bool IsChecked { get; set; }
 
-        public WeekDaySelectionModel(DayOfWeek dayOfWeek, bool isChecked = false)
+        public SelectableItem(T tObject, bool isChecked = false)
         {
-            DayOfWeek = dayOfWeek;
+            TObject = tObject;
             IsChecked = isChecked;
         }
 
         public override string ToString()
-            => DayOfWeek.ToString();
+            => TObject.ToString();
     }
 }

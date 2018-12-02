@@ -11,9 +11,9 @@ namespace BusMap.Mobile.ViewModels
 {
     public class WeekDaySelectionPageViewModel : ViewModelBase
     {
-        private ObservableCollection<WeekDaySelectionModel> _days;
+        private ObservableCollection<SelectableItem<DayOfWeek>> _days;
 
-        public ObservableCollection<WeekDaySelectionModel> Days
+        public ObservableCollection<SelectableItem<DayOfWeek>> Days
         {
             get => _days;
             set => SetProperty(ref _days, value);
@@ -23,14 +23,14 @@ namespace BusMap.Mobile.ViewModels
         public WeekDaySelectionPageViewModel(INavigationService navigationService) 
             : base(navigationService)
         {
-            Days = new ObservableCollection<WeekDaySelectionModel>();
+            Days = new ObservableCollection<SelectableItem<DayOfWeek>>();
         }
 
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("days"))
             {
-                var days = parameters["days"] as List<WeekDaySelectionModel>;
+                var days = parameters["days"] as List<SelectableItem<DayOfWeek>>;
                 Days.AddRange(days);
             }
         }
