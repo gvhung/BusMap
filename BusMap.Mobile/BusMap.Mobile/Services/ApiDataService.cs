@@ -18,14 +18,14 @@ namespace BusMap.Mobile.Services
 {
     public class ApiDataService : IDataService
     {
-        private const string Uri = "http://192.168.0.129:5000/api/";
+        private const string Uri = "http://192.168.0.129:5003/api/";
 
 
         public async Task<List<BusStop>> GetBusStopsAsync()
         {
             var httpClient = new HttpClient();
 
-            var json = await httpClient.GetStringAsync(Uri + "/busStops/routeCarrier");
+            var json = await httpClient.GetStringAsync(Uri + "/busStops/");
             var busStops = JsonConvert.DeserializeObject<List<BusStop>>(json);
 
             return busStops;
