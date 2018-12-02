@@ -131,6 +131,12 @@ namespace BusMap.Mobile.ViewModels
         {
             var busStopsReversed = BusStops.Reverse().ToList();
 
+            if (!_weekDays.Any(d => d.IsChecked))
+            {
+                MessagingHelper.Toast("Please set coursing days.", ToastTime.LongTime);
+                return;
+            }
+
             var route = new RouteQueued()
             {
                 BusStopsQueued = busStopsReversed,
@@ -172,9 +178,12 @@ namespace BusMap.Mobile.ViewModels
             if (result)
             {
                 //MessagingHelper.Toast("Upload successful!", ToastTime.LongTime);
-                await NavigationService.GoBackAsync();
+                //await NavigationService.GoBackAsync();
                 await _pageDialogService.DisplayAlertAsync("Success!",
                     "Route added successfully.\nYou can find it in new routes queue.", "Ok");
+                await NavigationService.NavigateAsync(
+                    new Uri($"/MainMasterDetailPage/CustomNavigationPage/MainPage",
+                    UriKind.Absolute));
             }
             else
             {
@@ -238,8 +247,8 @@ namespace BusMap.Mobile.ViewModels
                 if (day.IsChecked)
                     builder.Append(day.TObject + ", ");
             }
-
-            builder.Length -= 2;
+            if (builder.Length > 1)
+                builder.Length -= 2;
             return builder.ToString();
         }
 
