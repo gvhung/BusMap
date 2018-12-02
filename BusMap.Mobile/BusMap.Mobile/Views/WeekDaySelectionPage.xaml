@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.WeekDaySelectionPage"
+             Title="Choose course days">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Please select days, when bus drives:"
+                HorizontalOptions="CenterAndExpand" />
+            <ListView ItemsSource="{Binding Days}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <Switch IsToggled="{Binding IsChecked}"/>
+                                <Label Text="{Binding DayOfWeek}"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

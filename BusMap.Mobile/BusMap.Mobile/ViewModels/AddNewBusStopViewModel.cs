@@ -79,6 +79,7 @@ namespace BusMap.Mobile.ViewModels
                 Label = StopNameEntry,
                 Latitude = GeoPosition.Latitude,
                 Longitude = GeoPosition.Longitude,
+                Hour = new TimeSpan(Time.Hours, Time.Minutes, 0),
                 Id = 0
             };
 

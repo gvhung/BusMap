@@ -20,9 +20,13 @@
                             Command="{Binding PopupCommand}"/>
                     <Button Text="Create new carrier"
                             Command="{Binding CreateNewCarrierCommand}"/>
+
+                    <Button Text="Choose days"
+                            Command="{Binding ChooseDaysCommand}"/>
                 </StackLayout>
                 <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
                        HorizontalOptions="Center"/>
+                <Label Text="{Binding WeekDaysString}"/>
                 <ListView ItemsSource="{Binding BusStops}">
                     <ListView.Behaviors>
                         <b:EventToCommandBehavior EventName="ItemTapped"

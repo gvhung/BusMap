@@ -55,6 +55,7 @@ namespace BusMap.Mobile
             containerRegistry.RegisterForNavigation<TraceTrackingPage, TraceTrackingPageViewModel>();
             containerRegistry.RegisterForNavigation<RouteReportPage, RouteReportViewModel>();
             containerRegistry.RegisterForNavigation<FavoritesPage, FavoritesPageViewModel>();
+            containerRegistry.RegisterForNavigation<WeekDaySelectionPage, WeekDaySelectionPageViewModel>();
 
             containerRegistry.Register<IDataService, ApiDataService>();
             containerRegistry.Register<ILocalDatabase, LocalDatabase>();

@@ -12,6 +12,7 @@ namespace BusMap.Mobile.Models
 
         public int Id { get; set; }
         public string Name { get; set; }
+        public string DayOfTheWeek { get; set; }
         public CarrierQueued CarrierQueued { get; set; }
         public int CarrierQueuedId { get; set; }
         public List<BusStopQueued> BusStopsQueued { get; set; }

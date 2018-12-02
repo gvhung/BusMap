@@ -11,6 +11,7 @@ namespace BusMap.Mobile.Models
         public double Longitude { get; set; }
         public string Address { get; set; }
         public string Label { get; set; }
+        public TimeSpan Hour { get; set; }
 
 
         public RouteQueued RouteQueued { get; set; }

@@ -18,7 +18,7 @@ namespace BusMap.Mobile.Services
 {
     public class ApiDataService : IDataService
     {
-        private const string Uri = "http://192.168.0.108:5003/api/";
+        private const string Uri = "http://192.168.0.129:5000/api/";
 
 
         public async Task<List<BusStop>> GetBusStopsAsync()

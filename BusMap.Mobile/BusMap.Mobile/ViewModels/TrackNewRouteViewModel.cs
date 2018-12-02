@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,13 +29,16 @@ namespace BusMap.Mobile.ViewModels
         private readonly IDataService _dataService;
         private readonly IPageDialogService _pageDialogService;
 
+        private int _editingElementIndex = -1;
+        private bool _saveButtonEnabled;
+        private List<WeekDaySelectionModel> _weekDays;
+
         private ObservableCollection<Pin> _mapPins;
         private MapSpan _mapPosition;
         private ObservableCollection<BusStopQueued> _busStops;
         private CarrierQueued _carrier;
+        private string _weekDaysString;
 
-        private int _editingElementIndex = -1;
-        private bool _saveButtonEnabled;
 
         public ObservableCollection<Pin> MapPins
         {
@@ -66,6 +70,12 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _saveButtonEnabled, value);
         }
 
+        public string WeekDaysString
+        {
+            get => _weekDaysString;
+            set => SetProperty(ref _weekDaysString, value);
+        }
+
 
         public TrackNewRouteViewModel(IDataService dataService, INavigationService navigationService,
             IPageDialogService pageDialogService)
@@ -76,6 +86,7 @@ namespace BusMap.Mobile.ViewModels
             Title = "Add route";
             MapPins = new ObservableCollection<Pin>();
             BusStops = new ObservableCollection<BusStopQueued>();
+            _weekDays = AddDaysToCollection();
 
             Carrier = new CarrierQueued
             {
@@ -124,7 +135,8 @@ namespace BusMap.Mobile.ViewModels
             {
                 BusStopsQueued = busStopsReversed,
                 CarrierQueuedId = Carrier.Id,
-                Name = DateTime.Now.ToShortTimeString() //TODO: From Entry
+                Name = DateTime.Now.ToShortTimeString(), //TODO: From Entry
+                DayOfTheWeek = DaysToNumbersString(_weekDays)
             };
 
             var dialogAnswer = await _pageDialogService
@@ -146,6 +158,13 @@ namespace BusMap.Mobile.ViewModels
                 await NavigationService.NavigateAsync(nameof(AddNewCarrierPage));
         });
 
+        public ICommand ChooseDaysCommand => new DelegateCommand(async () =>
+            {
+                var param = new NavigationParameters();
+                param.Add("days", _weekDays);
+                await NavigationService.NavigateAsync(nameof(WeekDaySelectionPage), param);
+            });
+
         private async Task PostDataAsync(RouteQueued route)
         {
             MessagingHelper.Toast("Uploading new route...", ToastTime.ShortTime);
@@ -160,42 +179,6 @@ namespace BusMap.Mobile.ViewModels
             else
             {
                 MessagingHelper.Toast("Upload failed!", ToastTime.ShortTime);
-            }
-        }
-
-
-
-        public override async void OnNavigatedTo(NavigationParameters parameters)
-        {
-            if (parameters.ContainsKey("newBusStop"))
-            {
-                AddBusStopToLists(parameters["newBusStop"] as BusStopQueued);
-                if (BusStops.Count > 1)
-                {
-                    SaveButtonEnabled = true;
-                }
-            }
-                
-            if (parameters.ContainsKey("busStopFromEdit"))
-            {
-                var busStopFromEdit = parameters["busStopFromEdit"] as BusStopQueued;
-                AddEditedBusStopToLists(busStopFromEdit, ref _editingElementIndex);
-            }
-
-            if (parameters.ContainsKey("removeBusStopAddress") && parameters.ContainsKey("removeBusStopLabel"))
-            {
-                var busStopToRemoveLabel = parameters["removeBusStopLabel"] as string;
-                var busStopToRemoveAddress = parameters["removeBusStopAddress"] as string;
-                await RemoveBusStop(busStopToRemoveAddress, busStopToRemoveLabel);
-                if (BusStops.Count < 2)
-                {
-                    SaveButtonEnabled = false;
-                }
-            }
-
-            if (parameters.ContainsKey("addedCarrier"))
-            {
-                Carrier = parameters["addedCarrier"] as CarrierQueued;
             }
         }
 
@@ -228,6 +211,99 @@ namespace BusMap.Mobile.ViewModels
             {
                 await _pageDialogService.DisplayAlertAsync("Alert!", "Could not remove busStop.\nPlease try again.", "Ok");
             }
+        }
+
+        private List<WeekDaySelectionModel> AddDaysToCollection()
+            => new List<WeekDaySelectionModel>
+            {
+                //new WeekDaySelectionModel("Monday", "1"),
+                //new WeekDaySelectionModel("Tuesday", "2"),
+                //new WeekDaySelectionModel("Wednesday", "3"),
+                //new WeekDaySelectionModel("Thursday", "4"),
+                //new WeekDaySelectionModel("Friday", "5"),
+                //new WeekDaySelectionModel("Saturday", "6"),
+                //new WeekDaySelectionModel("Sunday", "7")
+                new WeekDaySelectionModel(DayOfWeek.Monday),
+                new WeekDaySelectionModel(DayOfWeek.Tuesday),
+                new WeekDaySelectionModel(DayOfWeek.Wednesday),
+                new WeekDaySelectionModel(DayOfWeek.Thursday),
+                new WeekDaySelectionModel(DayOfWeek.Friday),
+                new WeekDaySelectionModel(DayOfWeek.Saturday),
+                new WeekDaySelectionModel(DayOfWeek.Sunday),
+
+            };
+
+        private string DaysToString(IEnumerable<WeekDaySelectionModel> daysList)
+        {
+            var builder = new StringBuilder();
+
+            if (daysList.Any())
+                return builder.ToString();
+
+            foreach (var day in daysList)
+            {
+                if (day.IsChecked)
+                    builder.Append(day.DayOfWeek.ToString() + ", ");
+            }
+
+            builder.Length -= 2;
+            return builder.ToString();
+        }
+
+        private string DaysToNumbersString(IEnumerable<WeekDaySelectionModel> daysList)
+        {
+            var builder = new StringBuilder();
+
+            foreach (var day in daysList)
+            {
+                if (day.IsChecked)
+                    builder.Append((int)day.DayOfWeek + ",");
+            }
+
+            return builder.ToString(0, builder.Length - 1);
+        }
+
+
+
+        public override async void OnNavigatedTo(NavigationParameters parameters)
+        {
+            if (parameters.ContainsKey("newBusStop"))
+            {
+                AddBusStopToLists(parameters["newBusStop"] as BusStopQueued);
+                if (BusStops.Count > 1)
+                {
+                    SaveButtonEnabled = true;
+                }
+            }
+
+            if (parameters.ContainsKey("busStopFromEdit"))
+            {
+                var busStopFromEdit = parameters["busStopFromEdit"] as BusStopQueued;
+                AddEditedBusStopToLists(busStopFromEdit, ref _editingElementIndex);
+            }
+
+            if (parameters.ContainsKey("removeBusStopAddress") && parameters.ContainsKey("removeBusStopLabel"))
+            {
+                var busStopToRemoveLabel = parameters["removeBusStopLabel"] as string;
+                var busStopToRemoveAddress = parameters["removeBusStopAddress"] as string;
+                await RemoveBusStop(busStopToRemoveAddress, busStopToRemoveLabel);
+                if (BusStops.Count < 2)
+                {
+                    SaveButtonEnabled = false;
+                }
+            }
+
+            if (parameters.ContainsKey("addedCarrier"))
+            {
+                Carrier = parameters["addedCarrier"] as CarrierQueued;
+            }
+
+            if (parameters.ContainsKey("days"))
+            {
+                _weekDays = parameters["days"] as List<WeekDaySelectionModel>;
+                WeekDaysString = DaysToString(_weekDays);
+            }
+
         }
 
     }
