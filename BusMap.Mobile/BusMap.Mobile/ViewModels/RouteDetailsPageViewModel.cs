@@ -159,11 +159,12 @@ namespace BusMap.Mobile.ViewModels
 
 
         //--NAVIGATION--
-        public override async void OnNavigatingTo(NavigationParameters parameters)
+        public override async void OnNavigatedTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("route"))
             {
                 Route = parameters["route"] as Route;
+                Route.DayOfTheWeek = SetFullDayNamesForRoute(Route.DayOfTheWeek);
                 //Route = await _dataService.GetRouteAsync(routeParam.Id);
                 Title = Route.Name;
                 Pins.AddRange(Route.BusStops.ToGoogleMapsPins());   //Freezing thread?
@@ -194,6 +195,21 @@ namespace BusMap.Mobile.ViewModels
         private void MarkRecentBusStop(BusStop busStop)
         {
             Route.BusStops.FirstOrDefault(b => b.Id == busStop.Id).IsRecentBusStop = true;
+        }
+
+        private string SetFullDayNamesForRoute(string hoursString)
+        {
+            var builder = new StringBuilder();
+            var digits = Array.ConvertAll(hoursString.Split(','), x => int.Parse(x));
+
+            foreach (var item in digits)
+            {
+                var day = Enum.GetName(typeof(DayOfWeek), item);
+                builder.Append(day + ", ");
+            }
+
+            builder.Length -= 2;
+            return builder.ToString();
         }
 
     }

@@ -216,13 +216,6 @@ namespace BusMap.Mobile.ViewModels
         private List<SelectableItem<DayOfWeek>> AddDaysToCollection()
             => new List<SelectableItem<DayOfWeek>>
             {
-                //new WeekDaySelectionModel("Monday", "1"),
-                //new WeekDaySelectionModel("Tuesday", "2"),
-                //new WeekDaySelectionModel("Wednesday", "3"),
-                //new WeekDaySelectionModel("Thursday", "4"),
-                //new WeekDaySelectionModel("Friday", "5"),
-                //new WeekDaySelectionModel("Saturday", "6"),
-                //new WeekDaySelectionModel("Sunday", "7")
                 new SelectableItem<DayOfWeek>(DayOfWeek.Monday),
                 new SelectableItem<DayOfWeek>(DayOfWeek.Tuesday),
                 new SelectableItem<DayOfWeek>(DayOfWeek.Wednesday),

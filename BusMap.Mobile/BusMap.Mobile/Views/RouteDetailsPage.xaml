@@ -47,6 +47,13 @@
                                FontSize="Medium"/>
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-retweet"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0}'}"
+                               FontSize="Medium"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
                         <iconize:IconImage Icon="fas-hand-paper"
                                            HorizontalOptions="Start"
                                            IconSize="20"/>
