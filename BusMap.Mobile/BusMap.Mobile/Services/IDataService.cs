@@ -47,5 +47,8 @@ namespace BusMap.Mobile.Services
         Task<IEnumerable<Route>> GetFavoriteRoutes(IEnumerable<int> ids);
         Task<int> GetRouteCurrentLatency(int routeId);
         Task<BusStop> GetRouteRecentBusStop(int routeId);
+
+        Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity, string days,
+            TimeSpan hourFrom, TimeSpan hourTo, DateTime date);
     }
 }

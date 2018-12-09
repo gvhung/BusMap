@@ -239,7 +239,16 @@ namespace BusMap.Mobile.Services
             return recentBusStop;
         }
 
-
+        public async Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity, string days,
+            TimeSpan hourFrom, TimeSpan hourTo, DateTime date)
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync($"{Uri}routes/find?startCity={startCity}" +
+                                                       $"&destinationCity={destinationCity}&{days}" +
+                                                       $"&hourFrom={hourFrom}&hourTo={hourTo}&date={date}");
+            var foundRoutes = JsonConvert.DeserializeObject<List<Route>>(json);
+            return foundRoutes;
+        }
 
 
         private string IdArrayToStringQuery(IEnumerable<int> ids)

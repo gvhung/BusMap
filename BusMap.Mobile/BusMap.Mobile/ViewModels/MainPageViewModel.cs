@@ -151,17 +151,7 @@ namespace BusMap.Mobile.ViewModels
 
         //Button for simple tests
         public ICommand AdvancedButtonCommand => new Command(async () =>
-        {
-            var busStopTrace = new BusStopTrace
-            {
-                BusStopId = 1,
-                Hour = DateTime.Now.TimeOfDay
-            };
-            var result = await _dataService.PostBusStopTraceAsync(busStopTrace);
-            if (result)
-                MessagingHelper.Toast("Success", ToastTime.LongTime);
-            else MessagingHelper.Toast("Failed", ToastTime.LongTime);
-        });
+        await NavigationService.NavigateAsync(nameof(AdvancedSearchPage)));
 
         public ICommand NavigateToFavoritePage => new DelegateCommand(async () => 
             await NavigationService.NavigateAsync(nameof(FavoritesPage)));

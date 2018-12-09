@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.AdvancedSearchPage"
+             Title="Advanced searching">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Margin="5,0,5,0">
+                <Entry Placeholder="Start city"
+                   Text="{Binding StartCityText}"/>
+                <Entry Placeholder="Destination city"
+                   Text="{Binding DestinationCityText}"/>
+                <Picker Title="Choose single day"
+                    SelectedItem="{Binding SelectedDayOfWeek}"
+                    ItemsSource="{Binding DaysList}"/>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Choose multiple days"
+                       FontSize="Small"/>
+                    <Switch IsToggled="{Binding IsDaysSwitchToggled}"></Switch>
+                </StackLayout>
+
+                <StackLayout Margin="50,0,0,0"
+                         IsVisible="{Binding IsDaysSwitchToggled}">
+                    <StackLayout Orientation="Horizontal">
+                        <Switch IsToggled="{Binding IsMondaySwitchToggled}"/>
+                        <Label Text="Monday"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Switch IsToggled="{Binding IsTuesdaySwitchToggled}"/>
+                        <Label Text="Tuesday"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Switch IsToggled="{Binding IsWednesdaySwitchToggled}"/>
+                        <Label Text="Wednesday"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Switch IsToggled="{Binding IsThursdaySwitchToggled}"/>
+                        <Label Text="Thursday"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Switch IsToggled="{Binding IsFridaySwitchToggled}"/>
+                        <Label Text="Friday"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Switch IsToggled="{Binding IsSaturdaySwitchToggled}"/>
+                        <Label Text="Saturday"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Switch IsToggled="{Binding IsSundaySwitchToggled}"/>
+                        <Label Text="Sunday"/>
+                    </StackLayout>
+                </StackLayout>
+
+                <TimePicker Format="HH:mm"
+                        Time="{Binding HourFromTime}"/>
+                <TimePicker Format="HH:mm"
+                        Time="{Binding HourToTime}"/>
+                <StackLayout Margin="10"/>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Choose date only if you want check connections on selected date"
+                       FontSize="Small"/>
+                    <Switch IsToggled="{Binding IsDateSwitchToggled}"/>
+                </StackLayout>
+                <DatePicker Format="dd-MM-yyyy"
+                            Margin="50,0,50,0"
+                            Date="{Binding Date}"
+                            IsVisible="{Binding IsDateSwitchToggled}"/>
+                <Button Text="Search"
+                    HorizontalOptions="Center"
+                    VerticalOptions="CenterAndExpand"
+                    Command="{Binding SearchButtonCommand}"/>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
