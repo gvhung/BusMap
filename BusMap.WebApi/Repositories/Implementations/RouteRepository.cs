@@ -156,5 +156,102 @@ namespace BusMap.WebApi.Repositories.Implementations
             return result;
         }
 
+        //public async Task<Route> FindRoutesAsync(string startCity, string destinationCity, string days = null,
+        //    TimeSpan hourFrom = default(TimeSpan), TimeSpan hourTo = default(TimeSpan), DateTime date)
+        //{
+
+        //}
+
+        public async Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity)
+        {
+            var foundedRoutes = await _context.Routes
+                .Include(r => r.BusStops)
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant())))
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant())))
+                .ToListAsync();
+
+            var result = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
+            return result;
+        }
+
+        public async Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity, string day)
+        {
+            var foundedRoutes = await _context.Routes
+                .Include(r => r.BusStops)
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant())))
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant())))
+                .ToListAsync();
+
+            foundedRoutes = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
+            if (!day.Equals("1,2,3,4,5,6,0"))
+                foundedRoutes = RemoveRoutesFromWrongDays(foundedRoutes, day);
+
+            return foundedRoutes;
+        }
+
+
+        
+
+        public async Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity, string day,
+            TimeSpan hourFrom = default(TimeSpan), TimeSpan hourTo = default(TimeSpan))
+        {
+            List<Route> foundedRoutes = await _context.Routes
+                .Include(r => r.BusStops)
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant())))
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant())))
+                //.Where(r => r.DayOfTheWeek.Split(',', StringSplitOptions.None).Except(array).ToList().Count > 0)
+                .ToListAsync();
+
+            
+
+            var result = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
+            return result;
+        }
+
+
+        private List<Route> GetRoutesForGoodDirection(List<Route> routes, string startCity, string destinationCity)
+        {
+            var result = new List<Route>();
+            foreach (var route in routes)
+            {
+                var start = route.BusStops.First(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant()));
+                var dest = route.BusStops.First(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant()));
+
+                if (start.Id < dest.Id)
+                    result.Add(route);
+            }
+
+            return result;
+        }
+
+        private List<Route> RemoveRoutesFromWrongDays(List<Route> routes, string days)
+        {
+            var result = new List<Route>(routes);
+            var daysArray = days.Split(',');
+
+            foreach (var route in routes)
+            {
+                if (route.DayOfTheWeek.Split(',').Intersect(daysArray).ToArray().Length == 0)
+                    result.Remove(route);
+            }
+
+            return result;
+        }
     }
 }

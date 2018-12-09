@@ -140,6 +140,22 @@ namespace BusMap.WebApi.Services.Implementations
             return result;
         }
 
+        public async Task<IEnumerable<RoutesRouteDto>> FindRoutesAsync(string startCity, string destinationCity)
+        {
+            var routes = await _repository.FindRoutesAsync(startCity, destinationCity);
+            var result = _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes);
+            return result;
+        }
+
+        public async Task<IEnumerable<RoutesRouteDto>> FindRoutesAsync(string startCity, string destinationCity, string day)
+        {
+            var routes = await _repository.FindRoutesAsync(startCity, destinationCity, day);
+            var result = _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes);
+            return result;
+        }
+
+
+
 
         private static void SetPunctualityForRoute(Route route, ref RoutesRouteDto routeDto)
         {
@@ -161,6 +177,7 @@ namespace BusMap.WebApi.Services.Implementations
             routeDto.PunctualityAvgBeforeTime = avgPunctuality.avgTimeBefore.ToString();
             routeDto.PunctualityAvgAfterTime = avgPunctuality.avgTimeAfter.ToString();
         }
+
 
     }
 }

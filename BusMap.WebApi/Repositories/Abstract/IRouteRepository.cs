@@ -26,5 +26,8 @@ namespace BusMap.WebApi.Repositories.Abstract
 
         Task<int> GetRouteCurrentLatencyAsync(int routeId);
         Task<BusStop> GetRouteRecentBusStopAsync(int routeId);
+
+        Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity);
+        Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity, string day);
     }
 }

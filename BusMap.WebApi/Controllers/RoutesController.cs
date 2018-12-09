@@ -173,5 +173,20 @@ namespace BusMap.WebApi.Controllers
             return Ok();
         }
 
+        [HttpGet("Find")]
+        public async Task<IActionResult> FindRoute(string startCity, string destinationCity,
+            TimeSpan hourFrom, TimeSpan hourTo, string day)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _routeService.FindRoutesAsync(startCity, destinationCity, day);
+
+            if (!result.Any())
+                return NotFound();
+
+            return Ok(result);
+        }
+
     }
 }
