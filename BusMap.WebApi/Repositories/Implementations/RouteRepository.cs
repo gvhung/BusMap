@@ -156,68 +156,40 @@ namespace BusMap.WebApi.Repositories.Implementations
             return result;
         }
 
-        //public async Task<Route> FindRoutesAsync(string startCity, string destinationCity, string days = null,
-        //    TimeSpan hourFrom = default(TimeSpan), TimeSpan hourTo = default(TimeSpan), DateTime date)
-        //{
-
-        //}
-
-        public async Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity)
+        public async Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity, 
+            string days = "1,2,3,4,5,6,0", TimeSpan hourFrom = default(TimeSpan), 
+            TimeSpan hourTo = default(TimeSpan), DateTime date = default(DateTime))
         {
-            var foundedRoutes = await _context.Routes
+            var dayOfTheWeek = date.DayOfWeek;
+            if (hourTo == default(TimeSpan))
+                hourTo = new TimeSpan(23,59,0);
+            if (string.IsNullOrEmpty(days))
+                days = "1,2,3,4,5,6,0";
+
+            List<Route> foundedRoutes = await _context.Routes
                 .Include(r => r.BusStops)
+                .ThenInclude(b => b.BusStopTraces)
                 .Where(r => r.BusStops.Any(b => b.Address
                     .ToLowerInvariant()
                     .Contains(startCity.ToLowerInvariant())))
                 .Where(r => r.BusStops.Any(b => b.Address
                     .ToLowerInvariant()
                     .Contains(destinationCity.ToLowerInvariant())))
-                .ToListAsync();
-
-            var result = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
-            return result;
-        }
-
-        public async Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity, string day)
-        {
-            var foundedRoutes = await _context.Routes
-                .Include(r => r.BusStops)
-                .Where(r => r.BusStops.Any(b => b.Address
-                    .ToLowerInvariant()
-                    .Contains(startCity.ToLowerInvariant())))
-                .Where(r => r.BusStops.Any(b => b.Address
-                    .ToLowerInvariant()
-                    .Contains(destinationCity.ToLowerInvariant())))
+                .Where(r => r.BusStops.Any(b => b.Hour >= hourFrom && b.Hour <= hourTo))
                 .ToListAsync();
 
             foundedRoutes = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
-            if (!day.Equals("1,2,3,4,5,6,0"))
-                foundedRoutes = RemoveRoutesFromWrongDays(foundedRoutes, day);
 
+            if (!date.ToString().Equals("1/1/0001 12:00:00 AM"))
+            {
+                foundedRoutes = RemoveRoutesFromWrongDays(foundedRoutes, ((int)dayOfTheWeek).ToString());
+            }
+            else
+            {
+                if (!days.Equals("1,2,3,4,5,6,0"))
+                    foundedRoutes = RemoveRoutesFromWrongDays(foundedRoutes, days);
+            }
             return foundedRoutes;
-        }
-
-
-        
-
-        public async Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity, string day,
-            TimeSpan hourFrom = default(TimeSpan), TimeSpan hourTo = default(TimeSpan))
-        {
-            List<Route> foundedRoutes = await _context.Routes
-                .Include(r => r.BusStops)
-                .Where(r => r.BusStops.Any(b => b.Address
-                    .ToLowerInvariant()
-                    .Contains(startCity.ToLowerInvariant())))
-                .Where(r => r.BusStops.Any(b => b.Address
-                    .ToLowerInvariant()
-                    .Contains(destinationCity.ToLowerInvariant())))
-                //.Where(r => r.DayOfTheWeek.Split(',', StringSplitOptions.None).Except(array).ToList().Count > 0)
-                .ToListAsync();
-
-            
-
-            var result = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
-            return result;
         }
 
 

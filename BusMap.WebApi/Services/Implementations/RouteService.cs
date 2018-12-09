@@ -140,21 +140,20 @@ namespace BusMap.WebApi.Services.Implementations
             return result;
         }
 
-        public async Task<IEnumerable<RoutesRouteDto>> FindRoutesAsync(string startCity, string destinationCity)
+        public async Task<IEnumerable<RoutesRouteDto>> FindRoutesAsync(string startCity, string destinationCity, string days = null,
+            TimeSpan hourFrom = default(TimeSpan), TimeSpan hourTo = default(TimeSpan), DateTime date = default(DateTime))
         {
-            var routes = await _repository.FindRoutesAsync(startCity, destinationCity);
-            var result = _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes);
+            var routes = await _repository.FindRoutesAsync(startCity, destinationCity, days, hourFrom, hourTo, date);
+            var result = _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes).ToList();
+
+            for (int i = 0; i < result.Count(); i++)
+            {
+                result[i].PunctualityPercentage
+                    = PunctualityConverter.RoutePunctualityPercentage(routes.ElementAt(i));
+            }
+
             return result;
         }
-
-        public async Task<IEnumerable<RoutesRouteDto>> FindRoutesAsync(string startCity, string destinationCity, string day)
-        {
-            var routes = await _repository.FindRoutesAsync(startCity, destinationCity, day);
-            var result = _mapper.Map<IEnumerable<Route>, IEnumerable<RoutesRouteDto>>(routes);
-            return result;
-        }
-
-
 
 
         private static void SetPunctualityForRoute(Route route, ref RoutesRouteDto routeDto)

@@ -175,15 +175,16 @@ namespace BusMap.WebApi.Controllers
 
         [HttpGet("Find")]
         public async Task<IActionResult> FindRoute(string startCity, string destinationCity,
-            TimeSpan hourFrom, TimeSpan hourTo, string day)
+            TimeSpan hourFrom, TimeSpan hourTo, string days, DateTime date)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _routeService.FindRoutesAsync(startCity, destinationCity, day);
+            var result = await _routeService.FindRoutesAsync(startCity, destinationCity, 
+                days, hourFrom, hourTo, date);
 
             if (!result.Any())
-                return NotFound();
+                return NotFound("No routes found.");
 
             return Ok(result);
         }

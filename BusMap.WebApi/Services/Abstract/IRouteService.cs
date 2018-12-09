@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Dto.Routes;
@@ -27,8 +28,8 @@ namespace BusMap.WebApi.Services.Abstract
         Task<int> GetRouteCurrentLatencyAsync(int routeId);
         Task<RoutesBusStopDto> GetRouteRecentBusStopAsync(int routeId);
 
-        Task<IEnumerable<RoutesRouteDto>> FindRoutesAsync(string startCity, string destinationCity);
-        Task<IEnumerable<RoutesRouteDto>> FindRoutesAsync(string startCity, string destinationCity, string day);
-
+        Task<IEnumerable<RoutesRouteDto>> FindRoutesAsync(string startCity, string destinationCity, string days = null,
+            TimeSpan hourFrom = default(TimeSpan), TimeSpan hourTo = default(TimeSpan),
+            DateTime date = default(DateTime));
     }
 }
