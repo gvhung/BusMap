@@ -167,6 +167,7 @@ namespace BusMap.WebApi.Repositories.Implementations
                 days = "1,2,3,4,5,6,0";
 
             List<Route> foundedRoutes = await _context.Routes
+                .Include(r => r.Carrier)
                 .Include(r => r.BusStops)
                 .ThenInclude(b => b.BusStopTraces)
                 .Where(r => r.BusStops.Any(b => b.Address

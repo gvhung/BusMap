@@ -244,7 +244,7 @@ namespace BusMap.Mobile.Services
         {
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync($"{Uri}routes/find?startCity={startCity}" +
-                                                       $"&destinationCity={destinationCity}&{days}" +
+                                                       $"&destinationCity={destinationCity}&days={days}" +
                                                        $"&hourFrom={hourFrom}&hourTo={hourTo}&date={date}");
             var foundRoutes = JsonConvert.DeserializeObject<List<Route>>(json);
             return foundRoutes;

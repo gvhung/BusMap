@@ -80,7 +80,8 @@ namespace BusMap.Mobile.ViewModels
             Routes = parameters["foundedRoutes"] as List<Route>;
             var startName = parameters["startBusStopName"] as string;
             var destName = parameters["destinationBusStopName"] as string;
-            Title = $"{startName} - {destName}";
+            var optional = parameters["optionalInTitle"] as string;
+            Title = optional == null ? $"{startName} - {destName}" : $"{startName} - {destName} : {optional}";
         }
 
 
