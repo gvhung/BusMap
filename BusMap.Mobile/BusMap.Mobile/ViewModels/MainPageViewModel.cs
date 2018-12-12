@@ -159,6 +159,9 @@ namespace BusMap.Mobile.ViewModels
 
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
+            if (!CrossGeolocator.Current.IsGeolocationAvailable)    //Checking if permission Granted. Else app will crash on 1 run.
+                await Task.Delay(1000);
+
             var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
             var nOfNewRoutesInRange = 0;
 
