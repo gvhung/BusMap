@@ -65,40 +65,6 @@ namespace BusMap.Mobile.Services
             return route;
         }
 
-        public async Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity)
-        {
-            var result = new List<Route>();
-
-            var httpClient = new HttpClient();
-
-            var json = await httpClient.GetStringAsync(Uri + "/routes/all");
-            var routes = JsonConvert.DeserializeObject<List<Route>>(json);
-
-            var routesToTest = routes
-                .Where(r => r.BusStops.Any(b => b.Address
-                    .ToLowerInvariant()
-                    .Contains(startCity.ToLowerInvariant())))
-                .Where(r => r.BusStops.Any(b => b.Address
-                    .ToLowerInvariant()
-                    .Contains(destinationCity.ToLowerInvariant())))
-                .ToList();
-
-            foreach (var route in routesToTest)
-            {
-                var start = route.BusStops.First(b => b.Address
-                    .ToLowerInvariant()
-                    .Contains(startCity.ToLowerInvariant()));
-                var dest = route.BusStops.First(b => b.Address
-                    .ToLowerInvariant()
-                    .Contains(destinationCity.ToLowerInvariant()));
-
-                if (start.Id < dest.Id)
-                    result.Add(route);
-            }
-
-            return result;
-        }
-
         public async Task<bool> PostRouteAsync(Route route)
         {
             var httpClient = new HttpClient();
@@ -237,6 +203,15 @@ namespace BusMap.Mobile.Services
             var json = await httpClient.GetStringAsync($"{Uri}routes/{routeId}/recentBusStop");
             var recentBusStop = JsonConvert.DeserializeObject<BusStop>(json);
             return recentBusStop;
+        }
+
+        public async Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity)
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync($"{Uri}routes/find?startCity={startCity}" +
+                                                       $"&destinationCity={destinationCity}");
+            var foundRoutes = JsonConvert.DeserializeObject<List<Route>>(json);
+            return foundRoutes;
         }
 
         public async Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity, string days,

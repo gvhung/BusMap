@@ -29,7 +29,6 @@ namespace BusMap.Mobile.Services
         Task<List<BusStop>> GetBusStopsAsync();
         Task<List<Route>> GetRoutes();
         Task<Route> GetRouteAsync(int routeId);
-        Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity);
         Task<bool> PostRouteAsync(Route route);
         Task<bool> CheckIfCarrierExistAsync(string name);
         Task<Carrier> PostCarrierAsync(Carrier carrier);
@@ -48,6 +47,7 @@ namespace BusMap.Mobile.Services
         Task<int> GetRouteCurrentLatency(int routeId);
         Task<BusStop> GetRouteRecentBusStop(int routeId);
 
+        Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity);
         Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity, string days,
             TimeSpan hourFrom, TimeSpan hourTo, DateTime date);
     }

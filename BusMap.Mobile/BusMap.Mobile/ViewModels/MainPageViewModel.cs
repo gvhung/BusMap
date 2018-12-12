@@ -141,15 +141,12 @@ namespace BusMap.Mobile.ViewModels
         public ICommand NavigateToNearestStopsPageCommand => new DelegateCommand(async () =>
             await NavigationService.NavigateAsync(nameof(NearestStopsMapPage)));
 
-
         public ICommand NavigateToTrackNewRouteCommand => new DelegateCommand(async () => 
             await NavigationService.NavigateAsync(nameof(TrackNewRoutePage)));
 
         public ICommand NavigateToQueueCommand => new DelegateCommand(async () =>
             await NavigationService.NavigateAsync(nameof(RoutesQueuePage)));
 
-
-        //Button for simple tests
         public ICommand AdvancedButtonCommand => new Command(async () =>
         await NavigationService.NavigateAsync(nameof(AdvancedSearchPage)));
 
