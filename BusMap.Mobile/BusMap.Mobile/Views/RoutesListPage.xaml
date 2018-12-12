@@ -19,6 +19,13 @@
 
     <ContentPage.Content>
         <StackLayout>
+            <StackLayout Margin="40,0,40,0"
+                         IsVisible="{Binding AreFiltersStringsEnabled}"
+                         BackgroundColor="WhiteSmoke">
+                <Label Text="Applied filters:"
+                       FontSize="Medium"/>
+                <Label Text="{Binding SearchParametersString}"/>
+            </StackLayout>
             <ListView ItemsSource="{Binding Routes}"
                       HasUnevenRows="True"
                       IsPullToRefreshEnabled="True"

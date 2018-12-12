@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Windows.Input;
@@ -27,6 +28,7 @@ namespace BusMap.Mobile.ViewModels
         private bool _isDateSwitchToggled;
         private bool _isDaysSwitchToggled;
         private ObservableCollection<SelectableItem<DayOfWeek>> _selectableDays;
+        private int _pickerSelectedIndex;
 
         public string StartCityText
         {
@@ -84,6 +86,14 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _selectableDays, value);
         }
 
+        public int PickerSelectedIndex
+        {
+            get => _pickerSelectedIndex;
+            set => SetProperty(ref _pickerSelectedIndex, value);
+        }
+
+        public DateTime DatePickerMinimumDate { get; } = DateTime.Now;      
+
 
         public AdvancedSearchPageViewModel(INavigationService navigationService, IDataService dataService) 
             : base(navigationService)
@@ -91,11 +101,12 @@ namespace BusMap.Mobile.ViewModels
             _dataService = dataService;
 
             DaysList = CreateDaysList();
-            SelectedDayOfWeek = DaysList.Find(d => d == DateTime.Now.DayOfWeek);
+            //SelectedDayOfWeek = DaysList.Find(d => d == DateTime.Now.DayOfWeek);
             HourFromTime = DateTime.Now.TimeOfDay;
             HourToTime = new TimeSpan(23,59,0);
             Date = DateTime.Now;
             SelectableDays = CreateSelectableDaysList();
+            PickerSelectedIndex = -1;
         } 
 
 
@@ -107,26 +118,25 @@ namespace BusMap.Mobile.ViewModels
             var navParams = new NavigationParameters();
             var days = ConvertSwitchesToDays();
             var date = default(DateTime);
-            var destinationString = DestinationCityText;
-            var optionalInTitle = new StringBuilder();
             if (IsDateSwitchToggled)
             {
                 date = Date;
-                optionalInTitle.Append(date.DayOfWeek);
-                optionalInTitle.Append(date.Date.ToString("dd.MM.yyyy,"));  //Todo: display optional just as label of text on RoutesListPage as parameters list
             }
 
-            optionalInTitle.Append($"{HourFromTime.ToString("hh\\:mm")}-{HourToTime.ToString("hh\\:mm")}");
-
-            navParams.Add("startBusStopName", StartCityText);
-            navParams.Add("destinationBusStopName", destinationString);
-            navParams.Add("optionalInTitle", optionalInTitle.ToString());
+            if (!IsMultiDaySelectSwitchToggled && PickerSelectedIndex == -1 && !IsDateSwitchToggled)
+            {
+                days = ((int) DateTime.Now.DayOfWeek).ToString();
+            }
 
             try
             {
                 var foundRoutes = await _dataService.FindRoutesAsync(StartCityText, DestinationCityText,
                     days, HourFromTime, HourToTime, date);
+
                 navParams.Add("foundedRoutes", foundRoutes);
+                navParams.Add("startBusStopName", StartCityText);
+                navParams.Add("destinationBusStopName", DestinationCityText);
+                navParams.Add("searchParametersString", CreateSearchParametersString(date));
                 await NavigationService.NavigateAsync(nameof(RoutesListPage), navParams);
             }
             catch (HttpRequestException ex)
@@ -134,6 +144,36 @@ namespace BusMap.Mobile.ViewModels
                 MessagingHelper.Toast("No routes was found.", ToastTime.LongTime);
             }
         });
+
+        private string CreateSearchParametersString(DateTime date)
+        {
+            var stringBuilder = new StringBuilder();
+
+            if (SelectableDays.Any(d => d.IsChecked) && IsMultiDaySelectSwitchToggled && !IsDateSwitchToggled)
+            {
+                var daysBuilder = new StringBuilder("Days: ");
+                foreach (var selectableDay in SelectableDays)
+                {
+                    if (selectableDay.IsChecked)
+                        daysBuilder.Append(selectableDay + ", ");
+                }
+                daysBuilder.Length -= 2;
+                stringBuilder.Append(daysBuilder.ToString());
+            }
+            else if (!IsMultiDaySelectSwitchToggled && !IsDateSwitchToggled)
+            {
+                stringBuilder.Append($"Day: {SelectedDayOfWeek}");
+            }
+
+            if (stringBuilder.Length > 0)
+                stringBuilder.Append("\n");
+            stringBuilder.Append($"Hours: {HourFromTime.ToString("hh\\:mm")}-{HourToTime.ToString("hh\\:mm")}\n");
+
+            if (date != default(DateTime))
+                stringBuilder.Append($"Date: {date.ToString("dd.MM.yyyy")} ({date.DayOfWeek})\n");
+
+            return stringBuilder.ToString();
+        }
 
 
         private List<DayOfWeek> CreateDaysList()

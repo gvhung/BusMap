@@ -22,6 +22,8 @@ namespace BusMap.Mobile.ViewModels
         private IDataService _dataService;
         private List<Route> _routes;
         private bool _isRefreshing;
+        private string _searchParametersString;
+        private bool _areFiltersStringsEnabled;
 
         public string StartPoint { get; set; }
         public string DestinationPoint { get; set; }
@@ -36,6 +38,18 @@ namespace BusMap.Mobile.ViewModels
         {
             get => _isRefreshing;
             set => SetProperty(ref _isRefreshing, value);
+        }
+
+        public string SearchParametersString
+        {
+            get => _searchParametersString;
+            set => SetProperty(ref _searchParametersString, value);
+        }
+
+        public bool AreFiltersStringsEnabled
+        {
+            get => _areFiltersStringsEnabled;
+            set => SetProperty(ref _areFiltersStringsEnabled, value);
         }
 
         public RoutesListPageViewModel(IDataService dataService, INavigationService navigationService)
@@ -80,8 +94,10 @@ namespace BusMap.Mobile.ViewModels
             Routes = parameters["foundedRoutes"] as List<Route>;
             var startName = parameters["startBusStopName"] as string;
             var destName = parameters["destinationBusStopName"] as string;
-            var optional = parameters["optionalInTitle"] as string;
-            Title = optional == null ? $"{startName} - {destName}" : $"{startName} - {destName} : {optional}";
+            SearchParametersString = parameters["searchParametersString"] as string;
+            Title = $"{startName} - {destName}";
+
+            AreFiltersStringsEnabled = SearchParametersString?.Length > 0;
         }
 
 
