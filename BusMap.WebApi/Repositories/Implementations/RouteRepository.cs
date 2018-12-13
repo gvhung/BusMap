@@ -181,7 +181,7 @@ namespace BusMap.WebApi.Repositories.Implementations
 
             foundedRoutes = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
 
-            if (!date.ToString().Equals("1/1/0001 12:00:00 AM"))
+            if (!date.ToString().Equals("1/1/0001 12:00:00 AM") && !days.Equals("1,2,3,4,5,6,0"))
             {
                 foundedRoutes = RemoveRoutesFromWrongDays(foundedRoutes, ((int)dayOfTheWeek).ToString());
             }
