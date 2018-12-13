@@ -24,6 +24,8 @@ namespace BusMap.Mobile.ViewModels
         private readonly IDataService _dataService;
         private readonly IPageDialogService _pageDialogService;
 
+        private string _searchRoutesQueryString;
+
         private string _startBusStopName;
         private string _destinationBusStopName;
         private bool _isBusy;
@@ -69,6 +71,7 @@ namespace BusMap.Mobile.ViewModels
             _pageDialogService = pageDialogService;
             _dataService = dataService;
             LocalizationAlert();
+            _dataService.HttpClientFindEvent += (s, e) => _searchRoutesQueryString = e;
         }
 
 
@@ -133,6 +136,7 @@ namespace BusMap.Mobile.ViewModels
             parameters.Add("foundedRoutes", foundedRoutes);
             parameters.Add("startBusStopName", StartBusStopName);
             parameters.Add("destinationBusStopName", DestinationBusStopName);
+            parameters.Add("searchRoutesQueryString", _searchRoutesQueryString);
 
             await NavigationService.NavigateAsync(nameof(RoutesListPage), parameters);
         });

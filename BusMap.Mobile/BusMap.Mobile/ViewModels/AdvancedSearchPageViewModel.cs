@@ -18,6 +18,7 @@ namespace BusMap.Mobile.ViewModels
     public class AdvancedSearchPageViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
+        private string _searchRoutesQueryString;
 
         private string _startCityText;
         private string _destinationCityText;
@@ -107,6 +108,7 @@ namespace BusMap.Mobile.ViewModels
             Date = DateTime.Now;
             SelectableDays = CreateSelectableDaysList();
             PickerSelectedIndex = -1;
+            _dataService.HttpClientFindEvent += (s, e) => _searchRoutesQueryString = e;
         } 
 
 
@@ -137,6 +139,7 @@ namespace BusMap.Mobile.ViewModels
                 navParams.Add("startBusStopName", StartCityText);
                 navParams.Add("destinationBusStopName", DestinationCityText);
                 navParams.Add("searchParametersString", CreateSearchParametersString(date));
+                navParams.Add("searchRoutesQueryString", _searchRoutesQueryString);
                 await NavigationService.NavigateAsync(nameof(RoutesListPage), navParams);
             }
             catch (HttpRequestException ex)

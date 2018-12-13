@@ -21,6 +21,9 @@ namespace BusMap.Mobile.ViewModels
     {
         private IDataService _dataService;
         private List<Route> _routes;
+        private string _searchRoutesQueryString;
+
+
         private bool _isRefreshing;
         private string _searchParametersString;
         private bool _areFiltersStringsEnabled;
@@ -52,6 +55,9 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _areFiltersStringsEnabled, value);
         }
 
+        
+
+
         public RoutesListPageViewModel(IDataService dataService, INavigationService navigationService)
             : base(navigationService)
         {
@@ -61,7 +67,10 @@ namespace BusMap.Mobile.ViewModels
 
         public ICommand RefreshCommand => new DelegateCommand(async () =>
         {
-            await GetRoutes();
+            IsRefreshing = true;
+            var routes = await _dataService.GetObjectFromQueryStringAsync<IEnumerable<Route>>(_searchRoutesQueryString);
+            Routes = routes?.ToList();
+            IsRefreshing = false;
         });
 
         public ICommand SelectedRouteCommand => new DelegateCommand<Route>(async route =>
@@ -80,21 +89,13 @@ namespace BusMap.Mobile.ViewModels
 
 
 
-        private async Task GetRoutes()
-        {
-            IsRefreshing = true;
-            Routes = await _dataService.GetRoutes();
-            IsRefreshing = false;
-        }
-
-
-
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
             Routes = parameters["foundedRoutes"] as List<Route>;
             var startName = parameters["startBusStopName"] as string;
             var destName = parameters["destinationBusStopName"] as string;
             SearchParametersString = parameters["searchParametersString"] as string;
+            _searchRoutesQueryString = parameters["searchRoutesQueryString"] as string;
             Title = $"{startName} - {destName}";
 
             AreFiltersStringsEnabled = SearchParametersString?.Length > 0;

@@ -20,6 +20,7 @@ namespace BusMap.Mobile.Services
     {
         private const string Uri = "http://192.168.0.129:5003/api/";
 
+        public event EventHandler<string> HttpClientFindEvent;
 
         public async Task<List<BusStop>> GetBusStopsAsync()
         {
@@ -208,8 +209,12 @@ namespace BusMap.Mobile.Services
         public async Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity)
         {
             var httpClient = new HttpClient();
-            var json = await httpClient.GetStringAsync($"{Uri}routes/find?startCity={startCity}" +
-                                                       $"&destinationCity={destinationCity}");
+            var apiQuery = $"{Uri}routes/find?startCity={startCity}" +
+                          $"&destinationCity={destinationCity}";
+
+            var json = await httpClient.GetStringAsync(apiQuery);
+            HttpClientFindEvent?.Invoke(this, apiQuery);
+
             var foundRoutes = JsonConvert.DeserializeObject<List<Route>>(json);
             return foundRoutes;
         }
@@ -218,11 +223,23 @@ namespace BusMap.Mobile.Services
             TimeSpan hourFrom, TimeSpan hourTo, DateTime date)
         {
             var httpClient = new HttpClient();
-            var json = await httpClient.GetStringAsync($"{Uri}routes/find?startCity={startCity}" +
-                                                       $"&destinationCity={destinationCity}&days={days}" +
-                                                       $"&hourFrom={hourFrom}&hourTo={hourTo}&date={date}");
+            var apiQuery = $"{Uri}routes/find?startCity={startCity}" +
+                           $"&destinationCity={destinationCity}&days={days}" +
+                           $"&hourFrom={hourFrom}&hourTo={hourTo}&date={date}";
+
+            var json = await httpClient.GetStringAsync(apiQuery);
+            HttpClientFindEvent?.Invoke(this, apiQuery);
+
             var foundRoutes = JsonConvert.DeserializeObject<List<Route>>(json);
             return foundRoutes;
+        }
+
+        public async Task<T> GetObjectFromQueryStringAsync<T>(string query)
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync(query);
+            var resultObject = JsonConvert.DeserializeObject<T>(json);
+            return resultObject;
         }
 
 
@@ -247,5 +264,6 @@ namespace BusMap.Mobile.Services
             stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             return stringContent;
         }
+
     }
 }

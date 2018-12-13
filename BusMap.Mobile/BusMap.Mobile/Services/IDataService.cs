@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
@@ -24,7 +25,7 @@ namespace BusMap.Mobile.Services
         //Task PostBusStop(BusStop busStop);
         //Task<List<BusStop>> GetBusStopsForRoute(int routeId);
         //Task<Route> GetRoute(int routeId);
-
+        event EventHandler<string> HttpClientFindEvent;
 
         Task<List<BusStop>> GetBusStopsAsync();
         Task<List<Route>> GetRoutes();
@@ -50,5 +51,7 @@ namespace BusMap.Mobile.Services
         Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity);
         Task<List<Route>> FindRoutesAsync(string startCity, string destinationCity, string days,
             TimeSpan hourFrom, TimeSpan hourTo, DateTime date);
+
+        Task<T> GetObjectFromQueryStringAsync<T>(string query);
     }
 }
