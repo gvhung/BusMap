@@ -167,7 +167,7 @@ namespace BusMap.Mobile.ViewModels
                 Route.DayOfTheWeek = SetFullDayNamesForRoute(Route.DayOfTheWeek);
                 //Route = await _dataService.GetRouteAsync(routeParam.Id);
                 Title = Route.Name;
-                Pins.AddRange(Route.BusStops.ToGoogleMapsPins());   //Freezing thread?
+                Pins.AddRange(Route.BusStops.ToGoogleMapsPinsWithPunctualityColorsPins());   //Freezing thread?
             }
 
             _isRouteInFavorites = _favoriteRoutesRepository.IsRouteInFavorites(Route.Id);

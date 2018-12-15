@@ -108,6 +108,7 @@ namespace BusMap.Mobile.ViewModels
                 var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(true);
                 MapPosition = null;
                 MapPosition = MapSpan.FromCenterAndRadius(currentPosition.ToGoogleMapsPosition(), Distance.FromKilometers(10));
+                MapPins.ToCustomIconPins();
                 if (MapPins == null || MapPins.Count < 1)
                     MapPins.AddRange(BusStops.ToGoogleMapsPins());
             }
