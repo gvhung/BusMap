@@ -58,9 +58,10 @@ namespace BusMap.Mobile
             containerRegistry.RegisterForNavigation<WeekDaySelectionPage, WeekDaySelectionPageViewModel>();
             containerRegistry.RegisterForNavigation<AdvancedSearchPage, AdvancedSearchPageViewModel>();
 
-            containerRegistry.Register<IDataService, ApiDataService>();
+            containerRegistry.Register<IDataService, ApiDataService>();           
             containerRegistry.Register<ILocalDatabase, LocalDatabase>();
             containerRegistry.Register<IFavoriteRoutesRepository, FavoriteRoutesRepository>();
+            containerRegistry.RegisterSingleton<IRecentSearchRepository, RecentSearchRepository>();
         }
 
     }

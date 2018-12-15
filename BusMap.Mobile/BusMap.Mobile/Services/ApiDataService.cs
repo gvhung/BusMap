@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
+using BusMap.Mobile.SQLite.Models;
+using BusMap.Mobile.SQLite.Repositories;
 using Newtonsoft.Json;
 using Xamarin.Forms.Maps;
 using Position = Plugin.Geolocator.Abstractions.Position;
@@ -19,6 +21,15 @@ namespace BusMap.Mobile.Services
     public class ApiDataService : IDataService
     {
         private const string Uri = "http://192.168.0.129:5003/api/";
+        private readonly IRecentSearchRepository _recentSearchRepository;
+
+        public ApiDataService(IRecentSearchRepository recentSearchRepository)
+        {
+            _recentSearchRepository = recentSearchRepository;
+        }
+
+
+
 
         public event EventHandler<string> HttpClientFindEvent;
 
@@ -213,7 +224,8 @@ namespace BusMap.Mobile.Services
                           $"&destinationCity={destinationCity}";
 
             var json = await httpClient.GetStringAsync(apiQuery);
-            HttpClientFindEvent?.Invoke(this, apiQuery);
+            HttpClientFindEvent?.Invoke(this, apiQuery);            
+            _recentSearchRepository.AddSearch(startCity, destinationCity);
 
             var foundRoutes = JsonConvert.DeserializeObject<List<Route>>(json);
             return foundRoutes;
@@ -229,6 +241,7 @@ namespace BusMap.Mobile.Services
 
             var json = await httpClient.GetStringAsync(apiQuery);
             HttpClientFindEvent?.Invoke(this, apiQuery);
+            _recentSearchRepository.AddSearch(startCity, destinationCity);
 
             var foundRoutes = JsonConvert.DeserializeObject<List<Route>>(json);
             return foundRoutes;

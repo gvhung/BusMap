@@ -90,44 +90,12 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        private async Task<List<Route>> searchRoutes()
-        {
-            IsBusy = true;
-            var resultRoutes = new List<Route>();
-
-            try
-            {
-                if (String.IsNullOrEmpty(StartBusStopName) 
-                    || String.IsNullOrEmpty(DestinationBusStopName)
-                    || String.IsNullOrWhiteSpace(StartBusStopName) 
-                    || String.IsNullOrWhiteSpace(DestinationBusStopName))
-                {
-                    MessagingHelper.Toast("Please enter bus stops in both entries.", ToastTime.ShortTime);
-                    return null;
-                }
-
-
-                resultRoutes = await _dataService.FindRoutesAsync(StartBusStopName, DestinationBusStopName);
-                if (resultRoutes.Count <= 0)
-                {
-                    MessagingHelper.Toast("No routes found.", ToastTime.LongTime);
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessagingHelper.Toast(ex.Message, ToastTime.LongTime);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-            return resultRoutes;
-        }
 
         public ICommand SearchAndNavigateToRoutesListPageCommand => new DelegateCommand(async () =>
         {
-            var foundedRoutes = await searchRoutes();
+            IsBusy = true;
+            List<Route> foundedRoutes = await SearchRoutes();
+            IsBusy = false;
 
             if (foundedRoutes == null)
                 return;
@@ -141,7 +109,6 @@ namespace BusMap.Mobile.ViewModels
             await NavigationService.NavigateAsync(nameof(RoutesListPage), parameters);
         });
 
-        
         public ICommand NavigateToNearestStopsPageCommand => new DelegateCommand(async () =>
             await NavigationService.NavigateAsync(nameof(NearestStopsMapPage)));
 
@@ -184,7 +151,46 @@ namespace BusMap.Mobile.ViewModels
             QueueButtonText = $"New routes queue ({nOfNewRoutesInRange})";
         }
 
-        public async Task DialogWhenHttpRequestException()
+
+        private async Task<List<Route>> SearchRoutes()
+        {
+            List<Route> resultRoutes = null;
+
+            if (ValidateCityEntries())
+            {
+                try
+                {
+                    resultRoutes = await _dataService.FindRoutesAsync(StartBusStopName, DestinationBusStopName);
+                }
+                catch (HttpRequestException ex)
+                {
+                    MessagingHelper.Toast(ex.Message, ToastTime.LongTime);
+                }
+
+            }
+            else
+            {
+                return null;
+            }
+
+            return resultRoutes;
+        }
+
+        private bool ValidateCityEntries()
+        {
+            if (String.IsNullOrEmpty(StartBusStopName)
+                || String.IsNullOrEmpty(DestinationBusStopName)
+                || String.IsNullOrWhiteSpace(StartBusStopName)
+                || String.IsNullOrWhiteSpace(DestinationBusStopName))
+            {
+                MessagingHelper.Toast("Please enter bus stops in both entries.", ToastTime.ShortTime);
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task DialogWhenHttpRequestException()
         {
             var dialogResult = await _pageDialogService.DisplayAlertAsync("Connection with server failed",
                 "Please enable internet connection in your device.", "Done", "Close app");

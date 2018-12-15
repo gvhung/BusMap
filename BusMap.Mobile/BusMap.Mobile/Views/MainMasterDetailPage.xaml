@@ -17,6 +17,29 @@
                         Command="{Binding NavigateToTrackNewRouteCommand}"/>
                 <Button Text="Favorite routes"
                         Command="{Binding NavigateToFavoriteRoutesCommand}"/>
+
+                <Label Text="Recent searches"
+                       FontSize="Medium"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+                <ListView ItemsSource="{Binding RecentSearch}"
+                          HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" 
+                                             HorizontalOptions="Center">
+                                    <Label Text="{Binding Start}"
+                                           FontSize="Medium"/>
+                                    <Label Text=">>"
+                                           FontSize="Medium"/>
+                                    <Label Text="{Binding Destination}"
+                                           FontSize="Medium"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </StackLayout>
         </ContentPage>
     </MasterDetailPage.Master>

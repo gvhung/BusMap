@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using BusMap.Mobile.Models;
+using BusMap.Mobile.SQLite.Models;
 using Xamarin.Forms.Maps;
 using Position = Plugin.Geolocator.Abstractions.Position;
 
