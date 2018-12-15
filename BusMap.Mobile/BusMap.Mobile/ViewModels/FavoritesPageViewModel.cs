@@ -69,13 +69,16 @@ namespace BusMap.Mobile.ViewModels
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
             if (Routes.Count > 0)
+            {
                 FavoriteRoutes = _favoritesRepository.GetAllFavorites();
-
+            }
+                
             if (_favoritesRepository.GetAllFavorites().Count() < Routes.Count || Routes.Count == 0)
             {
                 Routes.Clear();
                 var ids = FavoriteRoutes.Select(r => r.Id).ToList();
-                Routes.AddRange(await _dataService.GetFavoriteRoutes(ids));
+                if (ids.Count > 0)
+                    Routes.AddRange(await _dataService.GetFavoriteRoutes(ids));
             }
         }
 
