@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -10,6 +11,7 @@ using BusMap.Mobile.Annotations;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.SQLite.Repositories;
 using BusMap.Mobile.Views;
 using Plugin.Geolocator;
 using Prism.Commands;
@@ -22,8 +24,9 @@ namespace BusMap.Mobile.ViewModels
     public class MainPageViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
+        private readonly IVotedQueuedRoutesRepository _votedQueuedRoutesRepository;
         private readonly IPageDialogService _pageDialogService;
-
+        
         private string _searchRoutesQueryString;
 
         private string _startBusStopName;
@@ -65,11 +68,12 @@ namespace BusMap.Mobile.ViewModels
 
 
         public MainPageViewModel(IDataService dataService, INavigationService navigationService, 
-            IPageDialogService pageDialogService) 
+            IPageDialogService pageDialogService, IVotedQueuedRoutesRepository votedQueuedRoutesRepository) 
             : base(navigationService)
         {
             _pageDialogService = pageDialogService;
             _dataService = dataService;
+            _votedQueuedRoutesRepository = votedQueuedRoutesRepository;
             LocalizationAlert();
             _dataService.HttpClientFindEvent += (s, e) => _searchRoutesQueryString = e;
         }
@@ -135,7 +139,9 @@ namespace BusMap.Mobile.ViewModels
 
             try
             {
-                nOfNewRoutesInRange = await _dataService.GetNumberOfQueuedRoutesInRangeAsync(currentPosition, StaticVariables.Range);
+                var queuedRoutes = await _dataService.GetQueuedRoutesInRange(currentPosition, StaticVariables.Range);
+                queuedRoutes = DistinctUsingLocalDb(queuedRoutes);
+                nOfNewRoutesInRange = queuedRoutes.Count();
             }
             catch (HttpRequestException)
             {
@@ -204,6 +210,17 @@ namespace BusMap.Mobile.ViewModels
                 System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
             }
             
+        }
+
+        private IEnumerable<RouteQueued> DistinctUsingLocalDb(IEnumerable<RouteQueued> routes)
+        {
+            List<int> votedQueuedIds = _votedQueuedRoutesRepository?.GetAllVotedQueuedRoutes().Select(x => x.Id).ToList();
+
+            if (votedQueuedIds.Count == 0)
+                return routes;
+
+            var result = routes.Where(r => !votedQueuedIds.Contains(r.Id));
+            return result;
         }
 
     }
