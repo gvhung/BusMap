@@ -96,6 +96,14 @@ namespace BusMap.Mobile.Services
             return result;
         }
 
+        public async Task<List<Carrier>> GetAllCarriersAsync()
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync(Uri + "carriers");
+            var result = JsonConvert.DeserializeObject<List<Carrier>>(json);
+            return result;
+        }
+
         public async Task<Carrier> PostCarrierAsync(Carrier carrier)
         {
             var httpClient = new HttpClient();

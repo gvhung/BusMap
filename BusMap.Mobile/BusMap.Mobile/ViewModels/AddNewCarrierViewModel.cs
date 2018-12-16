@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
@@ -16,12 +18,23 @@ namespace BusMap.Mobile.ViewModels
         private readonly IDataService _dataService;
         private readonly IPageDialogService _pageDialogService;
         private string _carrierName;
+        private string _autoSuggestText;
 
         public string CarrierName
         {
             get => _carrierName;
             set => SetProperty(ref _carrierName, value);
         }
+
+        public string AutoSuggestText
+        {
+            get => _autoSuggestText;
+            set => SetProperty(ref _autoSuggestText, value);
+        }
+
+        public Carrier SelectedCarrier { get; set; }
+
+        public List<Carrier> CarrierSuggestions { get; set; }
 
 
         public AddNewCarrierViewModel(INavigationService navigationService, IDataService dataService, 
@@ -31,6 +44,7 @@ namespace BusMap.Mobile.ViewModels
             _pageDialogService = pageDialogService;
             Title = "Add new carrier";
         }
+
 
 
         public ICommand SaveButtonCommand => new DelegateCommand(async () =>
@@ -66,5 +80,18 @@ namespace BusMap.Mobile.ViewModels
 
 
 
+        public override async void OnNavigatedTo(NavigationParameters parameters)
+        {
+            var carriers = await GetCarriersFromApiAsync();
+            CarrierSuggestions = carriers;
+        }
+
+        private async Task<List<Carrier>> GetCarriersFromApiAsync()
+        {
+            var carriers = await _dataService.GetAllCarriersAsync();
+            if (carriers.Count == 0)
+                return new List<Carrier>();
+            return carriers;
+        }
     }
 }

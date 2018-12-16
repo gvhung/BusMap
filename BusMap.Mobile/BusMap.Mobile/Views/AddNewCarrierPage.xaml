@@ -4,6 +4,9 @@
              x:Class="BusMap.Mobile.Views.AddNewCarrierPage"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:suggestBox="clr-namespace:dotMorten.Xamarin.Forms;assembly=dotMorten.Xamarin.Forms.AutoSuggestBox"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:converters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
              Title="{Binding Title}">
 
     <ContentPage.Content>
@@ -16,6 +19,12 @@
             <Button Text="Save"
                     HorizontalOptions="Center"
                     Command="{Binding SaveButtonCommand}"/>
+            <suggestBox:AutoSuggestBox x:Name="SuggestBox"
+                                       PlaceholderText="Enter carrier name"
+                                       ItemsSource="{Binding CarrierSuggestions}"
+                                       Text="{Binding AutoSuggestText}"
+                                       TextChanged="AutoSuggestBox_OnTextChanged"
+                                       SuggestionChosen="AutoSuggestBox_OnSuggestionChosen"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
