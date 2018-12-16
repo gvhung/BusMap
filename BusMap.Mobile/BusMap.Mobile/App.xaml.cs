@@ -62,6 +62,7 @@ namespace BusMap.Mobile
             containerRegistry.Register<ILocalDatabase, LocalDatabase>();
             containerRegistry.Register<IFavoriteRoutesRepository, FavoriteRoutesRepository>();
             containerRegistry.RegisterSingleton<IRecentSearchRepository, RecentSearchRepository>();
+            containerRegistry.Register<IVotedQueuedRoutesRepository, VotedQueuedRoutesRepository>();
         }
 
     }

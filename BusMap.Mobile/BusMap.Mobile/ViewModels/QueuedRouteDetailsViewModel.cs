@@ -6,6 +6,8 @@ using System.Windows.Input;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.SQLite.Models;
+using BusMap.Mobile.SQLite.Repositories;
 using Prism.Commands;
 using Prism.Navigation;
 using Xamarin.Forms.GoogleMaps;
@@ -15,6 +17,8 @@ namespace BusMap.Mobile.ViewModels
     public class QueuedRouteDetailsViewModel :ViewModelBase
     {
         private readonly IDataService _dataService;
+        private readonly IVotedQueuedRoutesRepository _votedQueuedRoutesRepository;
+
         private RouteQueued _routeQueued;
         private ObservableCollection<Pin> _pins;
         private MapSpan _mapPosition;
@@ -45,10 +49,13 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-        public QueuedRouteDetailsViewModel(INavigationService navigationService, IDataService dataService) 
+        public QueuedRouteDetailsViewModel(INavigationService navigationService, IDataService dataService, 
+            IVotedQueuedRoutesRepository votedQueuedRoutesRepository) 
             : base(navigationService)
         {
             _dataService = dataService;
+            _votedQueuedRoutesRepository = votedQueuedRoutesRepository;
+
             Title = "Queued route details";
             Pins = new ObservableCollection<Pin>();
         }
@@ -63,6 +70,7 @@ namespace BusMap.Mobile.ViewModels
             if (updateSuccess)
             {
                 MessagingHelper.Toast("Success! Thank You for voting", ToastTime.LongTime);
+                AddVoteToLocalDb(true);
             }
             else
             {
@@ -80,6 +88,7 @@ namespace BusMap.Mobile.ViewModels
             if (updateSuccess)
             {
                 MessagingHelper.Toast("Success! Thank You for voting", ToastTime.LongTime);
+                AddVoteToLocalDb(false);
             }
             else
             {
@@ -103,6 +112,17 @@ namespace BusMap.Mobile.ViewModels
                 MapPosition = MapSpan.FromCenterAndRadius(Pins[0].Position, Distance.FromKilometers(20));
             }
             
+        }
+
+        private void AddVoteToLocalDb(bool votedPositive)
+        {
+            var route = new VotedQueuedRoute
+            {
+                Id = RouteQueued.Id,
+                VoteType = votedPositive,
+                AddedDate = DateTime.Now
+            };
+            _votedQueuedRoutesRepository.AddVotedRoute(route);
         }
 
 

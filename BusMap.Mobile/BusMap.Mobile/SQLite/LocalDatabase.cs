@@ -26,6 +26,7 @@ namespace BusMap.Mobile.SQLite
 
             _connection.CreateTable<FavoriteRoute>();
             _connection.CreateTable<RecentSearch>();
+            _connection.CreateTable<VotedQueuedRoute>();
         }
 
         public SQLiteConnection GetConnection()
