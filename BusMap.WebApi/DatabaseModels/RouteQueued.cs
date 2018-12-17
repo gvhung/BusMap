@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels.BaseModels;
@@ -8,8 +9,9 @@ namespace BusMap.WebApi.DatabaseModels
 {
     public class RouteQueued : RouteBase
     {
-        public int CarrierQueuedId { get; set; }
+        public int? CarrierQueuedId { get; set; }
         public CarrierQueued CarrierQueued { get; set; }
+        public int? CarrierId { get; set; }
 
         public ICollection<BusStopQueued> BusStopsQueued { get; set; }
 

@@ -46,6 +46,7 @@ namespace BusMap.Mobile.Views
 
             AutoSuggestBox box = sender as AutoSuggestBox;
             _viewModel.AutoSuggestText = box.Text;
+            _viewModel.Carrier = null;
 
             if (string.IsNullOrWhiteSpace(box.Text) || box.Text.Length < 3)
                 box.ItemsSource = null;

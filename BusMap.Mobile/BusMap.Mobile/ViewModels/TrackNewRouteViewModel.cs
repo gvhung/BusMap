@@ -143,12 +143,16 @@ namespace BusMap.Mobile.ViewModels
                 return;
             }
 
-            var carrierQueued = new CarrierQueued();
-            if (Carrier != null)
+            var routeQueued = new RouteQueued()
             {
-                carrierQueued.Name = Carrier.Name;
-            }
-            else
+                BusStopsQueued = busStopsReversed,
+                //CarrierQueuedId = Carrier.Id,
+                Name = DateTime.Now.ToShortTimeString(), //TODO: From Entry
+                DayOfTheWeek = DaysToNumbersString(_weekDays)
+            };
+
+            var carrierQueued = new CarrierQueued();
+            if (Carrier == null)
             {
                 var dialogAnswerCarrier = await _pageDialogService
                     .DisplayAlertAsync("Information.",
@@ -158,21 +162,24 @@ namespace BusMap.Mobile.ViewModels
                         "please click Ok.", "Ok", "I want check again");
                 if (!dialogAnswerCarrier)
                     return;
+                else
+                {
+                    carrierQueued.Name = AutoSuggestText;
+                    routeQueued.CarrierQueued = carrierQueued;
+                }
+            }
+            else
+            {
+                routeQueued.CarrierId = Carrier.Id;
             }
 
-            var route = new RouteQueued()
-            {
-                BusStopsQueued = busStopsReversed,
-                CarrierQueuedId = Carrier.Id,
-                Name = DateTime.Now.ToShortTimeString(), //TODO: From Entry
-                DayOfTheWeek = DaysToNumbersString(_weekDays)
-            };
+            var x = 1;
 
             var dialogAnswer = await _pageDialogService
                 .DisplayAlertAsync("Are you sure?", "You would not edit route after it.", "Yes", "No");
             if (dialogAnswer)
             {
-                await PostDataAsync(route);
+                await PostDataAsync(routeQueued);
             }
 
             

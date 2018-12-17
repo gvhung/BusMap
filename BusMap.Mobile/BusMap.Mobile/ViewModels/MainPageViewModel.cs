@@ -207,7 +207,7 @@ namespace BusMap.Mobile.ViewModels
             
         }
 
-        private IEnumerable<RouteQueued> DistinctUsingLocalDb(IEnumerable<RouteQueued> routes)
+        private List<RouteQueued> DistinctUsingLocalDb(List<RouteQueued> routes)
         {
             List<int> votedQueuedIds = _votedQueuedRoutesRepository?.GetAllVotedQueuedRoutes().Select(x => x.Id).ToList();
 
@@ -215,7 +215,7 @@ namespace BusMap.Mobile.ViewModels
                 return routes;
 
             var result = routes.Where(r => !votedQueuedIds.Contains(r.Id));
-            return result;
+            return result.ToList();
         }
 
     }

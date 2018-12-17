@@ -125,7 +125,7 @@ namespace BusMap.Mobile.Services
             return queuedRoutes;
         }
 
-        public async Task<IEnumerable<RouteQueued>> GetQueuedRoutesInRange(Position currentPosition, int range)
+        public async Task<List<RouteQueued>> GetQueuedRoutesInRange(Position currentPosition, int range)
         {
             var httpClient = new HttpClient();
             var currentPositionString = $"{currentPosition.Latitude},{currentPosition.Longitude}";
@@ -140,7 +140,7 @@ namespace BusMap.Mobile.Services
                 return new List<RouteQueued>();
             }
 
-            var queuedRoutesInRange = JsonConvert.DeserializeObject<IEnumerable<RouteQueued>>(json);
+            var queuedRoutesInRange = JsonConvert.DeserializeObject<List<RouteQueued>>(json);
             return queuedRoutesInRange;
         }
 

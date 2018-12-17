@@ -37,7 +37,7 @@ namespace BusMap.Mobile.Services
         Task<Carrier> PostCarrierAsync(Carrier carrier);
 
         Task<IEnumerable<RouteQueued>> GetQueuedRoutesAsync();    //TODO: download range using current localization
-        Task<IEnumerable<RouteQueued>> GetQueuedRoutesInRange(Position currentPosition, int range);
+        Task<List<RouteQueued>> GetQueuedRoutesInRange(Position currentPosition, int range);
         Task<int> GetNumberOfQueuedRoutesAsync();    //TODO: download range using current localization
         Task<int> GetNumberOfQueuedRoutesInRangeAsync(Position currentPosition, int range);
         Task<bool> PostRouteQueuedAsync(RouteQueued routeQueued);

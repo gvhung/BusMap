@@ -200,7 +200,9 @@ namespace BusMap.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CarrierQueuedId");
+                    b.Property<int?>("CarrierId");
+
+                    b.Property<int?>("CarrierQueuedId");
 
                     b.Property<DateTime>("CreatedDatetime")
                         .ValueGeneratedOnAdd()
@@ -288,8 +290,7 @@ namespace BusMap.WebApi.Migrations
                 {
                     b.HasOne("BusMap.WebApi.DatabaseModels.CarrierQueued", "CarrierQueued")
                         .WithMany("RoutesQueued")
-                        .HasForeignKey("CarrierQueuedId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CarrierQueuedId");
                 });
 
             modelBuilder.Entity("BusMap.WebApi.DatabaseModels.RouteReport", b =>

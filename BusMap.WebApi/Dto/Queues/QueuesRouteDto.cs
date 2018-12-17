@@ -8,8 +8,9 @@ namespace BusMap.WebApi.Dto.Queues
         public int Id { get; set; }
         public string Name { get; set; }
         public string DayOfTheWeek { get; set; }
-        public int CarrierQueuedId { get; set; }
+        public int? CarrierQueuedId { get; set; }
         public QueuesCarrierDto CarrierQueued { get; set; }
+        public int? CarrierId { get; set; }
 
         public ICollection<QueuesBusStopDto> BusStopsQueued { get; set; }
 

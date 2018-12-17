@@ -34,6 +34,11 @@ namespace BusMap.WebApi.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RouteQueued>()
+                .HasOne(r => r.CarrierQueued)
+                .WithMany(c => c.RoutesQueued)
+                .IsRequired(false);
+
+            modelBuilder.Entity<RouteQueued>()
                 .Property(r => r.PositiveVotes)
                 .HasDefaultValue(0);
             modelBuilder.Entity<RouteQueued>()
