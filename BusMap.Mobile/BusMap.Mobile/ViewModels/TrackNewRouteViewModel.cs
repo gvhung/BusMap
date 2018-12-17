@@ -36,7 +36,7 @@ namespace BusMap.Mobile.ViewModels
         private ObservableCollection<Pin> _mapPins;
         private MapSpan _mapPosition;
         private ObservableCollection<BusStopQueued> _busStops;
-        private CarrierQueued _carrier;
+        private Carrier _carrier;
         private string _weekDaysString;
 
 
@@ -58,7 +58,7 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _busStops, value);
         }
 
-        public CarrierQueued Carrier
+        public Carrier Carrier
         {
             get => _carrier;
             set => SetProperty(ref _carrier, value);
@@ -76,6 +76,9 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _weekDaysString, value);
         }
 
+        public List<Carrier> CarrierSuggestions { get; set; }
+        public string AutoSuggestText { get; set; }
+
 
         public TrackNewRouteViewModel(IDataService dataService, INavigationService navigationService,
             IPageDialogService pageDialogService)
@@ -88,11 +91,11 @@ namespace BusMap.Mobile.ViewModels
             BusStops = new ObservableCollection<BusStopQueued>();
             _weekDays = AddDaysToCollection();
 
-            Carrier = new CarrierQueued
-            {
-                Name = "Placeholder carrier",
-                Id = 2  //Todo: get id carrier checked on list
-            };
+            //Carrier = new Carrier
+            //{
+            //    Name = "Placeholder carrier",
+            //    Id = 2  //Todo: get id carrier checked on list
+            //};
         }
 
 
@@ -132,10 +135,29 @@ namespace BusMap.Mobile.ViewModels
         {
             var busStopsReversed = BusStops.Reverse().ToList();
 
+            if(!CheckIfCarrierIsEntered())
+                return;
             if (!_weekDays.Any(d => d.IsChecked))
             {
                 MessagingHelper.Toast("Please set coursing days.", ToastTime.LongTime);
                 return;
+            }
+
+            var carrierQueued = new CarrierQueued();
+            if (Carrier != null)
+            {
+                carrierQueued.Name = Carrier.Name;
+            }
+            else
+            {
+                var dialogAnswerCarrier = await _pageDialogService
+                    .DisplayAlertAsync("Information.",
+                        "Entered carrier name was not found in our database. " +
+                        "We strongly recommend to check if it is not on list. " +
+                        "If are you sure about this is new carrier and his name is correct, " +
+                        "please click Ok.", "Ok", "I want check again");
+                if (!dialogAnswerCarrier)
+                    return;
             }
 
             var route = new RouteQueued()
@@ -154,15 +176,6 @@ namespace BusMap.Mobile.ViewModels
             }
 
             
-        });
-
-        public ICommand CreateNewCarrierCommand => new DelegateCommand(async () =>
-        {
-            var dialogAnswer = await _pageDialogService
-                .DisplayAlertAsync("Are you sure?", "Before creating new carrier please be sure, " +
-                    "if carrier which You want add not exist in our database.", "Yes", "No");
-            if (dialogAnswer)
-                await NavigationService.NavigateAsync(nameof(AddNewCarrierPage));
         });
 
         public ICommand ChooseDaysCommand => new DelegateCommand(async () =>
@@ -269,8 +282,15 @@ namespace BusMap.Mobile.ViewModels
 
 
 
+        public override async void OnNavigatingTo(NavigationParameters parameters)
+        {
+            var carriers = await GetCarriersFromApiAsync();
+            CarrierSuggestions = carriers;
+        }
+
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
+
             if (parameters.ContainsKey("newBusStop"))
             {
                 AddBusStopToLists(parameters["newBusStop"] as BusStopQueued);
@@ -297,11 +317,6 @@ namespace BusMap.Mobile.ViewModels
                 }
             }
 
-            if (parameters.ContainsKey("addedCarrier"))
-            {
-                Carrier = parameters["addedCarrier"] as CarrierQueued;
-            }
-
             if (parameters.ContainsKey("days"))
             {
                 _weekDays = parameters["days"] as List<SelectableItem<DayOfWeek>>;
@@ -309,6 +324,26 @@ namespace BusMap.Mobile.ViewModels
             }
 
         }
+
+        private bool CheckIfCarrierIsEntered()
+        {
+            if (string.IsNullOrEmpty(AutoSuggestText) || AutoSuggestText.Length < 3)
+            {
+                MessagingHelper.Toast("Please enter carrier (Minimum 3 characters).", ToastTime.LongTime);
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<List<Carrier>> GetCarriersFromApiAsync()
+        {
+            var carriers = await _dataService.GetAllCarriersAsync();
+            if (carriers.Count == 0)
+                return new List<Carrier>();
+            return carriers;
+        }
+
 
     }
 }

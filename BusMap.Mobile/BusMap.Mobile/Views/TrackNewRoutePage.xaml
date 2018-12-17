@@ -7,7 +7,8 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
              xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
-             prism:ViewModelLocator.AutowireViewModel="True"
+            xmlns:suggestBox="clr-namespace:dotMorten.Xamarin.Forms;assembly=dotMorten.Xamarin.Forms.AutoSuggestBox"
+            prism:ViewModelLocator.AutowireViewModel="True"
              Title="{Binding Title}">
 
     <!--AddingPage-->
@@ -18,12 +19,16 @@
                              HorizontalOptions="Center">
                     <Button Text="Add bus stop"
                             Command="{Binding PopupCommand}"/>
-                    <Button Text="Create new carrier"
-                            Command="{Binding CreateNewCarrierCommand}"/>
-
                     <Button Text="Choose days"
                             Command="{Binding ChooseDaysCommand}"/>
                 </StackLayout>
+                <suggestBox:AutoSuggestBox x:Name="SuggestBox"
+                                           PlaceholderText="Enter carrier name"
+                                           ItemsSource="{Binding CarrierSuggestions}"
+                                           Text="{Binding AutoSuggestText}"
+                                           TextChanged="AutoSuggestBox_OnTextChanged"
+                                           SuggestionChosen="AutoSuggestBox_OnSuggestionChosen"
+                                           HorizontalOptions="Center"/>
                 <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
                        HorizontalOptions="Center"/>
                 <Label Text="{Binding WeekDaysString}"/>
