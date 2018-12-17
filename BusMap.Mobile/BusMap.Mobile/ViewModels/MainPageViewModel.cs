@@ -137,16 +137,11 @@ namespace BusMap.Mobile.ViewModels
             var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
             var nOfNewRoutesInRange = 0;
 
-            try
-            {
-                var queuedRoutes = await _dataService.GetQueuedRoutesInRange(currentPosition, StaticVariables.Range);
-                queuedRoutes = DistinctUsingLocalDb(queuedRoutes);
-                nOfNewRoutesInRange = queuedRoutes.Count();
-            }
-            catch (HttpRequestException)
-            {
-                await DialogWhenHttpRequestException();
-            }
+            var queuedRoutes = await _dataService.GetQueuedRoutesInRange(currentPosition, StaticVariables.Range);
+            queuedRoutes = DistinctUsingLocalDb(queuedRoutes);
+            nOfNewRoutesInRange = queuedRoutes.Count();
+            
+
 
 
             if (nOfNewRoutesInRange > 0)

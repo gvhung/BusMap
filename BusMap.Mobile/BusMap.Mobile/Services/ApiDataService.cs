@@ -129,7 +129,17 @@ namespace BusMap.Mobile.Services
         {
             var httpClient = new HttpClient();
             var currentPositionString = $"{currentPosition.Latitude},{currentPosition.Longitude}";
-            var json = await httpClient.GetStringAsync($"{Uri}queues/routes/range?yourLocation={currentPositionString}&range={range}");
+            var json = "";
+            try
+            {
+                json = await httpClient.GetStringAsync(
+                    $"{Uri}queues/routes/range?yourLocation={currentPositionString}&range={range}");
+            }
+            catch (HttpRequestException)
+            {
+                return new List<RouteQueued>();
+            }
+
             var queuedRoutesInRange = JsonConvert.DeserializeObject<IEnumerable<RouteQueued>>(json);
             return queuedRoutesInRange;
         }
