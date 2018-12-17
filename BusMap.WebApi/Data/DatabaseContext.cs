@@ -44,12 +44,25 @@ namespace BusMap.WebApi.Data
             modelBuilder.Entity<RouteQueued>()
                 .Property(r => r.NegativeVotes)
                 .HasDefaultValue(0);
+
+            modelBuilder.Entity<CarrierQueued>()
+                .Property(c => c.PositiveVotes)
+                .HasDefaultValue(0);
+            modelBuilder.Entity<CarrierQueued>()
+                .Property(c => c.NegativeVotes)
+                .HasDefaultValue(0);
+
             modelBuilder.Entity<RouteQueued>()
                 .Property(r => r.CreatedDatetime)
+                .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
+            modelBuilder.Entity<CarrierQueued>()
+                .Property(c => c.CreatedDatetime)
                 .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
             modelBuilder.Entity<RouteReport>()
                 .Property(r => r.Date)
                 .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
+
+            //Todo: These 2 schould be from device, not db
             modelBuilder.Entity<BusStopTrace>()
                 .Property(t => t.Date)
                 .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");

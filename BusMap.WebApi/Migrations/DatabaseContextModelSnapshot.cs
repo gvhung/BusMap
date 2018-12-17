@@ -158,9 +158,25 @@ namespace BusMap.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CreatedDatetime")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("FORMAT(GetDate(), 'yyyy-MM-dd')");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100);
+
+                    b.Property<int>("NegativeVotes")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("PositiveVotes")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTime?>("VotingEndedDateTime");
+
+                    b.Property<DateTime?>("VotingStartedDatetime");
 
                     b.HasKey("Id");
 
