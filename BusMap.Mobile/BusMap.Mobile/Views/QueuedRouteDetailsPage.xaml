@@ -14,45 +14,77 @@
     </ContentPage.BindingContext>-->
 
     <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="5*"/>
-                <RowDefinition Height="5*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackLayout Grid.Row="0" Grid.Column="0">
-                <Label HorizontalOptions="Center"
+        <StackLayout Grid.Row="0" Grid.Column="0">
+            <Label Text="Vote route"
+                       FontSize="Medium"
+                       HorizontalOptions="Center"/>
+            <Label HorizontalOptions="Center"
                        Text="{Binding RouteQueued.Name, StringFormat='{0} details'}"
                        FontSize="Large"/>
-                <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
+            <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
                        FontSize="Medium"/>
-                <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"
+            <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"
                        FontSize="Medium"/>
-                <Label Text="{Binding RouteQueued.BusStopsQueued}"/>
-                <Label Text="{Binding RouteQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
-                <Label Text="{Binding RouteQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
-                <StackLayout Orientation="Horizontal">
+            <Label Text="{Binding RouteQueued.BusStopsQueued}"/>
+            <Label Text="{Binding RouteQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
+            <Label Text="{Binding RouteQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
+
+            <StackLayout Orientation="Horizontal">
+                <!--Route-->
+                <Label Text="Vote route:"
+                           FontSize="Medium"
+                           VerticalOptions="Center"/>
+                <StackLayout Orientation="Horizontal"
+                                 Spacing="0">
                     <Button Text="+" 
-                            FontAttributes="Bold"
-                            IsEnabled="{Binding VotingButtonsEnabled}"
-                            Command="{Binding PlusClickedCommand}"/>
+                                IsEnabled="{Binding RouteVotingButtonsEnabled}"
+                                Command="{Binding RoutePlusClickedCommand}"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Start"
+                                WidthRequest="60"
+                                HeightRequest="40"/>
                     <Button Text="-"
-                            FontAttributes="Bold"
-                            IsEnabled="{Binding VotingButtonsEnabled}"
-                            Command="{Binding MinusClickedCommand}"/>
+                                IsEnabled="{Binding RouteVotingButtonsEnabled}"
+                                Command="{Binding RouteMinusClickedCommand}"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Start"
+                                WidthRequest="60"
+                                HeightRequest="40"/>
                 </StackLayout>
             </StackLayout>
-            <googleMaps:Map Grid.Row="1" Grid.Column="0"
-                            MapType="Street"
-                            MyLocationEnabled="True">
-                <googleMaps:Map.Behaviors>
-                    <googleMapsBindings:BindingPinsBehavior Value="{Binding Pins}"/>
-                    <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
-                </googleMaps:Map.Behaviors>
-            </googleMaps:Map>
-        </Grid>
-        
+
+            <StackLayout Margin="10"/>
+            
+
+            <StackLayout>
+                <Label Text="{Binding RouteQueued.CarrierQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
+                <Label Text="{Binding RouteQueued.CarrierQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal"
+                             IsVisible="{Binding RouteHaveCarrierQueued}">
+                <!--Carrier-->
+
+                <Label Text="Vote carrier:"
+                           FontSize="Medium"
+                           VerticalOptions="Center"/>
+                <StackLayout Orientation="Horizontal"
+                                 Spacing="0">
+                    <Button Text="+"  
+                            IsEnabled="{Binding CarrierVotingButtonsEnabled}"
+                            Command="{Binding CarrierPlusClickedCommand}"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Start"
+                            WidthRequest="60"
+                            HeightRequest="40"/>
+                    <Button Text="-"
+                            IsEnabled="{Binding CarrierVotingButtonsEnabled}"
+                            Command="{Binding CarrierMinusClickedCommand}"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Start"
+                            WidthRequest="60"
+                            HeightRequest="40"/>
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
@@ -10,11 +11,12 @@ using BusMap.Mobile.SQLite.Models;
 using BusMap.Mobile.SQLite.Repositories;
 using Prism.Commands;
 using Prism.Navigation;
+using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
 namespace BusMap.Mobile.ViewModels
 {
-    public class QueuedRouteDetailsViewModel :ViewModelBase
+    public class QueuedRouteDetailsViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
         private readonly IVotedQueuedRoutesRepository _votedQueuedRoutesRepository;
@@ -22,7 +24,9 @@ namespace BusMap.Mobile.ViewModels
         private RouteQueued _routeQueued;
         private ObservableCollection<Pin> _pins;
         private MapSpan _mapPosition;
-        private bool _votingButtonsEnabled = true;
+        private bool _routeVotingButtonsEnabled = true;
+        private bool _carrierVotingButtonsEnabled = true;
+        private bool _routeHaveCarrierQueued;
 
         public RouteQueued RouteQueued
         {
@@ -42,67 +46,82 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _mapPosition, value);
         }
 
-        public bool VotingButtonsEnabled
+        public bool RouteVotingButtonsEnabled
         {
-            get => _votingButtonsEnabled;
-            set => SetProperty(ref _votingButtonsEnabled, value);
+            get => _routeVotingButtonsEnabled;
+            set => SetProperty(ref _routeVotingButtonsEnabled, value);
+        }
+
+        public bool CarrierVotingButtonsEnabled
+        {
+            get => _carrierVotingButtonsEnabled;
+            set => SetProperty(ref _carrierVotingButtonsEnabled, value);
+        }
+
+        public bool RouteHaveCarrierQueued
+        {
+            get => _routeHaveCarrierQueued;
+            set => SetProperty(ref _routeHaveCarrierQueued, value);
         }
 
 
-        public QueuedRouteDetailsViewModel(INavigationService navigationService, IDataService dataService, 
-            IVotedQueuedRoutesRepository votedQueuedRoutesRepository) 
+        public QueuedRouteDetailsViewModel(INavigationService navigationService, IDataService dataService,
+            IVotedQueuedRoutesRepository votedQueuedRoutesRepository)
             : base(navigationService)
         {
             _dataService = dataService;
             _votedQueuedRoutesRepository = votedQueuedRoutesRepository;
 
+            CarrierVotingButtonsEnabled = true;
             Title = "Queued route details";
             Pins = new ObservableCollection<Pin>();
         }
 
 
 
-        public ICommand PlusClickedCommand => new DelegateCommand(async () =>
+        public ICommand RoutePlusClickedCommand => new DelegateCommand(async () =>
         {
             RouteQueued.PositiveVotes++;
-            VotingButtonsEnabled = false;
-            var updateSuccess = await _dataService.UpdateQueuedRoute(RouteQueued.Id, RouteQueued);
-            if (updateSuccess)
+
+            if (!await IsRouteVoteSend())
             {
-                MessagingHelper.Toast("Success! Thank You for voting", ToastTime.LongTime);
-                AddVoteToLocalDb(true);
+                RouteQueued.PositiveVotes--;
             }
-            else
-            {
-                VotingButtonsEnabled = true;
-                MessagingHelper.Toast("Failed. Connection ussue", ToastTime.LongTime);
-            }
-                
         });
 
-        public ICommand MinusClickedCommand => new DelegateCommand(async () =>
+        public ICommand RouteMinusClickedCommand => new DelegateCommand(async () =>
         {
             RouteQueued.NegativeVotes++;
-            VotingButtonsEnabled = false;
-            var updateSuccess = await _dataService.UpdateQueuedRoute(RouteQueued.Id, RouteQueued);
-            if (updateSuccess)
+            if (!await IsRouteVoteSend())
             {
-                MessagingHelper.Toast("Success! Thank You for voting", ToastTime.LongTime);
-                AddVoteToLocalDb(false);
-            }
-            else
-            {
-                VotingButtonsEnabled = true;
-                MessagingHelper.Toast("Failed. Connection ussue", ToastTime.LongTime);
+                RouteQueued.NegativeVotes--;
             }
         });
 
+        public ICommand CarrierPlusClickedCommand => new DelegateCommand(async () =>
+        {
+            RouteQueued.CarrierQueued.PositiveVotes++;
+            if (!await IsCarrierVoteSend())
+            {
+                RouteQueued.CarrierQueued.PositiveVotes--;
+            }
+        });
+
+        public ICommand CarrierMinusClickedCommand => new DelegateCommand(async () =>
+        {
+            RouteQueued.CarrierQueued.NegativeVotes++;
+            if (!await IsCarrierVoteSend())
+            {
+                RouteQueued.CarrierQueued.NegativeVotes--;
+            }
+        });
 
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("selectedQueuedRoute"))
             {
                 RouteQueued = parameters["selectedQueuedRoute"] as RouteQueued;
+                RouteHaveCarrierQueued = RouteQueued.CarrierQueued != null ? true : false;
             }
 
             var pins = RouteQueued.BusStopsQueued.ToGoogleMapsPins();
@@ -111,7 +130,53 @@ namespace BusMap.Mobile.ViewModels
             {
                 MapPosition = MapSpan.FromCenterAndRadius(Pins[0].Position, Distance.FromKilometers(20));
             }
-            
+        }
+
+        public override void OnNavigatedFrom(NavigationParameters parameters)
+        {
+            if (!RouteVotingButtonsEnabled || !CarrierVotingButtonsEnabled)
+                AddVoteToLocalDb(true);
+        }
+
+
+        private async Task<bool> IsRouteVoteSend()
+        {
+            var updateSuccess = await UpdateQueuedRouteOrCarrier();
+            if (!updateSuccess)
+            {
+                return false;
+            }
+
+            RouteVotingButtonsEnabled = false;
+            return true;
+        }
+
+        private async Task<bool> IsCarrierVoteSend()
+        {
+            var updateSuccess = await UpdateQueuedRouteOrCarrier();
+            if (!updateSuccess)
+            {
+                return false;
+            }
+
+            CarrierVotingButtonsEnabled = false;
+            return true;
+        }
+
+        private async Task<bool> UpdateQueuedRouteOrCarrier()
+        {
+            var updateSuccess = await _dataService.UpdateQueuedRoute(RouteQueued.Id, RouteQueued);
+            if (updateSuccess)
+            {
+                MessagingHelper.Toast("Success! Thank You for voting", ToastTime.LongTime);
+            }
+            else
+            {
+                MessagingHelper.Toast("Failed. Connection ussue", ToastTime.LongTime);
+                return false;
+            }
+
+            return true;
         }
 
         private void AddVoteToLocalDb(bool votedPositive)

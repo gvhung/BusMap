@@ -145,6 +145,16 @@ namespace BusMap.WebApi.Controllers
             return StatusCode(202);
         }
 
+        //[HttpPut("carriers/{id:int}")]
+        //public async Task<IActionResult> PutCarrier(int id, CarrierQueued carrierQueued)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+
+            
+
+        //}
+
 
 
     }

@@ -54,33 +54,27 @@ namespace BusMap.WebApi.Repositories.Implementations
 
             routeQueued.Id = routeFromDb.Id;
 
-            //if (routeFromDb.CarrierQueued == null && routeQueued.CarrierQueued != null)
-            //{
-            //    _context.CarriersQueued.Add(routeQueued.CarrierQueued);
-            //    _context.Entry(routeFromDb).CurrentValues.SetValues(routeQueued);
-            //    routeFromDb.CarrierQueuedId = routeQueued.CarrierQueued.Id;
-            //}
+            if (routeFromDb.VotingStartedDatetime == null)
+            {
 
-            //if (routeFromDb.CarrierQueued != null && routeQueued.CarrierQueued != null)
-            //{
-
-            //    var carrierFromDb = _context.CarriersQueued
-            //        .SingleOrDefault(c => c.Id == routeFromDb.CarrierQueued.Id);
-
-            //    //_context.Entry(carrierFromDb).CurrentValues.SetValues(routeQueued.CarrierQueued);
-            //    carrierFromDb.Name = routeQueued.CarrierQueued.Name;
-            //    _context.Entry(carrierFromDb).State = EntityState.Modified;
-
-            //    //_context.Entry(routeFromDb).CurrentValues.SetValues(routeQueued);
-            //    //routeFromDb.CarrierQueued.Name = routeQueued.CarrierQueued.Name;
-            //}
-
-
+                routeQueued.VotingStartedDatetime = DateTime.Now.Date;
+                routeQueued.VotingEndedDateTime = routeQueued.VotingStartedDatetime.Value.AddDays(14);
+            }
 
             _context.Entry(routeFromDb).CurrentValues.SetValues(routeQueued);
             _context.Entry(routeFromDb).State = EntityState.Modified;
+
+            if (routeQueued.CarrierQueued != null)
+            {
+                _context.Entry(routeFromDb.CarrierQueued).CurrentValues.SetValues(routeQueued.CarrierQueued);
+                _context.Entry(routeFromDb.CarrierQueued).State = EntityState.Modified;
+            }
+            
+
+
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<IEnumerable<RouteQueued>> GetRoutesInRangeAsync(string yourLocation, int range)
         {
@@ -98,5 +92,7 @@ namespace BusMap.WebApi.Repositories.Implementations
 
             return result;
         }
+
+        
     }
 }
