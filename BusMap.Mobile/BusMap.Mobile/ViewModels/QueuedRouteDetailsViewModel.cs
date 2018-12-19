@@ -27,6 +27,7 @@ namespace BusMap.Mobile.ViewModels
         private bool _routeVotingButtonsEnabled = true;
         private bool _carrierVotingButtonsEnabled = true;
         private bool _routeHaveCarrierQueued;
+        private string _daysOfTheWeekText;
 
         public RouteQueued RouteQueued
         {
@@ -64,6 +65,11 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _routeHaveCarrierQueued, value);
         }
 
+        public string DaysOfTheWeekText
+        {
+            get => _daysOfTheWeekText;
+            set => SetProperty(ref _daysOfTheWeekText, value);
+        }
 
         public QueuedRouteDetailsViewModel(INavigationService navigationService, IDataService dataService,
             IVotedQueuedRoutesRepository votedQueuedRoutesRepository)
@@ -73,7 +79,6 @@ namespace BusMap.Mobile.ViewModels
             _votedQueuedRoutesRepository = votedQueuedRoutesRepository;
 
             CarrierVotingButtonsEnabled = true;
-            Title = "Queued route details";
             Pins = new ObservableCollection<Pin>();
         }
 
@@ -82,36 +87,22 @@ namespace BusMap.Mobile.ViewModels
         public ICommand RoutePlusClickedCommand => new DelegateCommand(async () =>
         {
             RouteQueued.PositiveVotes++;
+            RouteQueued.CarrierQueued.PositiveVotes++;
 
             if (!await IsRouteVoteSend())
             {
                 RouteQueued.PositiveVotes--;
+                RouteQueued.CarrierQueued.PositiveVotes--;
             }
         });
 
         public ICommand RouteMinusClickedCommand => new DelegateCommand(async () =>
         {
             RouteQueued.NegativeVotes++;
+            RouteQueued.CarrierQueued.NegativeVotes++;
             if (!await IsRouteVoteSend())
             {
                 RouteQueued.NegativeVotes--;
-            }
-        });
-
-        public ICommand CarrierPlusClickedCommand => new DelegateCommand(async () =>
-        {
-            RouteQueued.CarrierQueued.PositiveVotes++;
-            if (!await IsCarrierVoteSend())
-            {
-                RouteQueued.CarrierQueued.PositiveVotes--;
-            }
-        });
-
-        public ICommand CarrierMinusClickedCommand => new DelegateCommand(async () =>
-        {
-            RouteQueued.CarrierQueued.NegativeVotes++;
-            if (!await IsCarrierVoteSend())
-            {
                 RouteQueued.CarrierQueued.NegativeVotes--;
             }
         });
@@ -121,7 +112,7 @@ namespace BusMap.Mobile.ViewModels
             if (parameters.ContainsKey("selectedQueuedRoute") && RouteQueued == null)
             {
                 RouteQueued = parameters["selectedQueuedRoute"] as RouteQueued;
-                RouteQueued.DayOfTheWeek = RouteQueued.DayOfTheWeek.ConvertToFullDayNames();
+                DaysOfTheWeekText = RouteQueued.DayOfTheWeek.ConvertToFullDayNames();
                 RouteHaveCarrierQueued = RouteQueued.CarrierQueued != null ? true : false;
             }
 
@@ -135,14 +126,14 @@ namespace BusMap.Mobile.ViewModels
 
         public override void OnNavigatedFrom(NavigationParameters parameters)
         {
-            if (!RouteVotingButtonsEnabled || !CarrierVotingButtonsEnabled)
+            if (!RouteVotingButtonsEnabled)
                 AddVoteToLocalDb(true);
         }
 
 
         private async Task<bool> IsRouteVoteSend()
         {
-            var updateSuccess = await UpdateQueuedRouteOrCarrier();
+            var updateSuccess = await UpdateQueuedRoute();
             if (!updateSuccess)
             {
                 return false;
@@ -152,19 +143,7 @@ namespace BusMap.Mobile.ViewModels
             return true;
         }
 
-        private async Task<bool> IsCarrierVoteSend()
-        {
-            var updateSuccess = await UpdateQueuedRouteOrCarrier();
-            if (!updateSuccess)
-            {
-                return false;
-            }
-
-            CarrierVotingButtonsEnabled = false;
-            return true;
-        }
-
-        private async Task<bool> UpdateQueuedRouteOrCarrier()
+        private async Task<bool> UpdateQueuedRoute()
         {
             var updateSuccess = await _dataService.UpdateQueuedRoute(RouteQueued.Id, RouteQueued);
             if (updateSuccess)

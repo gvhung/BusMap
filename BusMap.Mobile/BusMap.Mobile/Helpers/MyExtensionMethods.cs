@@ -58,6 +58,21 @@ namespace BusMap.Mobile.Helpers
             return stringBuilder.ToString();
         }
 
+        public static string ConvertToFullDayNames(this string dayNumbersString)
+        {
+            var builder = new StringBuilder();
+            var digits = Array.ConvertAll(dayNumbersString.Split(','), x => int.Parse(x));
+
+            foreach (var item in digits)
+            {
+                var day = Enum.GetName(typeof(DayOfWeek), item);
+                builder.Append(day + ", ");
+            }
+
+            builder.Length -= 2;
+            return builder.ToString();
+        }
+
         public static double CalculateDistance(this Plugin.Geolocator.Abstractions.Position firstPosition,
             Plugin.Geolocator.Abstractions.Position secondPosition)
         {
@@ -78,22 +93,6 @@ namespace BusMap.Mobile.Helpers
 
         private static double ConvertToRadians(double angle)
             => (Math.PI / 180) * angle;
-
-        public static string ConvertToFullDayNames(this string dayNumbersString)
-        {
-            var builder = new StringBuilder();
-            var digits = Array.ConvertAll(dayNumbersString.Split(','), x => int.Parse(x));
-
-            foreach (var item in digits)
-            {
-                var day = Enum.GetName(typeof(DayOfWeek), item);
-                builder.Append(day + ", ");
-            }
-
-            builder.Length -= 2;
-            return builder.ToString();
-        }
-
 
     }
 }
