@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BusMap.Mobile.Views.QueuedRouteDetailsPage"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
@@ -13,78 +13,127 @@
         <viewModels:QueuedRouteDetailsViewModel
     </ContentPage.BindingContext>-->
 
-    <ContentPage.Content>
-        <StackLayout Grid.Row="0" Grid.Column="0">
-            <Label Text="Vote route"
+    <TabbedPage.Children>
+        <!--1. Details page-->
+        <ContentPage Title="Details">
+            <ContentPage.Content>
+                <StackLayout Grid.Row="0" Grid.Column="0">
+                    <Label Text="Vote route"
                        FontSize="Medium"
                        HorizontalOptions="Center"/>
-            <Label HorizontalOptions="Center"
+                    <Label HorizontalOptions="Center"
                        Text="{Binding RouteQueued.Name, StringFormat='{0} details'}"
                        FontSize="Large"/>
-            <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
+                    <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
                        FontSize="Medium"/>
-            <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"
+                    <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"
                        FontSize="Medium"/>
-            <Label Text="{Binding RouteQueued.BusStopsQueued}"/>
-            <Label Text="{Binding RouteQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
-            <Label Text="{Binding RouteQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
+                    <Label Text="{Binding RouteQueued.DayOfTheWeek, StringFormat='Coursing in: {0}'}"
+                           FontSize="Medium"/>
+                    <Label/>
+                    <Label Text="{Binding RouteQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
+                    <Label Text="{Binding RouteQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
 
-            <StackLayout Orientation="Horizontal">
-                <!--Route-->
-                <Label Text="Vote route:"
+                    <StackLayout Orientation="Horizontal">
+                        <!--Route-->
+                        <Label Text="Vote route:"
                            FontSize="Medium"
                            VerticalOptions="Center"/>
-                <StackLayout Orientation="Horizontal"
+                        <StackLayout Orientation="Horizontal"
                                  Spacing="0">
-                    <Button Text="+" 
+                            <Button Text="+" 
                                 IsEnabled="{Binding RouteVotingButtonsEnabled}"
                                 Command="{Binding RoutePlusClickedCommand}"
                                 VerticalOptions="Center"
                                 HorizontalOptions="Start"
                                 WidthRequest="60"
                                 HeightRequest="40"/>
-                    <Button Text="-"
+                            <Button Text="-"
                                 IsEnabled="{Binding RouteVotingButtonsEnabled}"
                                 Command="{Binding RouteMinusClickedCommand}"
                                 VerticalOptions="Center"
                                 HorizontalOptions="Start"
                                 WidthRequest="60"
                                 HeightRequest="40"/>
-                </StackLayout>
-            </StackLayout>
+                        </StackLayout>
+                    </StackLayout>
 
-            <StackLayout Margin="10"/>
-            
+                    <StackLayout Margin="10"/>
 
-            <StackLayout>
-                <Label Text="{Binding RouteQueued.CarrierQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
-                <Label Text="{Binding RouteQueued.CarrierQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
-            </StackLayout>
-            <StackLayout Orientation="Horizontal"
+
+                    <StackLayout>
+                        <Label Text="{Binding RouteQueued.CarrierQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
+                        <Label Text="{Binding RouteQueued.CarrierQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal"
                              IsVisible="{Binding RouteHaveCarrierQueued}">
-                <!--Carrier-->
+                        <!--Carrier-->
 
-                <Label Text="Vote carrier:"
+                        <Label Text="Vote carrier:"
                            FontSize="Medium"
                            VerticalOptions="Center"/>
-                <StackLayout Orientation="Horizontal"
+                        <StackLayout Orientation="Horizontal"
                                  Spacing="0">
-                    <Button Text="+"  
+                            <Button Text="+"  
                             IsEnabled="{Binding CarrierVotingButtonsEnabled}"
                             Command="{Binding CarrierPlusClickedCommand}"
                             VerticalOptions="Center"
                             HorizontalOptions="Start"
                             WidthRequest="60"
                             HeightRequest="40"/>
-                    <Button Text="-"
+                            <Button Text="-"
                             IsEnabled="{Binding CarrierVotingButtonsEnabled}"
                             Command="{Binding CarrierMinusClickedCommand}"
                             VerticalOptions="Center"
                             HorizontalOptions="Start"
                             WidthRequest="60"
                             HeightRequest="40"/>
+                        </StackLayout>
+                    </StackLayout>
                 </StackLayout>
-            </StackLayout>
-        </StackLayout>
-    </ContentPage.Content>
-</ContentPage>
+            </ContentPage.Content>
+        </ContentPage>
+
+        <!--2. BusStops-->
+        <ContentPage Title="Bus stops">
+            <ContentPage.Content>
+                <ListView ItemsSource="{Binding RouteQueued.BusStopsQueued}"
+                          HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="{Binding Address, StringFormat='{0}, '}"
+                                               FontSize="Medium"/>
+                                        <Label Text="{Binding Label}"
+                                               FontSize="Medium"/>
+                                    </StackLayout>
+                                    <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"
+                                           FontSize="Medium"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="EndAndExpand"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ContentPage.Content>
+        </ContentPage>
+
+        <!--3. MapPage-->
+        <ContentPage Title="Map">
+            <ContentPage.Content>
+                <googleMaps:Map MapType="Street"
+                                MyLocationEnabled="True"
+                                Margin="10,0,10,0">
+                    <googleMaps:Map.Behaviors>
+                        <googleMapsBindings:BindingPinsBehavior Value="{Binding Pins}"/>
+                        <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                    </googleMaps:Map.Behaviors>
+                </googleMaps:Map>
+            </ContentPage.Content>
+        </ContentPage>
+    </TabbedPage.Children>
+    
+</TabbedPage>

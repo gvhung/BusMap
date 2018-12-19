@@ -10,7 +10,7 @@ using Xamarin.Forms.Xaml;
 namespace BusMap.Mobile.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class QueuedRouteDetailsPage : ContentPage
+	public partial class QueuedRouteDetailsPage : TabbedPage
 	{
 		public QueuedRouteDetailsPage ()
 		{

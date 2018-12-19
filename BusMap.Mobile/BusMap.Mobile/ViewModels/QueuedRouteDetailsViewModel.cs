@@ -118,7 +118,7 @@ namespace BusMap.Mobile.ViewModels
 
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
-            if (parameters.ContainsKey("selectedQueuedRoute"))
+            if (parameters.ContainsKey("selectedQueuedRoute") && RouteQueued == null)
             {
                 RouteQueued = parameters["selectedQueuedRoute"] as RouteQueued;
                 RouteQueued.DayOfTheWeek = RouteQueued.DayOfTheWeek.ConvertToFullDayNames();
