@@ -31,32 +31,45 @@
         <ContentPage Title="Details">
             <ContentPage.Content>
                 <StackLayout Grid.Row="0" Grid.Column="0">
-                    <Label Text="Vote route"
-                       FontSize="Medium"
-                       HorizontalOptions="Center"/>
                     <Label HorizontalOptions="Center"
                        Text="{Binding RouteQueued.Name, StringFormat='{0} details'}"
                        FontSize="Large"/>
                     <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
                        FontSize="Medium"/>
                     <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"
-                       FontSize="Medium"/>
+                       FontSize="Medium"
+                           IsVisible="{Binding RouteHaveCarrierQueued}"/>
                     <Label Text="{Binding DaysOfTheWeekText, StringFormat='Coursing in: {0}'}"
                            FontSize="Medium"/>
-                    <Label/>
-                    <Label Text="{Binding RouteQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
-                    <Label Text="{Binding RouteQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
 
-                    <StackLayout Margin="10"/>
-
-                    <StackLayout IsVisible="{Binding RouteHaveCarrierQueued}">
-                        <Label Text="Carrier:"
-                               FontSize="Large"/>
-                        <Label Text="{Binding RouteQueued.CarrierQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
-                        <Label Text="{Binding RouteQueued.CarrierQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
-                    </StackLayout>
-                    
-                    
+                    <Grid Margin="20,0,20,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Text="Route votes"
+                               FontSize="Large"
+                               Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                               Margin="10,0,0,0"
+                               VerticalOptions="End"/>
+                        <StackLayout Grid.Row="1" Grid.Column="0"
+                                     HorizontalOptions="Center">
+                            <Label Text="{Binding RouteQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
+                            <Label Text="{Binding RouteQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
+                            <Label Text="{Binding RoutePositiveVotesPercentage, StringFormat='Percentage: {0}'}"/>
+                        </StackLayout>
+                        <StackLayout Grid.Row="1" Grid.Column="1"
+                                     HorizontalOptions="Center">
+                            <Label Text="{Binding RouteQueued.CarrierQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
+                            <Label Text="{Binding RouteQueued.CarrierQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
+                            <Label Text="{Binding CarrierPositiveVotesPercentage, StringFormat='Percentage: {0}'}"
+                                   IsVisible="{Binding RouteHaveCarrierQueued}"/>
+                        </StackLayout>
+                    </Grid>
                 </StackLayout>
             </ContentPage.Content>
         </ContentPage>

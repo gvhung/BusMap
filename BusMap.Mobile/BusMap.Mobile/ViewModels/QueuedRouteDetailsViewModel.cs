@@ -28,6 +28,8 @@ namespace BusMap.Mobile.ViewModels
         private bool _carrierVotingButtonsEnabled = true;
         private bool _routeHaveCarrierQueued;
         private string _daysOfTheWeekText;
+        private string _routePositiveVotesPercentage;
+        private string _carrierPositiveVotesPercentage;
 
         public RouteQueued RouteQueued
         {
@@ -71,6 +73,18 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _daysOfTheWeekText, value);
         }
 
+        public string RoutePositiveVotesPercentage
+        {
+            get => _routePositiveVotesPercentage;
+            set => SetProperty(ref _routePositiveVotesPercentage, value);
+        }
+
+        public string CarrierPositiveVotesPercentage
+        {
+            get => _carrierPositiveVotesPercentage;
+            set => SetProperty(ref _carrierPositiveVotesPercentage, value);
+        }
+
         public QueuedRouteDetailsViewModel(INavigationService navigationService, IDataService dataService,
             IVotedQueuedRoutesRepository votedQueuedRoutesRepository)
             : base(navigationService)
@@ -88,11 +102,13 @@ namespace BusMap.Mobile.ViewModels
         {
             RouteQueued.PositiveVotes++;
             RouteQueued.CarrierQueued.PositiveVotes++;
+            SetVotesPercentage();
 
             if (!await IsRouteVoteSend())
             {
                 RouteQueued.PositiveVotes--;
                 RouteQueued.CarrierQueued.PositiveVotes--;
+                SetVotesPercentage();
             }
         });
 
@@ -100,10 +116,13 @@ namespace BusMap.Mobile.ViewModels
         {
             RouteQueued.NegativeVotes++;
             RouteQueued.CarrierQueued.NegativeVotes++;
+            SetVotesPercentage();
+
             if (!await IsRouteVoteSend())
             {
                 RouteQueued.NegativeVotes--;
                 RouteQueued.CarrierQueued.NegativeVotes--;
+                SetVotesPercentage();
             }
         });
 
@@ -114,6 +133,7 @@ namespace BusMap.Mobile.ViewModels
                 RouteQueued = parameters["selectedQueuedRoute"] as RouteQueued;
                 DaysOfTheWeekText = RouteQueued.DayOfTheWeek.ConvertToFullDayNames();
                 RouteHaveCarrierQueued = RouteQueued.CarrierQueued != null ? true : false;
+                SetVotesPercentage();
             }
 
             var pins = RouteQueued.BusStopsQueued.ToGoogleMapsPins();
@@ -168,6 +188,23 @@ namespace BusMap.Mobile.ViewModels
                 AddedDate = DateTime.Now
             };
             _votedQueuedRoutesRepository.AddVotedRoute(route);
+        }
+
+        private void SetVotesPercentage()
+        {
+            var carrierQueued = RouteQueued.CarrierQueued;
+            var nOfVotesRoute = RouteQueued.PositiveVotes + RouteQueued.NegativeVotes;
+            var routeDouble = Convert.ToDouble(RouteQueued.PositiveVotes * 100 / nOfVotesRoute);
+            RoutePositiveVotesPercentage = $"{routeDouble}%";
+
+            if (carrierQueued != null)
+            {
+                var nOfVotesCarrier = carrierQueued.PositiveVotes + carrierQueued.NegativeVotes;
+                var carrierDouble = Convert.ToDouble(carrierQueued.PositiveVotes * 100 / nOfVotesCarrier);
+                CarrierPositiveVotesPercentage = $"{carrierDouble}%";
+            }
+
+            
         }
 
 
