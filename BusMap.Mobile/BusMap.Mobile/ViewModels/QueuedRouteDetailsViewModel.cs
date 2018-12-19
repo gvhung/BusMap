@@ -121,6 +121,7 @@ namespace BusMap.Mobile.ViewModels
             if (parameters.ContainsKey("selectedQueuedRoute"))
             {
                 RouteQueued = parameters["selectedQueuedRoute"] as RouteQueued;
+                RouteQueued.DayOfTheWeek = RouteQueued.DayOfTheWeek.ConvertToFullDayNames();
                 RouteHaveCarrierQueued = RouteQueued.CarrierQueued != null ? true : false;
             }
 
