@@ -194,17 +194,27 @@ namespace BusMap.Mobile.ViewModels
         {
             var carrierQueued = RouteQueued.CarrierQueued;
             var nOfVotesRoute = RouteQueued.PositiveVotes + RouteQueued.NegativeVotes;
-            var routeDouble = Convert.ToDouble(RouteQueued.PositiveVotes * 100 / nOfVotesRoute);
-            RoutePositiveVotesPercentage = $"{routeDouble}%";
 
-            if (carrierQueued != null)
+            try
             {
-                var nOfVotesCarrier = carrierQueued.PositiveVotes + carrierQueued.NegativeVotes;
-                var carrierDouble = Convert.ToDouble(carrierQueued.PositiveVotes * 100 / nOfVotesCarrier);
-                CarrierPositiveVotesPercentage = $"{carrierDouble}%";
+                var routeDouble = Convert.ToDouble(RouteQueued.PositiveVotes * 100 / nOfVotesRoute);
+                RoutePositiveVotesPercentage = $"{routeDouble}%";
+
+                if (carrierQueued != null)
+                {
+                    var nOfVotesCarrier = carrierQueued.PositiveVotes + carrierQueued.NegativeVotes;
+                    var carrierDouble = Convert.ToDouble(carrierQueued.PositiveVotes * 100 / nOfVotesCarrier);
+                    CarrierPositiveVotesPercentage = $"{carrierDouble}%";
+                }
+            }
+            catch (DivideByZeroException)
+            {
+                RoutePositiveVotesPercentage = "Nan";
+                CarrierPositiveVotesPercentage = "Nan";
             }
 
-            
+
+
         }
 
 
