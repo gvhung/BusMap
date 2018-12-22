@@ -148,6 +148,13 @@ namespace BusMap.Mobile.ViewModels
             }
         });
 
+        public ICommand SwapCitiesButtonCommand => new DelegateCommand(() =>
+        {
+            var temp = StartCityText;
+            StartCityText = DestinationCityText;
+            DestinationCityText = temp;
+        });
+
         private string CreateSearchParametersString(DateTime date)
         {
             var stringBuilder = new StringBuilder();

@@ -113,6 +113,13 @@ namespace BusMap.Mobile.ViewModels
             await NavigationService.NavigateAsync(nameof(RoutesListPage), parameters);
         });
 
+        public ICommand SwapCitiesButtonCommand => new DelegateCommand(() =>
+        {
+            var temp = StartBusStopName;
+            StartBusStopName = DestinationBusStopName;
+            DestinationBusStopName = temp;
+        });
+
         public ICommand NavigateToNearestStopsPageCommand => new DelegateCommand(async () =>
             await NavigationService.NavigateAsync(nameof(NearestStopsMapPage)));
 

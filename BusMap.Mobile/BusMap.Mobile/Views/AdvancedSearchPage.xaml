@@ -3,14 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BusMap.Mobile.Views.AdvancedSearchPage"
              xmlns:converters="clr-namespace:BusMap.Mobile.EventArgsConverters"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
              Title="Advanced searching">
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Margin="5,0,5,0">
-                <Entry Placeholder="Start city"
-                       Text="{Binding StartCityText}"/>
-                <Entry Placeholder="Destination city"
-                       Text="{Binding DestinationCityText}"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="85*"/>
+                        <ColumnDefinition Width="15*"/>
+                    </Grid.ColumnDefinitions>
+                    <Entry Placeholder="Start city"
+                           Text="{Binding StartCityText}"
+                           Grid.Row="0" Grid.Column="0"/>
+                    <Entry Placeholder="Destination city"
+                           Text="{Binding DestinationCityText}"
+                           Grid.Row="1" Grid.Column="0"/>
+                    <iconize:IconButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                           Text="fas-exchange-alt"
+                           FontSize="Large"
+                           Command="{Binding SwapCitiesButtonCommand}"/>
+                </Grid>
+
+
+
                 <Picker Title="Choose single day"
                         SelectedItem="{Binding SelectedDayOfWeek}"                             
                         ItemsSource="{Binding DaysList}"
