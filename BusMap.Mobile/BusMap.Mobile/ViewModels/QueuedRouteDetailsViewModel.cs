@@ -101,13 +101,15 @@ namespace BusMap.Mobile.ViewModels
         public ICommand RoutePlusClickedCommand => new DelegateCommand(async () =>
         {
             RouteQueued.PositiveVotes++;
-            RouteQueued.CarrierQueued.PositiveVotes++;
+            if (RouteQueued.CarrierQueued != null)
+                RouteQueued.CarrierQueued.PositiveVotes++;
             SetVotesPercentage();
 
             if (!await IsRouteVoteSend())
             {
                 RouteQueued.PositiveVotes--;
-                RouteQueued.CarrierQueued.PositiveVotes--;
+                if (RouteQueued.CarrierQueued != null)
+                    RouteQueued.CarrierQueued.PositiveVotes--;
                 SetVotesPercentage();
             }
         });
@@ -115,13 +117,15 @@ namespace BusMap.Mobile.ViewModels
         public ICommand RouteMinusClickedCommand => new DelegateCommand(async () =>
         {
             RouteQueued.NegativeVotes++;
-            RouteQueued.CarrierQueued.NegativeVotes++;
+            if (RouteQueued.CarrierQueued != null)
+                RouteQueued.CarrierQueued.NegativeVotes++;
             SetVotesPercentage();
 
             if (!await IsRouteVoteSend())
             {
                 RouteQueued.NegativeVotes--;
-                RouteQueued.CarrierQueued.NegativeVotes--;
+                if (RouteQueued.CarrierQueued != null)
+                    RouteQueued.CarrierQueued.NegativeVotes--;
                 SetVotesPercentage();
             }
         });
