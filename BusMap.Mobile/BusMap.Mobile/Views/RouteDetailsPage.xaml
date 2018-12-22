@@ -17,6 +17,9 @@
     </TabbedPage.BindingContext>-->
 
     <TabbedPage.ToolbarItems>
+        <iconize:IconToolbarItem Command="{Binding ReportDelayCommand}" 
+                                 Icon="fas-clock"
+                                 IconColor="White"/>
         <iconize:IconToolbarItem Command="{Binding ReportButtonCommand}"
                                  Icon="fas-exclamation-circle"
                                  IconColor="White"/>

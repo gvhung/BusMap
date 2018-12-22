@@ -56,6 +56,7 @@ namespace BusMap.Mobile
             containerRegistry.RegisterForNavigation<FavoritesPage, FavoritesPageViewModel>();
             containerRegistry.RegisterForNavigation<WeekDaySelectionPage, WeekDaySelectionPageViewModel>();
             containerRegistry.RegisterForNavigation<AdvancedSearchPage, AdvancedSearchPageViewModel>();
+            containerRegistry.RegisterForNavigation<RouteDelayReportPage, RouteDelayReportPageViewModel>();
 
             containerRegistry.Register<IDataService, ApiDataService>();           
             containerRegistry.Register<ILocalDatabase, LocalDatabase>();

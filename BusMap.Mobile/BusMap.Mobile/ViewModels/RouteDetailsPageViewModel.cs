@@ -146,6 +146,15 @@ namespace BusMap.Mobile.ViewModels
             }
         });
 
+        public ICommand ReportDelayCommand => new DelegateCommand(async () =>
+        {
+            var navParams = new NavigationParameters();
+            navParams.Add("route", Route);
+
+            await NavigationService.NavigateAsync(nameof(RouteDelayReportPage), navParams);
+        });
+
+
         public ICommand TestCommand => new DelegateCommand(() => 
             MessagingHelper.Toast("Juhu", ToastTime.LongTime));
 
