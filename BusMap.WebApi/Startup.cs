@@ -83,7 +83,8 @@ namespace BusMap.WebApi
             app.UseHangfireServer();
             app.UseHangfireDashboard();
 
-            RecurringJob.AddOrUpdate<IQueueService>(s => s.MoveQueuedRoutesToMainTableAsync(), Cron.Daily(1, 15));
+            RecurringJob.AddOrUpdate<IQueueService>(s => 
+                s.MoveQueuedRoutesToMainTableAsync(), Cron.Daily(2));
 
             app.UseHttpsRedirection();
             app.UseMvc();

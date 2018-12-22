@@ -306,7 +306,8 @@ namespace BusMap.WebApi.Migrations
                 {
                     b.HasOne("BusMap.WebApi.DatabaseModels.CarrierQueued", "CarrierQueued")
                         .WithMany("RoutesQueued")
-                        .HasForeignKey("CarrierQueuedId");
+                        .HasForeignKey("CarrierQueuedId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("BusMap.WebApi.DatabaseModels.RouteReport", b =>

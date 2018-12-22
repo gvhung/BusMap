@@ -39,6 +39,15 @@ namespace BusMap.WebApi.Data
                 .IsRequired(false);
 
             modelBuilder.Entity<RouteQueued>()
+                .HasOne(r => r.CarrierQueued)
+                .WithMany(c => c.RoutesQueued)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<RouteQueued>()
+                .HasMany(r => r.BusStopsQueued)
+                .WithOne(b => b.RouteQueued)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RouteQueued>()
                 .Property(r => r.PositiveVotes)
                 .HasDefaultValue(0);
             modelBuilder.Entity<RouteQueued>()

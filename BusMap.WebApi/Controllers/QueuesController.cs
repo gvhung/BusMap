@@ -147,17 +147,5 @@ namespace BusMap.WebApi.Controllers
             return StatusCode(202);
         }
 
-        //[HttpGet("routes/move/{id:int}")]
-        //public async Task<IActionResult> MoveRoute(int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    await _service.MoveRouteQueuedToMainTable(id);
-
-        //    RecurringJob.AddOrUpdate(() => _service.MoveRouteQueuedToMainTable(id), Cron.Daily(1));
-        //    return Ok();
-        //}
-
     }
 }

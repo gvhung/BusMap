@@ -101,11 +101,14 @@ namespace BusMap.WebApi.Repositories.Implementations
 
         public async Task MoveQueuedRoutesToMainTableAsync()
         {
+            var test = await GetRoutesQueueAsync();
+
             var queuedRoutesToReplace = await _context.RoutesQueued
                 .Include(r => r.BusStopsQueued)
                 .Include(r => r.CarrierQueued)
-                .Where(r => r.VotingEndedDateTime == DateTime.Now.Date)
-                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / r.NegativeVotes) > 75)
+                .Where(r => r.VotingStartedDatetime != null)
+                .Where(r => r.VotingEndedDateTime.Value.Date == DateTime.Now.Date)
+                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / (r.NegativeVotes + r.PositiveVotes)) > 75)
                 .ToListAsync();
 
             MoveRouteQueuedToMainTable(queuedRoutesToReplace);
@@ -157,7 +160,15 @@ namespace BusMap.WebApi.Repositories.Implementations
 
         private void DeleteAfterMove(RouteQueued routeQueuedToRemove)
         {
-            _context.RoutesQueued.Remove(routeQueuedToRemove);
+            if (routeQueuedToRemove.CarrierQueued != null)
+            {
+                _context.CarriersQueued.Remove(routeQueuedToRemove.CarrierQueued);
+            }
+            else
+            {
+                _context.RoutesQueued.Remove(routeQueuedToRemove);
+            }
+                
             _context.SaveChanges();
         }
 
