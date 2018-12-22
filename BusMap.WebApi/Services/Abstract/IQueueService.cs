@@ -19,5 +19,6 @@ namespace BusMap.WebApi.Services.Abstract
         Task UpdateRouteAsync(int id, RouteQueued routeQueued);
 
         Task<IEnumerable<QueuesRouteDto>> GetRoutesInRangeAsync(string yourLocation, int range);
+        Task MoveQueuedRoutesToMainTableAsync();
     }
 }

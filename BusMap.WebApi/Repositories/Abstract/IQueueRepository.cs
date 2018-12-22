@@ -9,6 +9,7 @@ namespace BusMap.WebApi.Repositories.Abstract
 {
     public interface IQueueRepository
     {
+        Task<RouteQueued> GetRouteQueuedAsync(int routeQueuedId);
         Task<IEnumerable<RouteQueued>> GetRoutesQueueAsync();
         Task<int> GetNumberOfQueuedRoutesAsync();
         Task<CarrierQueued> GetCarrierQueued(int id);
@@ -18,5 +19,6 @@ namespace BusMap.WebApi.Repositories.Abstract
         Task UpdateRouteAsync(int id, RouteQueued routeQueued);
 
         Task<IEnumerable<RouteQueued>> GetRoutesInRangeAsync(string yourLocation, int range);
+        Task MoveQueuedRoutesToMainTableAsync();
     }
 }

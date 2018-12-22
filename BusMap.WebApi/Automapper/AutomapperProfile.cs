@@ -36,6 +36,10 @@ namespace BusMap.WebApi.Automapper
             CreateMap<CarrierQueued, QueuesCarrierDto>();
 
             CreateMap<RouteReport, ReportsRouteReportDto>();
+
+            CreateMap<RouteQueued, Route>();
         }
+
+
     }
 }

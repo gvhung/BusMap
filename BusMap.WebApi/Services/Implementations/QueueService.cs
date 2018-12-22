@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using BusMap.WebApi.Data;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Dto.Queues;
 using BusMap.WebApi.Dto.Routes;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Services.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusMap.WebApi.Services.Implementations
 {
@@ -57,5 +59,8 @@ namespace BusMap.WebApi.Services.Implementations
             var result = _mapper.Map<IEnumerable<RouteQueued>, IEnumerable<QueuesRouteDto>>(routes);
             return result;
         }
+
+        public async Task MoveQueuedRoutesToMainTableAsync()
+            => await _repository.MoveQueuedRoutesToMainTableAsync();
     }
 }

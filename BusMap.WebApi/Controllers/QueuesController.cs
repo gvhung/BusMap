@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using BusMap.WebApi.Data;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Dto.Queues;
 using BusMap.WebApi.Services.Abstract;
+using BusMap.WebApi.Services.Implementations;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +20,6 @@ namespace BusMap.WebApi.Controllers
     public class QueuesController : ControllerBase
     {
         private readonly IQueueService _service;
-        private readonly IMapper _mapper;
 
         public QueuesController(IQueueService service)
         {
@@ -145,17 +147,17 @@ namespace BusMap.WebApi.Controllers
             return StatusCode(202);
         }
 
-        //[HttpPut("carriers/{id:int}")]
-        //public async Task<IActionResult> PutCarrier(int id, CarrierQueued carrierQueued)
+        //[HttpGet("routes/move/{id:int}")]
+        //public async Task<IActionResult> MoveRoute(int id)
         //{
         //    if (!ModelState.IsValid)
         //        return BadRequest(ModelState);
 
-            
+        //    await _service.MoveRouteQueuedToMainTable(id);
 
+        //    RecurringJob.AddOrUpdate(() => _service.MoveRouteQueuedToMainTable(id), Cron.Daily(1));
+        //    return Ok();
         //}
-
-
 
     }
 }

@@ -20,6 +20,12 @@ namespace BusMap.WebApi.Repositories.Implementations
             _context = context;
         }
 
+        public async Task<RouteQueued> GetRouteQueuedAsync(int routeQueuedId) 
+            => await _context.RoutesQueued
+                .Include(r => r.BusStopsQueued)
+                .Include(r => r.CarrierQueued)
+                .FirstOrDefaultAsync(r => r.Id == routeQueuedId);
+
         public async Task<IEnumerable<RouteQueued>> GetRoutesQueueAsync()
             => await _context.RoutesQueued
                 .Include(r => r.CarrierQueued)
@@ -93,6 +99,67 @@ namespace BusMap.WebApi.Repositories.Implementations
             return result;
         }
 
-        
+        public async Task MoveQueuedRoutesToMainTableAsync()
+        {
+            var queuedRoutesToReplace = await _context.RoutesQueued
+                .Include(r => r.BusStopsQueued)
+                .Include(r => r.CarrierQueued)
+                .Where(r => r.VotingEndedDateTime == DateTime.Now.Date)
+                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / r.NegativeVotes) > 75)
+                .ToListAsync();
+
+            MoveRouteQueuedToMainTable(queuedRoutesToReplace);
+        }
+
+        private void MoveRouteQueuedToMainTable(List<RouteQueued> queuedRoutesToReplace)
+        {
+            foreach (var routeQueued in queuedRoutesToReplace)
+            {
+                Move(routeQueued);
+                DeleteAfterMove(routeQueued);
+            }
+            
+        }
+
+        private void Move(RouteQueued routeQueued)
+        {
+            var busStops = routeQueued.BusStopsQueued.Select(q => new BusStop
+            {
+                Address = q.Address,
+                Hour = q.Hour,
+                Label = q.Label,
+                Latitude = q.Latitude,
+                Longitude = q.Longitude
+            }).ToList();
+
+            var route = new Route
+            {
+                Name = routeQueued.Name,
+                BusStops = busStops,
+                DayOfTheWeek = routeQueued.DayOfTheWeek,
+            };
+
+            if (routeQueued.CarrierQueued != null && routeQueued.CarrierId == null)
+            {
+                route.Carrier = new Carrier
+                {
+                    Name = routeQueued.CarrierQueued.Name
+                };
+            }
+            else
+            {
+                route.CarrierId = (int)routeQueued.CarrierId;
+            }
+
+            _context.Routes.Add(route);
+            _context.SaveChanges();
+        }
+
+        private void DeleteAfterMove(RouteQueued routeQueuedToRemove)
+        {
+            _context.RoutesQueued.Remove(routeQueuedToRemove);
+            _context.SaveChanges();
+        }
+
     }
 }

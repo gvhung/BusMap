@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using BusMap.WebApi.Automapper;
+using BusMap.WebApi.Controllers;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Repositories.Implementations;
 using BusMap.WebApi.Services;
 using BusMap.WebApi.Services.Abstract;
 using BusMap.WebApi.Services.Implementations;
+using Hangfire;
+using Hangfire.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -57,6 +63,9 @@ namespace BusMap.WebApi
             });
             var mapper = config.CreateMapper();
             services.AddSingleton(mapper);
+
+            services.AddHangfire(x => x.UseSqlServerStorage(Connections.GeDbConnectionString()));
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +79,11 @@ namespace BusMap.WebApi
             {
                 app.UseHsts();
             }
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
+
+            RecurringJob.AddOrUpdate<IQueueService>(s => s.MoveQueuedRoutesToMainTableAsync(), Cron.Daily(1, 15));
 
             app.UseHttpsRedirection();
             app.UseMvc();
