@@ -96,6 +96,7 @@
                             HorizontalOptions="Center"/>
 
                     <StackLayout IsVisible="{Binding IsRouteDelayed}">
+                        <Label Text="{Binding CurrentRouteDelay, StringFormat='Current delay: {0:hh\\hmm\\m}'}"/>
                         <Label Text="Latest route delay reports"
                                FontSize="Medium"
                                FontAttributes="Bold"/>

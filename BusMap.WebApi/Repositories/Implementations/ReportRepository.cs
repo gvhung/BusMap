@@ -59,6 +59,7 @@ namespace BusMap.WebApi.Repositories.Implementations
             var delays = await _context.RouteDelays
                 .Where(d => d.RouteId == routeId)
                 .Where(d => d.DateTime.Date == currentDateTime.Date)
+                .OrderByDescending(d => d.DateTime)
                 .ToListAsync();
             return delays;
         }

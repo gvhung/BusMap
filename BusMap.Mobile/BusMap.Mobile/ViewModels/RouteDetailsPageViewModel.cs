@@ -33,6 +33,7 @@ namespace BusMap.Mobile.ViewModels
         private bool _currentLatencyIsVisible;
         private bool _isRouteDelayed;
         private List<RouteDelay> _routeDelays;
+        private TimeSpan _currentRouteDelay;
 
         public Route Route
         {
@@ -92,6 +93,12 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _routeDelays, value);
         }
 
+        public TimeSpan CurrentRouteDelay
+        {
+            get => _currentRouteDelay;
+            set => SetProperty(ref _currentRouteDelay, value);
+        }
+
         public RouteDetailsPageViewModel(INavigationService navigationService, 
             IDataService dataService,
             IFavoriteRoutesRepository favoriteRoutesRepository) 
@@ -103,6 +110,7 @@ namespace BusMap.Mobile.ViewModels
             Pins = new ObservableCollection<Pin>();
             FavoriteStarColor = Color.White;
             RouteDelays = new List<RouteDelay>();
+            CurrentRouteDelay = new TimeSpan();
         }
 
 
@@ -215,11 +223,20 @@ namespace BusMap.Mobile.ViewModels
             RouteDelays = await _dataService.GetRouteDelays(Route.Id);
             if (RouteDelays.Any())
                 IsRouteDelayed = true;
+            CurrentRouteDelay = CalculateCurrentDelay();
         }
 
         private void MarkRecentBusStop(BusStop busStop)
         {
             Route.BusStops.FirstOrDefault(b => b.Id == busStop.Id).IsRecentBusStop = true;
+        }
+
+        private TimeSpan CalculateCurrentDelay()
+        {
+            var lastDelayTime = RouteDelays.LastOrDefault().DateTime.TimeOfDay;
+            var delay = DateTime.Now.TimeOfDay.Subtract(lastDelayTime);
+
+            return delay;
         }
 
     }
