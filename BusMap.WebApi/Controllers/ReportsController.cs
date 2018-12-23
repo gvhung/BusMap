@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
@@ -45,6 +46,41 @@ namespace BusMap.WebApi.Controllers
 
             return StatusCode(StatusCodes.Status201Created);
         }
+
+
+
+        [HttpGet("delay/{routeId:int}")]
+        public async Task<IActionResult> GetLatestDelaysForRoute(int routeId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var routeDelays = await _service.GetLatestRouteDelaysAsync(routeId);
+
+            if (!routeDelays.Any())
+                return NotFound("Not found any delays for route");
+
+            return Ok(routeDelays);
+        }
+
+        [HttpPost("delay")]
+        public async Task<IActionResult> PostRouteDelay(RouteDelay routeDelay)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _service.AddRouteDelayAsync(routeDelay);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return StatusCode(StatusCodes.Status201Created);
+        }
+
 
     }
 }

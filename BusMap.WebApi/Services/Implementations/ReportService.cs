@@ -29,5 +29,14 @@ namespace BusMap.WebApi.Services.Implementations
 
         public async Task AddRouteReportAsync(RouteReport routeReport)
             => await _repository.AddRouteReportAsync(routeReport);
+
+        public async Task<IEnumerable<ReportsRouteDelayDto>> GetLatestRouteDelaysAsync(int routeId)
+        {
+            var delays = await _repository.GetLatestRouteDelaysAsync(routeId);
+            return _mapper.Map<IEnumerable<RouteDelay>, IEnumerable<ReportsRouteDelayDto>>(delays);
+        }
+
+        public async Task AddRouteDelayAsync(RouteDelay routeDelay)
+            => await _repository.AddRouteDelayAsync(routeDelay);
     }
 }

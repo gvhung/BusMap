@@ -10,5 +10,8 @@ namespace BusMap.WebApi.Repositories.Abstract
     {
         Task<IEnumerable<RouteReport>> GetRouteReportsForRouteAsync(int routeId);
         Task AddRouteReportAsync(RouteReport routeReport);
+
+        Task<IEnumerable<RouteDelay>> GetLatestRouteDelaysAsync(int routeId);
+        Task AddRouteDelayAsync(RouteDelay routeDelay);
     }
 }

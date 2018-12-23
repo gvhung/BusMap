@@ -210,6 +210,27 @@ namespace BusMap.WebApi.Migrations
                     );
                 });
 
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.RouteDelay", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTime");
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("RouteId");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RouteId");
+
+                    b.ToTable("RouteDelays");
+                });
+
             modelBuilder.Entity("BusMap.WebApi.DatabaseModels.RouteQueued", b =>
                 {
                     b.Property<int>("Id")
@@ -299,6 +320,14 @@ namespace BusMap.WebApi.Migrations
                     b.HasOne("BusMap.WebApi.DatabaseModels.Carrier", "Carrier")
                         .WithMany("Routes")
                         .HasForeignKey("CarrierId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BusMap.WebApi.DatabaseModels.RouteDelay", b =>
+                {
+                    b.HasOne("BusMap.WebApi.DatabaseModels.Route", "Route")
+                        .WithMany()
+                        .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -28,6 +28,7 @@ namespace BusMap.WebApi.Data
         public DbSet<CarrierQueued> CarriersQueued { get; set; }
         public DbSet<BusStopTrace> BusStopTraces { get; set; }
         public DbSet<RouteReport> RouteReports { get; set; }
+        public DbSet<RouteDelay> RouteDelays { get; set; }
 
 
 
