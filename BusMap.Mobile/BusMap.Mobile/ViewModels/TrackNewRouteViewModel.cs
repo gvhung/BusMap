@@ -38,6 +38,7 @@ namespace BusMap.Mobile.ViewModels
         private ObservableCollection<BusStopQueued> _busStops;
         private Carrier _carrier;
         private string _weekDaysString;
+        private BusStopQueued _busStopQueuedClickedOnMap;
 
 
         public ObservableCollection<Pin> MapPins
@@ -75,6 +76,13 @@ namespace BusMap.Mobile.ViewModels
             get => _weekDaysString;
             set => SetProperty(ref _weekDaysString, value);
         }
+
+        public BusStopQueued BusStopQueuedClickedOnMap
+        {
+            get => _busStopQueuedClickedOnMap;
+            set => SetProperty(ref _busStopQueuedClickedOnMap, value);
+        }
+
 
         public List<Carrier> CarrierSuggestions { get; set; }
         public string AutoSuggestText { get; set; }
@@ -191,6 +199,14 @@ namespace BusMap.Mobile.ViewModels
                 param.Add("days", _weekDays);
                 await NavigationService.NavigateAsync(nameof(WeekDaySelectionPage), param);
             });
+
+        public ICommand PinClickedCommand => new DelegateCommand<PinClickedEventArgs>(args =>
+        {
+            var pin = args.Pin;
+            var index = MapPins.IndexOf(pin);
+            BusStopQueuedClickedOnMap = BusStops[index];
+
+        });
 
         private async Task PostDataAsync(RouteQueued route)
         {

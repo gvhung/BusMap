@@ -75,8 +75,20 @@
                 <googleMaps:Map.Behaviors>
                     <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
                     <googleMapsBindings:BindingPinsBehavior Value="{Binding MapPins}"/>
+                    <googleMapsBindings:PinClickedToCommandBehavior Command="{Binding PinClickedCommand}"/>
                 </googleMaps:Map.Behaviors>
             </googleMaps:Map>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center"
+                         Spacing="20">
+                <Label Text="{Binding BusStopQueuedClickedOnMap.Hour, StringFormat='{0:hh\\:mm}'}"
+                       FontSize="Medium"
+                       TextColor="Black"/>
+                <Label Text="{Binding BusStopQueuedClickedOnMap.Latitude, StringFormat='Latitude: {0:0.##}'}"
+                       FontSize="Medium"/>
+                <Label Text="{Binding BusStopQueuedClickedOnMap.Longitude, StringFormat='Longitude: {0:0.##}'}"
+                       FontSize="Medium"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage>
 
