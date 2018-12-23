@@ -36,6 +36,7 @@ namespace BusMap.Mobile.ViewModels
         private List<RouteDelay> _routeDelays;
         private TimeSpan _currentRouteDelay;
         private bool _isBusy;
+        private BusStop _busStopClickedOnMap;
 
         public Route Route
         {
@@ -105,6 +106,12 @@ namespace BusMap.Mobile.ViewModels
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
+        }
+
+        public BusStop BusStopClickedOnMap
+        {
+            get => _busStopClickedOnMap;
+            set => SetProperty(ref _busStopClickedOnMap, value);
         }
 
         public RouteDetailsPageViewModel(INavigationService navigationService, 
@@ -208,6 +215,14 @@ namespace BusMap.Mobile.ViewModels
             var currentPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(true);
             MapPosition = currentPosition.ToMapSpan(Distance.FromKilometers(20));
         });
+
+        public ICommand PinClickedCommand => new DelegateCommand<PinClickedEventArgs>(args =>
+        {
+            var pin = args.Pin;
+            var index = Pins.IndexOf(pin);
+            BusStopClickedOnMap = Route.BusStops[index]; 
+        });
+
 
 
         //--NAVIGATION--

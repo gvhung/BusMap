@@ -209,8 +209,32 @@
                         <googleMaps:Map.Behaviors>
                             <googleMapsBindings:BindingPinsBehavior Value="{Binding Pins}"/>
                             <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                            <googleMapsBindings:PinClickedToCommandBehavior Command="{Binding PinClickedCommand}"/>
                         </googleMaps:Map.Behaviors>
                     </googleMaps:Map>
+
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center">
+                        <Label Text="{Binding BusStopClickedOnMap.Address, StringFormat='{0} '}"
+                               FontSize="Medium"/>
+                        <Label Text="{Binding BusStopClickedOnMap.Label}"
+                               FontSize="Medium"/>
+                        <Label Text="{Binding BusStopClickedOnMap.Hour, StringFormat='{0:hh\\:mm}'}"
+                               FontSize="Medium"
+                               HorizontalOptions="End"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center">
+                        <Label Text="{Binding BusStopClickedOnMap.PunctualityPercentage, StringFormat='Puctuality index: {0}'}"
+                               TextColor="Black"/>
+                        <Label Text="{Binding BusStopClickedOnMap.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
+                               TextColor="ForestGreen"/>
+                        <Label Text=":"/>
+                        <Label Text="{Binding BusStopClickedOnMap.PunctualityAvgAfterTime, StringFormat='{0} After'}"
+                               TextColor="DarkRed"/>
+                        <Label Text="{Binding BusStopClickedOnMap.PunctualityMode, StringFormat='Mode: {0}'}"
+                               TextColor="Black"/>
+                    </StackLayout>
                 </StackLayout>
             </ContentPage.Content>
         </ContentPage>
