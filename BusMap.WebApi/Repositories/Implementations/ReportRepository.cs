@@ -34,13 +34,24 @@ namespace BusMap.WebApi.Repositories.Implementations
         public async Task<IEnumerable<RouteDelay>> GetLatestRouteDelaysAsync(int routeId)
         {
             var route = await _context.Routes
+                .Include(r => r.BusStops)
                 .FirstOrDefaultAsync(r => r.Id == routeId);
 
-            var datetimeMinusHour = DateTime.Now.Subtract(new TimeSpan(1, 0, 0));
+            //var currentDate = = new DateTime(2018, 12, 23, 13, 0, 0);
+            var currentDateTime = DateTime.Now;
+
+            var routeFin = _context.BusStopTraces
+                .Include(t => t.BusStop)
+                .Where(t => t.BusStop.RouteId == routeId)
+                .Last(t => t.Date == currentDateTime.Date)
+                .BusStop.Equals(route.BusStops.Last());
+
+            if (routeFin)
+                return new List<RouteDelay>();
 
             var delays = await _context.RouteDelays
                 .Where(d => d.RouteId == routeId)
-                .Where(d => d.DateTime > datetimeMinusHour)
+                .Where(d => d.DateTime.Date == currentDateTime.Date)
                 .ToListAsync();
             return delays;
         }
