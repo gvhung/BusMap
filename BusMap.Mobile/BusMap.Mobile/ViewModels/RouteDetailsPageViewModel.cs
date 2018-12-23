@@ -213,8 +213,6 @@ namespace BusMap.Mobile.ViewModels
         //--NAVIGATION--
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
-            
-
             if (parameters.ContainsKey("route"))
             {
                 Route = parameters["route"] as Route;
@@ -264,6 +262,9 @@ namespace BusMap.Mobile.ViewModels
 
         private TimeSpan CalculateCurrentDelay()
         {
+            if (!RouteDelays.Any())
+                return new TimeSpan(0,0,0);
+
             var lastDelayTime = RouteDelays.LastOrDefault().DateTime.TimeOfDay;
             var delay = DateTime.Now.TimeOfDay.Subtract(lastDelayTime);
 
