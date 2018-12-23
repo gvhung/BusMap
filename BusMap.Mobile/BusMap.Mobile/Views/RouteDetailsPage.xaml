@@ -94,6 +94,28 @@
                             FontSize="Large"
                             Command="{Binding TrackButtonCommand}"
                             HorizontalOptions="Center"/>
+
+                    <StackLayout IsVisible="{Binding IsRouteDelayed}">
+                        <Label Text="Latest route delay reports"
+                               FontSize="Medium"
+                               FontAttributes="Bold"/>
+                        <ListView ItemsSource="{Binding RouteDelays}"
+                                  HasUnevenRows="True"
+                                  ItemSelected="RouteDelaysListView_OnItemSelected">
+                          <ListView.ItemTemplate>
+                              <DataTemplate>
+                                  <ViewCell>
+                                      <StackLayout>
+                                          <Label Text="{Binding Title}"/>
+                                          <Label Text="{Binding Description}"/>
+                                          <Label Text="{Binding DateTime, StringFormat='Date and time: {0:MMMM d, HH:mm}'}"/>
+                                      </StackLayout>
+                                  </ViewCell>
+                              </DataTemplate>
+                          </ListView.ItemTemplate>
+                      </ListView>
+                    </StackLayout>
+                
                 </StackLayout>
             </ContentPage.Content>
         </ContentPage>

@@ -57,7 +57,7 @@ namespace BusMap.WebApi.Controllers
 
             var routeDelays = await _service.GetLatestRouteDelaysAsync(routeId);
 
-            if (!routeDelays.Any())
+            if (routeDelays == null)
                 return NotFound("Not found any delays for route");
 
             return Ok(routeDelays);

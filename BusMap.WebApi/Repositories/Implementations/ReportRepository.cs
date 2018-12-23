@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.DatabaseModels;
@@ -39,15 +40,21 @@ namespace BusMap.WebApi.Repositories.Implementations
 
             //var currentDate = = new DateTime(2018, 12, 23, 13, 0, 0);
             var currentDateTime = DateTime.Now;
+            try
+            {
+                var routeFin = _context.BusStopTraces
+                    .Include(t => t.BusStop)
+                    .Where(t => t.BusStop.RouteId == routeId)
+                    .Last(t => t.Date == currentDateTime.Date)
+                    .BusStop.Equals(route.BusStops.Last());
 
-            var routeFin = _context.BusStopTraces
-                .Include(t => t.BusStop)
-                .Where(t => t.BusStop.RouteId == routeId)
-                .Last(t => t.Date == currentDateTime.Date)
-                .BusStop.Equals(route.BusStops.Last());
-
-            if (routeFin)
+                if (routeFin)
+                    return new List<RouteDelay>();
+            }
+            catch (InvalidOperationException)   //When any busStop today haven't trace
+            {
                 return new List<RouteDelay>();
+            }
 
             var delays = await _context.RouteDelays
                 .Where(d => d.RouteId == routeId)

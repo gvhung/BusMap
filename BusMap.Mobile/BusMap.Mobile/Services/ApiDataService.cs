@@ -273,6 +273,22 @@ namespace BusMap.Mobile.Services
             return resultObject;
         }
 
+        public async Task<List<RouteDelay>> GetRouteDelays(int routeId)
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync($"{Uri}reports/delay/{routeId}");
+            var routeDelays = JsonConvert.DeserializeObject<List<RouteDelay>>(json);
+            return routeDelays;
+        }
+
+        public async Task<bool> PostRouteDelay(RouteDelay routeDelay)
+        {
+            var httpClient = new HttpClient();
+            var json = JsonConvert.SerializeObject(routeDelay);
+            var result = await httpClient.PostAsync(Uri + "reports/delay", AddMediaTypeHeaderValueToJson(json));
+            return result.StatusCode.Equals(HttpStatusCode.Created);
+        }
+
 
         private string IdArrayToStringQuery(IEnumerable<int> ids)
         {

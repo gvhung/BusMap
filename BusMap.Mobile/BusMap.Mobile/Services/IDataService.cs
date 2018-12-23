@@ -55,5 +55,8 @@ namespace BusMap.Mobile.Services
             TimeSpan hourFrom, TimeSpan hourTo, DateTime date);
 
         Task<T> GetObjectFromQueryStringAsync<T>(string query);
+
+        Task<List<RouteDelay>> GetRouteDelays(int routeId);
+        Task<bool> PostRouteDelay(RouteDelay routeDelay);
     }
 }

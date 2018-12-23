@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -53,6 +54,13 @@ namespace BusMap.Mobile.ViewModels
             if (!dialogResult)
                 return;
 
+            var sendReportResult = await _dataService.PostRouteDelay(RouteDelay);
+            if (!sendReportResult)
+            {
+                MessagingHelper.Toast("Could not send raport. Please check your internet connection", ToastTime.LongTime);
+                return;
+            }
+
             MessagingHelper.Toast("Report sent", ToastTime.LongTime);
             await NavigationService.GoBackAsync();
         });
@@ -62,6 +70,7 @@ namespace BusMap.Mobile.ViewModels
         {
             Route = parameters["route"] as Route;
             RouteDelay.DateTime = DateTime.Now;
+            RouteDelay.RouteId = Route.Id;
             Title = $"Report delay on {Route.Name}";
         }
 
