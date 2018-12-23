@@ -76,6 +76,9 @@
     <PackageReference Include="Prism.Unity.Forms">
       <Version>7.0.0.396</Version>
     </PackageReference>
+    <PackageReference Include="Refractored.XamForms.PullToRefresh">
+      <Version>2.2.2</Version>
+    </PackageReference>
     <PackageReference Include="Rg.Plugins.Popup">
       <Version>1.1.4.168</Version>
     </PackageReference>

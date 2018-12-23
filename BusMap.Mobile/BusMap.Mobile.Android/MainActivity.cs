@@ -5,6 +5,7 @@ using Plugin.CurrentActivity;
 using Plugin.Iconize.Fonts;
 using Prism;
 using Prism.Ioc;
+using Refractored.XamForms.PullToRefresh.Droid;
 
 namespace BusMap.Mobile.Droid
 {
@@ -26,6 +27,7 @@ namespace BusMap.Mobile.Droid
             Xamarin.FormsGoogleMapsBindings.Init();            
             Plugin.Iconize.Iconize.With(new Plugin.Iconize.Fonts.FontAwesomeSolidModule());
             Plugin.Iconize.Iconize.Init(Resource.Id.toolbar, Resource.Id.sliding_tabs);
+            PullToRefreshLayoutRenderer.Init();
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App(new AndroidInitializer()));

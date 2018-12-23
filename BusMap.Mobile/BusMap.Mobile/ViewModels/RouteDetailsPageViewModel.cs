@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
@@ -34,6 +35,7 @@ namespace BusMap.Mobile.ViewModels
         private bool _isRouteDelayed;
         private List<RouteDelay> _routeDelays;
         private TimeSpan _currentRouteDelay;
+        private bool _isBusy;
 
         public Route Route
         {
@@ -99,6 +101,12 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _currentRouteDelay, value);
         }
 
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
         public RouteDetailsPageViewModel(INavigationService navigationService, 
             IDataService dataService,
             IFavoriteRoutesRepository favoriteRoutesRepository) 
@@ -122,6 +130,9 @@ namespace BusMap.Mobile.ViewModels
 
             await NavigationService.NavigateAsync(nameof(TraceTrackingPage), navParams);
         });
+
+        public ICommand RouteDetailsRefreshCommand => new DelegateCommand(async () 
+            => await DownloadAndSetRouteDetailsData());
 
 
         //--BusStopsTab--
@@ -210,6 +221,12 @@ namespace BusMap.Mobile.ViewModels
                 });
             }
 
+            await DownloadAndSetRouteDetailsData();
+        }
+
+        private async Task DownloadAndSetRouteDetailsData()
+        {
+            IsBusy = true;
             try
             {
                 CurrentLatency = await _dataService.GetRouteCurrentLatency(Route.Id);
@@ -223,7 +240,9 @@ namespace BusMap.Mobile.ViewModels
             RouteDelays = await _dataService.GetRouteDelays(Route.Id);
             if (RouteDelays.Any())
                 IsRouteDelayed = true;
+
             CurrentRouteDelay = CalculateCurrentDelay();
+            IsBusy = false;
         }
 
         private void MarkRecentBusStop(BusStop busStop)

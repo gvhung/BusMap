@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Foundation;
+using Refractored.XamForms.PullToRefresh.iOS;
 using UIKit;
 
 namespace BusMap.Mobile.iOS
@@ -25,6 +26,7 @@ namespace BusMap.Mobile.iOS
             global::Xamarin.Forms.Forms.Init();
             Xamarin.FormsMaps.Init();
             LoadApplication(new App());
+            PullToRefreshLayoutRenderer.Init();
 
             return base.FinishedLaunching(app, options);
         }
