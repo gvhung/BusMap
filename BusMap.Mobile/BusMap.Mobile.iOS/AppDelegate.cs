@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Foundation;
-using SuaveControls.FloatingActionButton.iOS.Renderers;
 using UIKit;
 
 namespace BusMap.Mobile.iOS
@@ -25,8 +24,6 @@ namespace BusMap.Mobile.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             Xamarin.FormsMaps.Init();
-            FloatingActionButtonRenderer.InitRenderer();
-
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);

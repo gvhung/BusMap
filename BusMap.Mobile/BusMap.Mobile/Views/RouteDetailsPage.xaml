@@ -10,7 +10,6 @@
              xmlns:eventArgsConverters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
              prism:ViewModelLocator.AutowireViewModel="True"
              xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
-             xmlns:views="clr-namespace:SuaveControls.Views;assembly=SuaveControls.FloatingActionButton"
              Title="{Binding Title}">
     
     <!--<TabbedPage.BindingContext>
@@ -34,98 +33,91 @@
         <!--Details page - first page-->
         <ContentPage Title="Details">
             <ContentPage.Content>
-                <AbsoluteLayout>
-                      <StackLayout>
+                <StackLayout Margin="20,10,20,0">
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-bus"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.Name, StringFormat='Name: {0}'}"
+                               FontSize="Medium"
+                               FontAttributes="Bold"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-user-tie"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.Carrier.Name, StringFormat='Carrier: {0}'}"
+                               FontSize="Medium"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-retweet"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0}'}"
+                               FontSize="Medium"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-hand-paper"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.BusStops.Count, StringFormat='Number of bus stops: {0}'}"
+                               FontSize="Medium"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-angle-double-right"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0:N}'}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-percentage"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
+                        <Label Text="{Binding Route.PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-clock"
+                                           HorizontalOptions="Start"
+                                           IconSize="20"/>
                         <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-bus"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.Name, StringFormat='Name: {0}'}"
-                                 FontSize="Medium"
-                                 FontAttributes="Bold"/>
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-user-tie"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.Carrier.Name, StringFormat='Carrier: {0}'}"
-                                 FontSize="Medium"/>
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-retweet"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0}'}"
-                                 FontSize="Medium"/>
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-hand-paper"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.BusStops.Count, StringFormat='Number of bus stops: {0}'}"
-                                 FontSize="Medium"/>
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-angle-double-right"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0:N}'}"/>
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-percentage"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-clock"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <StackLayout Orientation="Horizontal">
                             <Label Text="{Binding Route.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
                                    TextColor="ForestGreen"/>
                             <Label Text=":"/>
                             <Label Text="{Binding Route.PunctualityAvgAfterTime, StringFormat='{0} After'}"
                                    TextColor="DarkRed"/>
-                          </StackLayout>
                         </StackLayout>
-                        <Label Text="{Binding CurrentLatency, StringFormat='Current latency: {0}'}"
-                               IsVisible="{Binding CurrentLatencyIsVisible}"/>
-                        <Label Text="{Binding RecentBusStop.Address, StringFormat= 'Recent bus stop: {0}'}"/>
-                        <Button Text="Track"
-                                FontSize="Large"
-                                Command="{Binding TrackButtonCommand}"
-                                HorizontalOptions="Center"/>
+                    </StackLayout>
+                    <Label Text="{Binding CurrentLatency, StringFormat='Current latency: {0}'}"
+                           IsVisible="{Binding CurrentLatencyIsVisible}"/>
+                    <Label Text="{Binding RecentBusStop.Address, StringFormat= 'Recent bus stop: {0}'}"/>
+                    <Button Text="Track"
+                            FontSize="Large"
+                            Command="{Binding TrackButtonCommand}"
+                            HorizontalOptions="Center"/>
 
-                        <StackLayout IsVisible="{Binding IsRouteDelayed}">
-                          <Label Text="{Binding CurrentRouteDelay, StringFormat='Current delay: {0:hh\\hmm\\m}'}"/>
-                          <Label Text="Latest route delay reports"
-                                 FontSize="Medium"
-                                 FontAttributes="Bold"/>
-                          <ListView ItemsSource="{Binding RouteDelays}"
-                                    HasUnevenRows="True"
-                                    ItemSelected="RouteDelaysListView_OnItemSelected"
-                                    AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0.5,0.5,1,1">
-                            <ListView.ItemTemplate>
+                    <StackLayout IsVisible="{Binding IsRouteDelayed}">
+                        <Label Text="{Binding CurrentRouteDelay, StringFormat='Current delay: {0:hh\\hmm\\m}'}"/>
+                        <Label Text="Latest route delay reports"
+                               FontSize="Medium"
+                               FontAttributes="Bold"/>
+                        <ListView ItemsSource="{Binding RouteDelays}"
+                                  HasUnevenRows="True"
+                                  ItemSelected="RouteDelaysListView_OnItemSelected">
+                          <ListView.ItemTemplate>
                               <DataTemplate>
-                                <ViewCell>
-                                  <StackLayout>
-                                    <Label Text="{Binding Title}"/>
-                                    <Label Text="{Binding Description}"/>
-                                    <Label Text="{Binding DateTime, StringFormat='Date and time: {0:MMMM d, HH:mm}'}"/>
-                                  </StackLayout>
-                                </ViewCell>
+                                  <ViewCell>
+                                      <StackLayout>
+                                          <Label Text="{Binding Title}"/>
+                                          <Label Text="{Binding Description}"/>
+                                          <Label Text="{Binding DateTime, StringFormat='Date and time: {0:MMMM d, HH:mm}'}"/>
+                                      </StackLayout>
+                                  </ViewCell>
                               </DataTemplate>
-                            </ListView.ItemTemplate>
-                          </ListView>
-                        </StackLayout>
-                      </StackLayout>
-                    <views:FloatingActionButton Image="recordIcon48.png"
-                                                ButtonColor="White"
-                                                AbsoluteLayout.LayoutBounds="0.9, 0.9, 80, 90"
-                                                AbsoluteLayout.LayoutFlags="PositionProportional">
-                    </views:FloatingActionButton>
-                </AbsoluteLayout>
+                          </ListView.ItemTemplate>
+                      </ListView>
+                    </StackLayout>
+                
+                </StackLayout>
             </ContentPage.Content>
         </ContentPage>
 

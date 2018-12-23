@@ -82,9 +82,6 @@
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.5.231</Version>
     </PackageReference>
-    <PackageReference Include="SuaveControls.FloatingActionButton">
-      <Version>2018.1.5</Version>
-    </PackageReference>
     <PackageReference Include="Xam.Plugin.Iconize">
       <Version>3.2.0.74</Version>
     </PackageReference>
@@ -144,7 +141,9 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\drawable\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BusMap.Mobile\BusMap.Mobile.csproj">
       <Project>{E977723D-A5B5-437F-A3FC-DDA40F3945FF}</Project>
@@ -171,9 +170,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\MapIcons\mapIconBad.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\recordIcon48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
