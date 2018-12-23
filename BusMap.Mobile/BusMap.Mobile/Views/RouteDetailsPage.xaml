@@ -11,6 +11,7 @@
              prism:ViewModelLocator.AutowireViewModel="True"
              xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
              xmlns:pullToRefresh="clr-namespace:Refractored.XamForms.PullToRefresh;assembly=Refractored.XamForms.PullToRefresh"
+             xmlns:contextMenu="clr-namespace:ContextMenu;assembly=ContextMenu"
              Title="{Binding Title}">
     
     <!--<TabbedPage.BindingContext>
@@ -110,7 +111,9 @@
                                FontAttributes="Bold"/>
                         <ListView ItemsSource="{Binding RouteDelays}"
                                   HasUnevenRows="True"
-                                  ItemSelected="RouteDelaysListView_OnItemSelected">
+                                  ItemSelected="RouteDelaysListView_OnItemSelected"
+                                  SelectionMode="None"
+                                  SeparatorVisibility="None">
                           <ListView.ItemTemplate>
                               <DataTemplate>
                                   <ViewCell>
@@ -135,39 +138,56 @@
             <ContentPage.Content>
                 <StackLayout Padding="20,10,20,0">
                     <ListView ItemsSource="{Binding Route.BusStops}"
-                          HasUnevenRows="True">
-                        <ListView.Behaviors>
-                            <b:EventToCommandBehavior EventName="ItemTapped"
-                                                  Command="{Binding SelectedBusStopCommand}"
-                                                  EventArgsConverter="{eventArgsConverters:ItemTappedEventArgsConverter}"/>
-                        </ListView.Behaviors>
+                          HasUnevenRows="True"
+                          x:Name="BusStopList">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <ViewCell>
-                                    <StackLayout>
-                                        <StackLayout.Triggers>
-                                            <DataTrigger TargetType="{x:Type StackLayout}" Binding="{Binding IsRecentBusStop}" Value="True">
-                                                <Setter Property="StackLayout.BackgroundColor" Value="AntiqueWhite"/>
-                                            </DataTrigger>
-                                        </StackLayout.Triggers>
-                                        <StackLayout Orientation="Horizontal">
-                                            <Label Text="{Binding Address, StringFormat='{0}, '}"
-                                               FontSize="Medium"/>
-                                            <Label Text="{Binding Label}"
-                                               FontSize="Medium"/>
+                                <contextMenu:SideActionBarCell>
+                                    <contextMenu:SideActionBarCell.Content>
+                                        <StackLayout Margin="0, 5"
+                                                     WidthRequest="{Binding Source={x:Reference BusStopList}, Path=Width}">
+                                            <!--<StackLayout.Triggers>
+                                                <DataTrigger TargetType="{x:Type StackLayout}" Binding="{Binding IsRecentBusStop}" Value="True">
+                                                    <Setter Property="StackLayout.BackgroundColor" Value="AntiqueWhite"/>
+                                                </DataTrigger>
+                                            </StackLayout.Triggers>-->
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Text="{Binding Address, StringFormat='{0}, '}"
+                                                       FontSize="Medium"/>
+                                                <Label Text="{Binding Label}"
+                                                       FontSize="Medium"/>
+                                            </StackLayout>
+                                            <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"/>
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Text="{Binding PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
+                                                       TextColor="ForestGreen"/>
+                                                <Label Text=":"/>
+                                                <Label Text="{Binding PunctualityAvgAfterTime, StringFormat='{0} After'}"
+                                                       TextColor="DarkRed"/>
+                                            </StackLayout>
+                                            <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
+                                            <Label Text="{Binding PunctualityMode, StringFormat='Punctuality mode: {0}'}"/>
                                         </StackLayout>
-                                        <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"/>
-                                        <StackLayout Orientation="Horizontal">
-                                            <Label Text="{Binding PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
-                                                   TextColor="ForestGreen"/>
-                                            <Label Text=":"/>
-                                            <Label Text="{Binding PunctualityAvgAfterTime, StringFormat='{0} After'}"
-                                                   TextColor="DarkRed"/>
-                                        </StackLayout>
-                                        <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
-                                        <Label Text="{Binding PunctualityMode, StringFormat='Punctuality mode: {0}'}"/>
-                                    </StackLayout>
-                                </ViewCell>
+                                    </contextMenu:SideActionBarCell.Content>
+                                    <contextMenu:SideActionBarCell.ContextTemplate>
+                                        <DataTemplate>
+                                            <StackLayout Orientation="Horizontal"
+                                                         Margin="0, 5"
+                                                         HorizontalOptions="Fill">
+                                                <Button WidthRequest="80"
+                                                        BackgroundColor="DodgerBlue"
+                                                        Text="Set alarm"
+                                                        Clicked="SetAlarmButton_OnClicked"
+                                                        Margin="5, 0, 0, 0"/>
+                                                <Button WidthRequest="80"
+                                                        BackgroundColor="GreenYellow"
+                                                        Text="Show on map"
+                                                        Clicked="ShowOnMapButton_OnClicked"
+                                                        Margin="5, 0, 0, 0"/>
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </contextMenu:SideActionBarCell.ContextTemplate>
+                                </contextMenu:SideActionBarCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>

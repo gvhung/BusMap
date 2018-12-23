@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using ContextMenu.iOS;
 using Foundation;
 using Refractored.XamForms.PullToRefresh.iOS;
 using UIKit;
@@ -27,6 +27,7 @@ namespace BusMap.Mobile.iOS
             Xamarin.FormsMaps.Init();
             LoadApplication(new App());
             PullToRefreshLayoutRenderer.Init();
+            ContextMenuScrollViewRenderer.Initialize();
 
             return base.FinishedLaunching(app, options);
         }

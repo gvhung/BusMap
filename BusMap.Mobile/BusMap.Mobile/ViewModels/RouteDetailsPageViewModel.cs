@@ -114,12 +114,15 @@ namespace BusMap.Mobile.ViewModels
         {
             _dataService = dataService;
             _favoriteRoutesRepository = favoriteRoutesRepository;
+
             Route = new Route();
             Pins = new ObservableCollection<Pin>();
             FavoriteStarColor = Color.White;
             RouteDelays = new List<RouteDelay>();
             CurrentRouteDelay = new TimeSpan();
         }
+
+        
 
 
         //--DetailsTab--
@@ -136,12 +139,6 @@ namespace BusMap.Mobile.ViewModels
 
 
         //--BusStopsTab--
-        //Todo: to use with switching tabs onClick
-        public ICommand SelectedBusStopCommand => new DelegateCommand<BusStop>(async busStop =>
-        {
-            var positionFromBusStop = new Position(busStop.Latitude, busStop.Longitude);
-            MapPosition = MapSpan.FromCenterAndRadius(positionFromBusStop, Distance.FromKilometers(20));
-        });
 
         public ICommand ReportButtonCommand => new DelegateCommand(async () =>
         {
@@ -187,9 +184,22 @@ namespace BusMap.Mobile.ViewModels
             await NavigationService.NavigateAsync(nameof(RouteDelayReportPage), navParams);
         });
 
-
         public ICommand TestCommand => new DelegateCommand(() => 
             MessagingHelper.Toast("Juhu", ToastTime.LongTime));
+
+        public ICommand SetAlarmCommand => new DelegateCommand<BusStop>(b =>
+        {
+            MessagingHelper.Toast($"selected: {b.Address}", ToastTime.LongTime);
+        });
+
+        //Todo: to use with switching tabs onClick
+        public ICommand ShowBusStopOnMapCommand => new DelegateCommand<BusStop>(async busStop =>
+        {
+            var positionFromBusStop = new Position(busStop.Latitude, busStop.Longitude);
+            MapPosition = MapSpan.FromCenterAndRadius(positionFromBusStop, Distance.FromKilometers(20));
+            //await NavigationService.NavigateAsync("RouteDetailsPage?selectedTab=Details");
+        });
+
 
 
         //--MapTab--
@@ -203,6 +213,8 @@ namespace BusMap.Mobile.ViewModels
         //--NAVIGATION--
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
+            
+
             if (parameters.ContainsKey("route"))
             {
                 Route = parameters["route"] as Route;
