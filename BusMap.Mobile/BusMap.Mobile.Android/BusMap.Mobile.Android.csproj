@@ -118,6 +118,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="NLog\NLogLogger.cs" />
     <Compile Include="NLog\NLogManager.cs" />
+    <Compile Include="Services\GeolocationBackgroundService_Droid.cs" />
     <Compile Include="ToastMessage_Droid.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

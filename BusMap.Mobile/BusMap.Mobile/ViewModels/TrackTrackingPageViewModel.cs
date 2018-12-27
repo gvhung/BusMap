@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
 using Plugin.Geolocator;
@@ -18,6 +19,8 @@ namespace BusMap.Mobile.ViewModels
     public class TraceTrackingPageViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
+        private readonly IGeolocationBackgroundService _geolocationBackgroundService;
+
         private Route _route;
         private bool _isTrackingStarted;
         private string _testLabelText;
@@ -51,6 +54,8 @@ namespace BusMap.Mobile.ViewModels
             : base(navigationService)
         {
             _dataService = dataService;
+            _geolocationBackgroundService = DependencyService.Get<IGeolocationBackgroundService>();
+
             _busStops = new List<BusStop>();
         }
 
@@ -60,72 +65,70 @@ namespace BusMap.Mobile.ViewModels
             if (!IsTrackingStarted)
             {
                 IsTrackingStarted = true;
-                await Task.Run(async () =>
-                {
-                    await StartListening();
-                });
+                _geolocationBackgroundService.StartService();
+
             }
             else
             {
-                await CrossGeolocator.Current.StopListeningAsync();
-                CrossGeolocator.Current.PositionChanged -= Current_PositionChanged;
-                IsTrackingStarted = false;
+                //await CrossGeolocator.Current.StopListeningAsync();
+                //CrossGeolocator.Current.PositionChanged -= Current_PositionChanged;
+                //IsTrackingStarted = false;
             }
 
             
         });
 
-        private async Task StartListening()
-        {
-            await CrossGeolocator.Current.StartListeningAsync(TimeSpan.FromSeconds(5), 10, true,
-                new ListenerSettings
-                {
-                    ActivityType = ActivityType.AutomotiveNavigation,
-                    AllowBackgroundUpdates = true,
-                    DeferLocationUpdates = true,
-                    DeferralDistanceMeters = 1,
-                    DeferralTime = TimeSpan.FromSeconds(1),
-                    ListenForSignificantChanges = true,
-                    PauseLocationUpdatesAutomatically = false
-                });
+        //private async Task StartListening()
+        //{
+        //    await CrossGeolocator.Current.StartListeningAsync(TimeSpan.FromSeconds(5), 10, true,
+        //        new ListenerSettings
+        //        {
+        //            ActivityType = ActivityType.AutomotiveNavigation,
+        //            AllowBackgroundUpdates = true,
+        //            DeferLocationUpdates = true,
+        //            DeferralDistanceMeters = 1,
+        //            DeferralTime = TimeSpan.FromSeconds(1),
+        //            ListenForSignificantChanges = true,
+        //            PauseLocationUpdatesAutomatically = false
+        //        });
 
-            CrossGeolocator.Current.PositionChanged += Current_PositionChanged;
-        }
+        //    CrossGeolocator.Current.PositionChanged += Current_PositionChanged;
+        //}
 
-        private void Current_PositionChanged(object sender, PositionEventArgs e)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                var position = e.Position;
+        //private void Current_PositionChanged(object sender, PositionEventArgs e)
+        //{
+        //    Device.BeginInvokeOnMainThread(() =>
+        //    {
+        //        var position = e.Position;
 
-                //TestLabelText = $"{position.Latitude}, {position.Longitude}";
+        //        //TestLabelText = $"{position.Latitude}, {position.Longitude}";
 
-                var distanceArray = new double[Route.BusStops.Count];
+        //        var distanceArray = new double[Route.BusStops.Count];
 
-                for (int i = 0; i < _busStops.Count; i++)
-                {
-                    var busStop = _busStops[i];
-                    var busStopPosition = new Plugin.Geolocator.Abstractions.Position(busStop.Latitude, busStop.Longitude);
-                    var distance = position.CalculateDistance(busStopPosition);
-                    distanceArray[i] = distance;
+        //        for (int i = 0; i < _busStops.Count; i++)
+        //        {
+        //            var busStop = _busStops[i];
+        //            var busStopPosition = new Plugin.Geolocator.Abstractions.Position(busStop.Latitude, busStop.Longitude);
+        //            var distance = GeolocatorUtils.CalculateDistance(position, busStopPosition);
+        //            distanceArray[i] = distance;
 
-                    if (distance < 0.05)
-                    {
-                        TestLabelText = $"{busStop.Address}, {busStop.Label}";
-                        _busStops.Remove(busStop);
-                        var currentHour = DateTime.Now;
-                        _dataService.PostBusStopTraceAsync(new BusStopTrace
-                        {
-                            BusStopId = busStop.Id,
-                            Hour = new TimeSpan(currentHour.Hour, currentHour.Minute, 0)
-                        });
-                        return;
-                    }
+        //            if (distance < 0.05)
+        //            {
+        //                TestLabelText = $"{busStop.Address}, {busStop.Label}";
+        //                _busStops.Remove(busStop);
+        //                var currentHour = DateTime.Now;
+        //                _dataService.PostBusStopTraceAsync(new BusStopTrace
+        //                {
+        //                    BusStopId = busStop.Id,
+        //                    Hour = new TimeSpan(currentHour.Hour, currentHour.Minute, 0)
+        //                });
+        //                return;
+        //            }
 
-                }
+        //        }
 
-            });
-        }
+        //    });
+        //}
 
 
 
