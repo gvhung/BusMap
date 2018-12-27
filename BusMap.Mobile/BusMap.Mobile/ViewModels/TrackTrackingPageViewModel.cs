@@ -67,71 +67,52 @@ namespace BusMap.Mobile.ViewModels
             {
                 IsTrackingStarted = true;
                 await _geolocationBackgroundService.StartService();
-
+                CrossGeolocator.Current.PositionChanged += GeolocatorOnPositionChanged;
             }
             else
             {
-                //await CrossGeolocator.Current.StopListeningAsync();
-                //CrossGeolocator.Current.PositionChanged -= Current_PositionChanged;
-                //IsTrackingStarted = false;
+                CrossGeolocator.Current.PositionChanged -= GeolocatorOnPositionChanged;
+                IsTrackingStarted = false;
             }
 
             
         });
 
-        //private async Task StartListening()
-        //{
-        //    await CrossGeolocator.Current.StartListeningAsync(TimeSpan.FromSeconds(5), 10, true,
-        //        new ListenerSettings
-        //        {
-        //            ActivityType = ActivityType.AutomotiveNavigation,
-        //            AllowBackgroundUpdates = true,
-        //            DeferLocationUpdates = true,
-        //            DeferralDistanceMeters = 1,
-        //            DeferralTime = TimeSpan.FromSeconds(1),
-        //            ListenForSignificantChanges = true,
-        //            PauseLocationUpdatesAutomatically = false
-        //        });
+        private void GeolocatorOnPositionChanged(object sender, PositionEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var position = e.Position;
 
-        //    CrossGeolocator.Current.PositionChanged += Current_PositionChanged;
-        //}
+                TestLabelText = $"{position.Latitude}, {position.Longitude}";
 
-        //private void Current_PositionChanged(object sender, PositionEventArgs e)
-        //{
-        //    Device.BeginInvokeOnMainThread(() =>
-        //    {
-        //        var position = e.Position;
+                var distanceArray = new double[Route.BusStops.Count];
 
-        //        //TestLabelText = $"{position.Latitude}, {position.Longitude}";
+                for (int i = 0; i < _busStops.Count; i++)
+                {
+                    var busStop = _busStops[i];
+                    var busStopPosition =
+                        new Plugin.Geolocator.Abstractions.Position(busStop.Latitude, busStop.Longitude);
+                    var distance = GeolocatorUtils.CalculateDistance(position, busStopPosition, 
+                        GeolocatorUtils.DistanceUnits.Kilometers);
+                    distanceArray[i] = distance;
 
-        //        var distanceArray = new double[Route.BusStops.Count];
+                    if (distance < 0.05)
+                    {
+                        TestLabelText = $"{busStop.Address}, {busStop.Label}";
+                        _busStops.Remove(busStop);
+                        var currentHour = DateTime.Now;
+                        _dataService.PostBusStopTraceAsync(new BusStopTrace
+                        {
+                            BusStopId = busStop.Id,
+                            Hour = new TimeSpan(currentHour.Hour, currentHour.Minute, 0)
+                        });
+                        return;
+                    }
 
-        //        for (int i = 0; i < _busStops.Count; i++)
-        //        {
-        //            var busStop = _busStops[i];
-        //            var busStopPosition = new Plugin.Geolocator.Abstractions.Position(busStop.Latitude, busStop.Longitude);
-        //            var distance = GeolocatorUtils.CalculateDistance(position, busStopPosition);
-        //            distanceArray[i] = distance;
-
-        //            if (distance < 0.05)
-        //            {
-        //                TestLabelText = $"{busStop.Address}, {busStop.Label}";
-        //                _busStops.Remove(busStop);
-        //                var currentHour = DateTime.Now;
-        //                _dataService.PostBusStopTraceAsync(new BusStopTrace
-        //                {
-        //                    BusStopId = busStop.Id,
-        //                    Hour = new TimeSpan(currentHour.Hour, currentHour.Minute, 0)
-        //                });
-        //                return;
-        //            }
-
-        //        }
-
-        //    });
-        //}
-
-
+                }
+            });
+        }
 
 
         //--NAVIGATION--
