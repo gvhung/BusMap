@@ -40,7 +40,11 @@ namespace BusMap.Mobile.Droid.Services
             CreateNotificationChannel();
             _broadcastReceiver = new NotificationBroadcastReceiver();
             _broadcastReceiver.GeolocationServiceStopped += async (s, e) =>
+            {
                 await StopServiceAsync();
+                MessagingCenter.Send(Xamarin.Forms.Application.Current, "STOP_TRACKING");
+            };
+                
 
             RegisterReceiver(_broadcastReceiver, new IntentFilter("STOP_TRACKING"));
         }

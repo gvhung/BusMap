@@ -55,8 +55,9 @@ namespace BusMap.Mobile.ViewModels
         {
             _dataService = dataService;
             _geolocationBackgroundService = DependencyService.Get<IGeolocationBackgroundService>();
-
             _busStops = new List<BusStop>();
+
+            MessagingCenter.Subscribe<Application>(this, "STOP_TRACKING", a => IsTrackingStarted = false);
         }
 
 
