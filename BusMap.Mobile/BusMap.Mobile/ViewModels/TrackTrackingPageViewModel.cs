@@ -65,7 +65,7 @@ namespace BusMap.Mobile.ViewModels
             if (!IsTrackingStarted)
             {
                 IsTrackingStarted = true;
-                _geolocationBackgroundService.StartService();
+                await _geolocationBackgroundService.StartService();
 
             }
             else

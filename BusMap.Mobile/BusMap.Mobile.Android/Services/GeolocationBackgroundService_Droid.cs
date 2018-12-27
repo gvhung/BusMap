@@ -13,6 +13,7 @@ using Android.Widget;
 using BusMap.Mobile.Droid.Services;
 using BusMap.Mobile.Helpers;
 using Plugin.CurrentActivity;
+using Plugin.Geolocator;
 using Xamarin.Forms;
 
 [assembly:Dependency(typeof(GeolocationBackgroundService_Droid))]
@@ -24,6 +25,7 @@ namespace BusMap.Mobile.Droid.Services
         private static readonly string CHANNEL_ID = "geolocationServiceChannel";
         private Context _context = CrossCurrentActivity.Current.Activity;
         private NotificationManager _notificationManager;
+        private NotificationBroadcastReceiver _broadcastReceiver;
 
         public override IBinder OnBind(Intent intent)
             => null;
@@ -36,6 +38,17 @@ namespace BusMap.Mobile.Droid.Services
         {
             base.OnCreate();
             CreateNotificationChannel();
+            _broadcastReceiver = new NotificationBroadcastReceiver();
+            _broadcastReceiver.GeolocationServiceStopped += async (s, e) =>
+                await StopServiceAsync();
+
+            RegisterReceiver(_broadcastReceiver, new IntentFilter("STOP_TRACKING"));
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            StopForeground(true);
         }
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
@@ -46,6 +59,14 @@ namespace BusMap.Mobile.Droid.Services
             newIntent.AddFlags(ActivityFlags.SingleTop);
             var pendingIntent = PendingIntent.GetActivity(this, 0, newIntent, 0);
 
+            //actions pending intent
+            var stopTrackingIntent = new Intent("StopTrackingIntent");
+            stopTrackingIntent.SetAction("STOP_TRACKING");
+            stopTrackingIntent.SetFlags(ActivityFlags.NewTask);
+            stopTrackingIntent.SetFlags(ActivityFlags.ClearTask);
+            var pendingIntentStopTracking = PendingIntent.GetBroadcast(_context, 0, 
+                stopTrackingIntent, PendingIntentFlags.CancelCurrent);
+
             var notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .SetContentIntent(pendingIntent)
                 .SetSmallIcon(Resource.Drawable.ic_media_play_light)
@@ -53,6 +74,7 @@ namespace BusMap.Mobile.Droid.Services
                 .SetShowWhen(true)
                 .SetContentTitle("BusMap trace tracking")
                 .SetContentText("Service is started.")
+                .AddAction(Resource.Drawable.ic_media_stop_light, "Stop tracking", pendingIntentStopTracking)
                 .Build();
 
             StartForeground(112, notification);
@@ -60,7 +82,7 @@ namespace BusMap.Mobile.Droid.Services
         }
 
 
-        public void StartService()
+        public async Task StartService()
         {
             var serviceIntent = new Intent(_context, typeof(GeolocationBackgroundService_Droid));
             if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
@@ -71,26 +93,14 @@ namespace BusMap.Mobile.Droid.Services
             {
                 _context.StartService(serviceIntent);
             }
+
+            await StartTracking();
         }
 
         public async Task StopServiceAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task StartTrackingAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task PauseTrackingAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task ResumeTrackingAsync()
-        {
-            throw new NotImplementedException();
+            _context.StopService(new Intent(_context, typeof(GeolocationBackgroundService_Droid)));
+            await CrossGeolocator.Current.StopListeningAsync();
         }
 
 
@@ -98,7 +108,7 @@ namespace BusMap.Mobile.Droid.Services
 
         private void CreateNotificationChannel()
         {
-            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)                 
             {
                 NotificationChannel serviceChannel = new NotificationChannel(CHANNEL_ID,
                     "GeolocationService", NotificationManager.ImportanceDefault);
@@ -112,6 +122,15 @@ namespace BusMap.Mobile.Droid.Services
                     _context.GetSystemService(Context.NotificationService) as NotificationManager;
             }
         }
+
+        private async Task StartTracking()
+            => await CrossGeolocator.Current.StartListeningAsync(
+                TimeSpan.FromSeconds(5), 5, true, new Plugin.Geolocator.Abstractions.ListenerSettings
+                {
+                    ActivityType = Plugin.Geolocator.Abstractions.ActivityType.AutomotiveNavigation,
+                    AllowBackgroundUpdates = true,
+                    PauseLocationUpdatesAutomatically = false
+                });
 
     }
 }
