@@ -29,13 +29,6 @@ namespace BusMap.Mobile.Views
 
         }
 
-        private void EditMenuItem_OnClicked(object sender, EventArgs e)
-        {
-            MenuItem menuItem = sender as MenuItem;
-            StackLayout stackItem = menuItem.Parent as StackLayout;
-            var busStop = stackItem.BindingContext as BusStop;
-        }
-
 
         //AutoSuggestBoxEvents
         private void AutoSuggestBox_OnTextChanged(object sender, AutoSuggestBoxTextChangedEventArgs e)

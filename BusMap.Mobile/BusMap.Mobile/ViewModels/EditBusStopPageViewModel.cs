@@ -85,7 +85,8 @@ namespace BusMap.Mobile.ViewModels
                 Address = CityNameEntry,
                 Label = StopNameEntry,
                 Latitude = GeoPosition.Latitude,
-                Longitude = GeoPosition.Longitude
+                Longitude = GeoPosition.Longitude,
+                Hour = Time
             };
 
             navigationParams.Add("busStopFromEdit", updatedBusStop);
@@ -114,19 +115,6 @@ namespace BusMap.Mobile.ViewModels
         });
 
 
-
-
-        private void UpdateDataUsingPosition(Position position)
-        {
-            BusStopToEdit.Latitude = position.Latitude;
-            BusStopToEdit.Longitude = position.Longitude;
-            GeoPosition = position;
-            MapPins.Add(BusStopToEdit.ToGoogleMapsPin());
-            MapPosition = position.ToMapSpan(Distance.FromKilometers(10));
-        }
-
-
-
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
             if (parameters.ContainsKey("busStopToEdit"))
@@ -147,7 +135,16 @@ namespace BusMap.Mobile.ViewModels
             CityNameEntry = busStop.Address;
             StopNameEntry = busStop.Label;
             GeoPosition = new Position(busStop.Latitude, busStop.Longitude);
-            Time = DateTime.Now.TimeOfDay;  //TODO: update after db update
+            Time = busStop.Hour;
+        }
+
+        private void UpdateDataUsingPosition(Position position)
+        {
+            BusStopToEdit.Latitude = position.Latitude;
+            BusStopToEdit.Longitude = position.Longitude;
+            GeoPosition = position;
+            MapPins.Add(BusStopToEdit.ToGoogleMapsPin());
+            MapPosition = position.ToMapSpan(Distance.FromKilometers(10));
         }
 
         private bool ValidateEntries()

@@ -30,9 +30,17 @@
                                            TextChanged="AutoSuggestBox_OnTextChanged"
                                            SuggestionChosen="AutoSuggestBox_OnSuggestionChosen"
                                            HorizontalOptions="Center"/>
-                <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"
+                <Label Text="{Binding Carrier.Name, StringFormat='Existing carrier: {0}'}"
                        HorizontalOptions="Center"/>
-                <Label Text="{Binding WeekDaysString}"/>
+                <Label Text="Selected days of the week:"
+                       FontSize="Medium"
+                       FontAttributes="Bold"/>
+                <Label Text="{Binding WeekDaysString}"
+                       FontSize="Medium"
+                       Margin="0,0,0,20"/>
+                <Label Text="Added bus stops"
+                       FontSize="Medium"
+                       FontAttributes="Bold"/>
                 <ListView ItemsSource="{Binding BusStops}">
                     <ListView.Behaviors>
                         <b:EventToCommandBehavior EventName="ItemTapped"
@@ -42,13 +50,15 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <ViewCell.ContextActions>
-                                    <MenuItem Text="Edit" Clicked="EditMenuItem_OnClicked"/>
-                                    <MenuItem Text="Delete"/>
-                                </ViewCell.ContextActions>
-                                <StackLayout>
-                                    <Label Text="{Binding Address}"/>
-                                    <Label Text="{Binding Label}"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{Binding Address, StringFormat='{0}  '}"
+                                           FontSize="Medium"/>
+                                    <Label Text="{Binding Label}"
+                                           FontSize="Medium"/>
+                                    <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"
+                                           TextColor="Black"
+                                           HorizontalOptions="EndAndExpand"
+                                           FontSize="Medium"/>
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>

@@ -155,7 +155,7 @@ namespace BusMap.Mobile.ViewModels
             {
                 BusStopsQueued = busStopsReversed,
                 //CarrierQueuedId = Carrier.Id,
-                Name = DateTime.Now.ToShortTimeString(), //TODO: From Entry
+                Name = $"{busStopsReversed[0].Address} - {busStopsReversed[busStopsReversed.Count - 1].Address}",
                 DayOfTheWeek = DaysToNumbersString(_weekDays)
             };
 
@@ -304,15 +304,9 @@ namespace BusMap.Mobile.ViewModels
         }
 
 
-
-        public override async void OnNavigatingTo(NavigationParameters parameters)
-        {
-            var carriers = await GetCarriersFromApiAsync();
-            CarrierSuggestions = carriers;
-        }
-
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
+            
 
             if (parameters.ContainsKey("newBusStop"))
             {
@@ -346,6 +340,12 @@ namespace BusMap.Mobile.ViewModels
                 WeekDaysString = DaysToString(_weekDays);
             }
 
+            if (!parameters.Any())
+            {
+                var carriers = await GetCarriersFromApiAsync();
+                CarrierSuggestions = carriers;
+            }
+
         }
 
         private bool CheckIfCarrierIsEntered()
@@ -361,7 +361,21 @@ namespace BusMap.Mobile.ViewModels
 
         private async Task<List<Carrier>> GetCarriersFromApiAsync()
         {
-            var carriers = await _dataService.GetAllCarriersAsync();
+            var carriers = new List<Carrier>();
+            try
+            {
+                carriers = await _dataService.GetAllCarriersAsync();
+            }
+            catch (Exception ex)
+            {
+                await _pageDialogService.DisplayAlertAsync("Can not connect with the server.",
+                    "Please check your connection and try again later",
+                    "Ok");
+                await NavigationService.NavigateAsync(new Uri($"/MainMasterDetailPage/CustomNavigationPage/MainPage",
+                    UriKind.Absolute));
+            }
+            
+                
             if (carriers.Count == 0)
                 return new List<Carrier>();
             return carriers;
