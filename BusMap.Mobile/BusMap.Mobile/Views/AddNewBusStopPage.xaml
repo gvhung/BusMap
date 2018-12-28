@@ -7,15 +7,18 @@
              Title="{Binding Title}">
 
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout Margin="20,0,20,0">
             <Entry Placeholder="City name"
                    Text="{Binding CityNameEntry}"/>
             <Entry Placeholder="Bus stop name"
                    Text="{Binding StopNameEntry}"/>
             <TimePicker Time="{Binding Time}"
-                        Format="HH:mm"/>
-            <Label Text="{Binding GeoPosition.Latitude}"/>
-            <Label Text="{Binding GeoPosition.Longitude}"/>
+                        Format="HH:mm"
+                        HorizontalOptions="Center"/>
+            <Label Text="{Binding GeoPosition.Latitude, StringFormat='Latitude: {0}'}"
+                   FontSize="Medium"/>
+            <Label Text="{Binding GeoPosition.Longitude, StringFormat='Longitude: {0}'}"
+                   FontSize="Medium"/>
             <Button Text="Save Bus Stop"
                     HorizontalOptions="Center"
                     Command="{Binding SaveButtonCommand}"
@@ -35,6 +38,6 @@
             </StackLayout>
             
             
-            </StackLayout>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

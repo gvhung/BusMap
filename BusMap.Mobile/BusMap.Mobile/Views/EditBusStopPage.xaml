@@ -5,35 +5,62 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
              xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
              prism:ViewModelLocator.AutowireViewModel="True"
              Title="{Binding Title}">
 
+    <ContentPage.ToolbarItems>
+        <iconize:IconToolbarItem Command="{Binding SaveButtonCommand}"
+                                 Icon="fas-save"
+                                 IconColor="GhostWhite"/>
+        <iconize:IconToolbarItem Command="{Binding SetCurrentLocationButtonCommand}"
+                                 Icon="fas-crosshairs"
+                                 IconColor="White"/>
+        <iconize:IconToolbarItem Command="{Binding RemoveButtonCommand}"
+                                 Icon="fas-trash-alt"
+                                 IconColor="FloralWhite"/>
+    </ContentPage.ToolbarItems>
+    
     <ContentPage.Content>
         <StackLayout>
-            <StackLayout Margin="15,5,15,0">
-                <StackLayout Orientation="Horizontal">
-                    <StackLayout HorizontalOptions="FillAndExpand"
-                                 >
-                        <Entry Placeholder="City name"
-                               Text="{Binding CityNameEntry}"/>
-                        <Entry Placeholder="Bus stop name"
-                               Text="{Binding StopNameEntry}"/>
-                        <TimePicker Time="{Binding Time}"
-                                    Format="HH:mm"/>
-                    </StackLayout>
-                    <StackLayout HorizontalOptions="Fill">
-                        <Button Text="Save Bus Stop"
-                                FontSize="Micro"
-                                Command="{Binding SaveButtonCommand}"/>
-                        <Button Text="Set current location" 
-                                FontSize="Micro"
-                                Command="{Binding SetCurrentLocationButtonCommand}"/>
-                        <Button Text="Remove"
-                                FontSize="Micro"
-                                Command="{Binding RemoveButtonCommand}"/>
-                    </StackLayout>
-                </StackLayout>
-            </StackLayout>
+            <Grid HorizontalOptions="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Text="City name:"
+                       Grid.Row="0" Grid.Column="0"
+                       FontSize="Medium"
+                       VerticalOptions="Center"
+                       HorizontalOptions="End"/>
+                <Entry Placeholder="City name"
+                       Text="{Binding CityNameEntry}"
+                       Grid.Row="0" Grid.Column="01"
+                       Margin="0,0,20,0"/>
+                <Label Text="Bus stop name:"
+                       Grid.Row="1" Grid.Column="0"
+                       FontSize="Medium"
+                       VerticalOptions="Center"
+                       HorizontalOptions="End"/>
+                <Entry Placeholder="Bus stop name"
+                       Text="{Binding StopNameEntry}"
+                       Grid.Row="1" Grid.Column="1"
+                       Margin="0,0,20,0"/>
+                <Label Text="Hour:"
+                       Grid.Row="2" Grid.Column="0"
+                       FontSize="Medium"
+                       VerticalOptions="Center"
+                       HorizontalOptions="End"/>
+                <TimePicker Time="{Binding Time}"
+                            Format="HH:mm"
+                            Grid.Row="2" Grid.Column="1"
+                            HorizontalOptions="Start"/>
+            </Grid>
             <googleMaps:Map MyLocationEnabled="True">
                 <googleMaps:Map.Behaviors>
                     <googleMapsBindings:BindingPinsBehavior Value="{Binding MapPins}"/>

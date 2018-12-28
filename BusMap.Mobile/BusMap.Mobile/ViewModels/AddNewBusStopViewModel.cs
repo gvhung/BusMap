@@ -62,8 +62,8 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _positionIsDownloading, value);
         }
 
-        public AddNewBusStopViewModel(INavigationService navigationService, IPageDialogService pageDialogService) 
-            : base (navigationService)
+        public AddNewBusStopViewModel(INavigationService navigationService, IPageDialogService pageDialogService)
+            : base(navigationService)
         {
             _pageDialogService = pageDialogService;
             Title = "Add new bus stop";
@@ -73,6 +73,9 @@ namespace BusMap.Mobile.ViewModels
 
         public ICommand SaveButtonCommand => new DelegateCommand(async () =>
         {
+            if (!ValidateEntries())
+                return;
+
             var newBusStop = new BusStopQueued()
             {
                 Address = CityNameEntry,
@@ -94,21 +97,34 @@ namespace BusMap.Mobile.ViewModels
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
             try
-            {               
+            {
                 PositionIsDownloading = true;
                 GeoPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
-                SaveButtonIsEnabled = true;               
+                SaveButtonIsEnabled = true;
                 PositionIsDownloading = false;
             }
             catch (TaskCanceledException)
             {
                 MessagingHelper.Toast("Unable to get position.", ToastTime.ShortTime);
             }
-            
+
         }
 
-        
 
+        private bool ValidateEntries()
+        {
+            if (string.IsNullOrEmpty(CityNameEntry)
+                || CityNameEntry.Length < 3
+                || string.IsNullOrEmpty(StopNameEntry)
+                || StopNameEntry.Length < 3)
+            {
+                MessagingHelper.Toast("City name and bus stop name must have at least 3 characters.",
+                    ToastTime.LongTime);
+                return false;
+            }
+
+            return true;
+        }
 
 
     }

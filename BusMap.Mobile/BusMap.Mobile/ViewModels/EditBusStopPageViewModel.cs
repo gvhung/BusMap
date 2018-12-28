@@ -76,6 +76,9 @@ namespace BusMap.Mobile.ViewModels
 
         public ICommand SaveButtonCommand => new DelegateCommand(async () =>
         {
+            if (!ValidateEntries())
+                return;
+
             var navigationParams = new NavigationParameters();
             var updatedBusStop = new BusStopQueued()
             {
@@ -145,6 +148,21 @@ namespace BusMap.Mobile.ViewModels
             StopNameEntry = busStop.Label;
             GeoPosition = new Position(busStop.Latitude, busStop.Longitude);
             Time = DateTime.Now.TimeOfDay;  //TODO: update after db update
+        }
+
+        private bool ValidateEntries()
+        {
+            if (string.IsNullOrEmpty(CityNameEntry)
+                || CityNameEntry.Length < 3
+                || string.IsNullOrEmpty(StopNameEntry)
+                || StopNameEntry.Length < 3)
+            {
+                MessagingHelper.Toast("City name and bus stop name must have at least 3 characters.",
+                    ToastTime.LongTime);
+                return false;
+            }
+
+            return true;
         }
 
 
