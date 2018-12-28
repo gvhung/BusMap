@@ -202,4 +202,7 @@
       <Name>BusMap.Mobile</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\aboutPicture.jpg" />
+  </ItemGroup>
 </Project>

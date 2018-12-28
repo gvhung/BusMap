@@ -7,6 +7,10 @@
              x:Class="BusMap.Mobile.Views.MainPage"
              Title="BusMap">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="About"
+                     Command="{Binding NavigateToAboutPageCommand}"/>
+    </ContentPage.ToolbarItems>
 
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness">

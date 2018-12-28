@@ -135,6 +135,8 @@ namespace BusMap.Mobile.ViewModels
         public ICommand NavigateToFavoritePage => new DelegateCommand(async () => 
             await NavigationService.NavigateAsync(nameof(FavoritesPage)));
 
+        public ICommand NavigateToAboutPageCommand => new DelegateCommand(async () => 
+            await NavigationService.NavigateAsync(nameof(AboutPage)));
 
         public override async void OnNavigatedTo(NavigationParameters parameters)
         {
