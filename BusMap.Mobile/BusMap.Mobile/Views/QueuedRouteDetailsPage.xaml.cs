@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Plugin.Iconize;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace BusMap.Mobile.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class QueuedRouteDetailsPage : TabbedPage
-	{
+	public partial class QueuedRouteDetailsPage : IconTabbedPage
+    {
 		public QueuedRouteDetailsPage ()
 		{
 			InitializeComponent ();

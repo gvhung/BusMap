@@ -12,7 +12,7 @@ using Xamarin.Forms.Xaml;
 namespace BusMap.Mobile.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class RouteDetailsPage : TabbedPage
+	public partial class RouteDetailsPage : IconTabbedPage
     {
         private readonly RouteDetailsPageViewModel _viewModel;
 

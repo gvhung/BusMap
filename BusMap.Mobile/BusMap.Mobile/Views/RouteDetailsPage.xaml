@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+<iconize:IconTabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BusMap.Mobile.Views.RouteDetailsPage"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
@@ -18,7 +18,7 @@
         <viewModels:RouteDetailsPageViewModel/>
     </TabbedPage.BindingContext>-->
 
-    <TabbedPage.ToolbarItems>
+  <iconize:IconTabbedPage.ToolbarItems>
         <iconize:IconToolbarItem Command="{Binding ReportDelayCommand}" 
                                  Icon="fas-clock"
                                  IconColor="White"/>
@@ -29,11 +29,11 @@
                                  Icon="fas-star"
                                  IconColor="{Binding FavoriteStarColor}"
                                  IsEnabled="{Binding BoolTest}"/>
-    </TabbedPage.ToolbarItems>
+    </iconize:IconTabbedPage.ToolbarItems>
 
-        <TabbedPage.Children>
-        <!--Details page - first page-->
-        <ContentPage Title="Details">
+  <iconize:IconTabbedPage.Children>
+            <!--Details page - first page-->
+        <ContentPage Title="Details" Icon="fas-info">
             <ContentPage.Content>
                 <StackLayout Margin="20,10,20,0">
                   <pullToRefresh:PullToRefreshLayout IsPullToRefreshEnabled="True"
@@ -134,7 +134,7 @@
 
 
         <!--BusStops page - second page-->
-        <ContentPage Title="Bus stops">
+        <ContentPage Title="Bus stops" Icon="fas-bus-alt">
             <ContentPage.Content>
                 <StackLayout Padding="20,10,20,0">
                     <ListView ItemsSource="{Binding Route.BusStops}"
@@ -197,7 +197,7 @@
 
 
         <!--Map page - third page-->
-        <ContentPage Title="Map">
+        <ContentPage Title="Map" Icon="fas-map-marked-alt">
             <ContentPage.Behaviors>
                 <b:EventToCommandBehavior EventName="Appearing"
                                           Command="{Binding MapAppearingCommand}"
@@ -238,9 +238,9 @@
                 </StackLayout>
             </ContentPage.Content>
         </ContentPage>
-    </TabbedPage.Children>
+    </iconize:IconTabbedPage.Children>
 
     
 
 
-</TabbedPage>
+</iconize:IconTabbedPage>

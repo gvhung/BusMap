@@ -7,13 +7,14 @@ using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.ViewModels;
 using dotMorten.Xamarin.Forms;
+using Plugin.Iconize;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace BusMap.Mobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class TrackNewRoutePage : TabbedPage
+    public partial class TrackNewRoutePage : IconTabbedPage
     {
         private TrackNewRouteViewModel _viewModel;
 

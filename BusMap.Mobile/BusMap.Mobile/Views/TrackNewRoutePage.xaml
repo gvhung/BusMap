@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+<iconize:IconTabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BusMap.Mobile.Views.TrackNewRoutePage"
              xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
@@ -8,11 +8,12 @@
              xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
              xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
             xmlns:suggestBox="clr-namespace:dotMorten.Xamarin.Forms;assembly=dotMorten.Xamarin.Forms.AutoSuggestBox"
+            xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
             prism:ViewModelLocator.AutowireViewModel="True"
              Title="{Binding Title}">
 
     <!--AddingPage-->
-    <ContentPage Title="Add bus stops">
+    <ContentPage Title="Add bus stops" Icon="fas-plus-circle">
         <ContentPage.Content>
             <StackLayout>
                 <StackLayout Orientation="Horizontal"
@@ -63,7 +64,7 @@
     </ContentPage>
 
     <!--MapPage-->
-    <ContentPage Title="MapPage">
+    <ContentPage Title="MapPage" Icon="fas-map-marked-alt">
         <ContentPage.Behaviors>
             <b:EventToCommandBehavior EventName="Appearing"
                                       Command="{Binding MapAppearingCommand}"
@@ -91,4 +92,4 @@
         </StackLayout>
     </ContentPage>
 
-</TabbedPage>
+</iconize:IconTabbedPage>
