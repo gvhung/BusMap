@@ -16,5 +16,11 @@ namespace BusMap.Mobile.Views
 		{
 			InitializeComponent ();
 		}
-	}
+
+        private void ListView_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            var listView = sender as ListView;
+            listView.SelectedItem = null;
+        }
+    }
 }

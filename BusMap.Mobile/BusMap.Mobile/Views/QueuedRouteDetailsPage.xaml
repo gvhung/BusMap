@@ -86,24 +86,57 @@
     <ContentPage Title="Bus stops" Icon="fas-bus-alt">
       <ContentPage.Content>
         <ListView ItemsSource="{Binding RouteQueued.BusStopsQueued}"
-                  HasUnevenRows="True">
-          <ListView.ItemTemplate>
-            <DataTemplate>
-              <ViewCell>
-                <StackLayout Orientation="Horizontal">
-                  <StackLayout Orientation="Horizontal">
-                    <Label Text="{Binding Address, StringFormat='{0}, '}"
-                           FontSize="Medium"/>
-                    <Label Text="{Binding Label}"
-                           FontSize="Medium"/>
-                  </StackLayout>
-                  <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"
-                         FontSize="Medium"
-                         FontAttributes="Bold"
-                         HorizontalOptions="EndAndExpand"/>
-                </StackLayout>
-              </ViewCell>
-            </DataTemplate>
+                  HasUnevenRows="True"
+                  RowHeight="75"
+                  SeparatorVisibility="None"
+                  ItemSelected="ListView_OnItemSelected">
+            <ListView.Header>
+                <StackLayout Padding="20,10,0,30">
+                    <Label Text="Route Schedule" 
+                           TextColor="Black"
+                           FontSize="30"/>
+                    <Label Text="{Binding RouteQueued.Name}" 
+                           TextColor="Gray"
+                           FontSize="18"/>
+                        </StackLayout>
+            </ListView.Header>
+                
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                                          <Grid.RowDefinitions>
+                                              <RowDefinition Height="Auto"/>
+                                              <RowDefinition Height="*"/>
+                                          </Grid.RowDefinitions>
+                            <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"
+                                   TextColor="#A64C79"
+                                   FontSize="20"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="{Binding Address}"
+                                   FontSize="Medium"
+                                   Grid.Column="2"
+                                   Margin="20,0"/>
+                                    <Label Text="{Binding Label}"
+                                FontSize="Medium" 
+                                Grid.Row="1" Grid.Column="2"
+                                Margin="20,0,5,20"/>
+                            <Image Grid.Column="1"
+                                   Source="listViewSquare.png" WidthRequest="18" HeightRequest="18"/>
+                            <BoxView Grid.Column="1" Grid.RowSpan="2"
+                                     BackgroundColor="DodgerBlue"
+                                     HorizontalOptions="Center"
+                                     IsVisible="True"
+                                     VerticalOptions="Fill"
+                                     WidthRequest="3"/>
+                                </Grid>
+                    </ViewCell>
+                </DataTemplate>
           </ListView.ItemTemplate>
         </ListView>
       </ContentPage.Content>
