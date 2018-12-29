@@ -41,7 +41,10 @@
                 <Label Text="Added bus stops"
                        FontSize="Medium"
                        FontAttributes="Bold"/>
-                <ListView ItemsSource="{Binding BusStops}">
+                <ListView ItemsSource="{Binding BusStops}"
+                          SeparatorVisibility="None"
+                          HasUnevenRows="True"
+                          RowHeight="75">
                     <ListView.Behaviors>
                         <b:EventToCommandBehavior EventName="ItemTapped"
                                                   Command="{Binding EditBusStopCommand}"
@@ -50,16 +53,38 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text="{Binding Address, StringFormat='{0}  '}"
-                                           FontSize="Medium"/>
-                                    <Label Text="{Binding Label}"
-                                           FontSize="Medium"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
                                     <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"
-                                           TextColor="Black"
-                                           HorizontalOptions="EndAndExpand"
-                                           FontSize="Medium"/>
-                                </StackLayout>
+                                           TextColor="#A64C79"
+                                           FontSize="20"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Address}"
+                                           FontSize="Medium"
+                                           Grid.Column="2"
+                                           Margin="20,0"/>
+                                    <Label Text="{Binding Label}"
+                                           FontSize="Medium"
+                                           Grid.Row="1" Grid.Column="2"
+                                           Margin="20,0,5,10"/>
+                                    <Image Grid.Column="1"
+                                           Source="listViewSquare.png" WidthRequest="18" HeightRequest="18"/>
+                                    <BoxView Grid.Column="1" Grid.RowSpan="2"
+                                             BackgroundColor="DodgerBlue"
+                                             HorizontalOptions="Center"
+                                             IsVisible="True"
+                                             VerticalOptions="Fill"
+                                             WidthRequest="3"/>
+                                </Grid>
+                                
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
