@@ -192,14 +192,21 @@
                                         <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
                                     </StackLayout>
 
-                                    <Image Grid.Column="1"
-                                           Source="listViewSquare.png" WidthRequest="18" HeightRequest="18"/>
+                                    
                                     <BoxView Grid.Column="1" Grid.RowSpan="2"
                                              BackgroundColor="DodgerBlue"
                                              HorizontalOptions="Center"
                                              IsVisible="True"
                                              VerticalOptions="Fill"
                                              WidthRequest="3"/>
+                                    <Image Grid.Column="1"
+                                           Source="listViewSquare.png" WidthRequest="18" HeightRequest="18">
+                                        <Image.Triggers>
+                                            <DataTrigger TargetType="{x:Type Image}" Binding="{Binding IsRecentBusStop}" Value="True">
+                                                <Setter Property="Image.Source" Value="listViewSquareEmpty.png"/>
+                                            </DataTrigger>
+                                        </Image.Triggers>
+                                    </Image>
                                 </Grid>
                             </ViewCell>
                             </DataTemplate>
