@@ -30,21 +30,5 @@ namespace BusMap.Mobile.Views
         }
 
 
-        private void SetAlarmButton_OnClicked(object sender, EventArgs e) //Library doesn't support behaviors.
-        {
-            var button = sender as Button;
-            var stack = button.Parent as StackLayout;
-            var busStop = stack.BindingContext as BusStop;
-            _viewModel.SetAlarmCommand.Execute(busStop);
-        }
-
-        private void ShowOnMapButton_OnClicked(object sender, EventArgs e) //Library doesn't support behaviors.
-        {
-            var button = sender as Button;
-            var stack = button.Parent as StackLayout;
-            var busStop = stack.BindingContext as BusStop;
-            _viewModel.ShowBusStopOnMapCommand.Execute(busStop);
-        }
-
     }
 }
