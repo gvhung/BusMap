@@ -13,13 +13,21 @@
     <ContentPage.Content>
         <StackLayout>
             <ListView ItemsSource="{Binding Routes}"
-                      Header="Favorite routes"
-                      HasUnevenRows="True">
+                      HasUnevenRows="True"
+                      Margin="10,0,10,0">
                 <ListView.Behaviors>
                     <behaviors:EventToCommandBehavior EventName="ItemTapped"
                                               Command="{Binding SelectedRouteCommand}"
                                               EventArgsConverter="{eventArgsConverters:ItemTappedEventArgsConverter}"/>
                 </ListView.Behaviors>
+
+                <ListView.Header>
+                    <Label Margin="20,10,0,30"
+                           Text="Favorite routes"
+                           TextColor="Black"
+                           FontSize="30"/>
+                </ListView.Header>
+
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
