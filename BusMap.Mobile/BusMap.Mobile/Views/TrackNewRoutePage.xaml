@@ -15,7 +15,7 @@
     <!--AddingPage-->
     <ContentPage Title="Add bus stops" Icon="fas-plus-circle">
         <ContentPage.Content>
-            <StackLayout>
+            <StackLayout Margin="5">
                 <StackLayout Orientation="Horizontal"
                              HorizontalOptions="Center">
                     <Button Text="Add bus stop"
@@ -32,15 +32,22 @@
                                            HorizontalOptions="Center"/>
                 <Label Text="{Binding Carrier.Name, StringFormat='Existing carrier: {0}'}"
                        HorizontalOptions="Center"/>
-                <Label Text="Selected days of the week:"
-                       FontSize="Medium"
-                       FontAttributes="Bold"/>
+                <StackLayout Orientation="Horizontal">
+                    <iconize:IconImage Icon="fas-angle-double-right" Style="{StaticResource DetailsIconMedium}"/>
+                    <Label Text="Selected days of the week:"
+                           FontSize="Medium"
+                           FontAttributes="Bold"/>
+                </StackLayout>
                 <Label Text="{Binding WeekDaysString}"
                        FontSize="Medium"
                        Margin="0,0,0,20"/>
-                <Label Text="Added bus stops"
-                       FontSize="Medium"
-                       FontAttributes="Bold"/>
+
+                <StackLayout Orientation="Horizontal">
+                    <iconize:IconImage Icon="fas-bus" Style="{StaticResource DetailsIconMedium}"/>
+                    <Label Text="Added bus stops"
+                           FontSize="Medium"
+                           FontAttributes="Bold"/>
+                </StackLayout>
                 <ListView ItemsSource="{Binding BusStops}"
                           SeparatorVisibility="None"
                           HasUnevenRows="True"

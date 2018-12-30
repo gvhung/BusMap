@@ -30,19 +30,23 @@
     <!--1. Details page-->
     <ContentPage Title="Details" Icon="fas-info">
       <ContentPage.Content>
-        <StackLayout Grid.Row="0" Grid.Column="0">
-          <Label HorizontalOptions="Center"
-             Text="{Binding RouteQueued.Name, StringFormat='{0} details'}"
-             FontSize="Large"/>
-          <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
-             FontSize="Medium"/>
-          <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"
-             FontSize="Medium"
-                 IsVisible="{Binding RouteHaveCarrierQueued}"/>
-          <Label Text="{Binding DaysOfTheWeekText, StringFormat='Coursing in: {0}'}"
-                 FontSize="Medium"/>
-
-          <Grid Margin="20,0,20,0">
+        <StackLayout Grid.Row="0" Grid.Column="0" Margin="5">
+            <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-route" Style="{StaticResource DetailsIconMedium}"/>
+                        <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
+                               FontSize="Medium"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" IsVisible="{Binding RouteHaveCarrierQueued}">
+                <iconize:IconImage Icon="fas-user" Style="{StaticResource DetailsIconMedium}"/>
+                <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"
+               FontSize="Medium"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <iconize:IconImage Icon="fas-angle-double-right" Style="{StaticResource DetailsIconMedium}"/>
+                <Label Text="{Binding DaysOfTheWeekText, StringFormat='Coursing in: {0}'}"
+                       FontSize="Medium"/>
+            </StackLayout>
+         <Grid Margin="20,0,20,0">
             <Grid.RowDefinitions>
               <RowDefinition/>
               <RowDefinition/>

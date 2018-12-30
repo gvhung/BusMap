@@ -122,7 +122,7 @@ namespace BusMap.Mobile.ViewModels
             _dataService = dataService;
             _favoriteRoutesRepository = favoriteRoutesRepository;
 
-            Route = new Route();
+            Route = new Route {PunctualityPercentage = "10%"};
             Pins = new ObservableCollection<Pin>();
             FavoriteStarColor = Color.White;
             RouteDelays = new List<RouteDelay>();
@@ -222,8 +222,6 @@ namespace BusMap.Mobile.ViewModels
             var index = Pins.IndexOf(pin);
             BusStopClickedOnMap = Route.BusStops[index]; 
         });
-
-
 
         //--NAVIGATION--
         public override async void OnNavigatedTo(NavigationParameters parameters)

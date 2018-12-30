@@ -18,6 +18,10 @@
         <viewModels:RouteDetailsPageViewModel/>
     </TabbedPage.BindingContext>-->
 
+    <iconize:IconTabbedPage.Resources>
+        <eventArgsConverters:PunctualityPercentageConverter x:Key="PercentageConverter"/>
+    </iconize:IconTabbedPage.Resources>
+
   <iconize:IconTabbedPage.ToolbarItems>
         <iconize:IconToolbarItem Command="{Binding ReportDelayCommand}" 
                                  Icon="fas-clock"
@@ -39,53 +43,43 @@
                   <pullToRefresh:PullToRefreshLayout IsPullToRefreshEnabled="True"
                                                      RefreshCommand="{Binding RouteDetailsRefreshCommand}"
                                                      IsRefreshing="{Binding IsBusy}"
-                                                     RefreshColor="DodgerBlue">
+                                                     RefreshColor="CornflowerBlue">
                       <StackLayout>
                         <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-bus"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
+                          <iconize:IconImage Icon="fas-bus" Style="{StaticResource DetailsIconMedium}"/>
                           <Label Text="{Binding Route.Name, StringFormat='Name: {0}'}"
                                  FontSize="Medium"
                                  FontAttributes="Bold"/>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-user-tie"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.Carrier.Name, StringFormat='Carrier: {0}'}"
+                            <StackLayout Orientation="Horizontal">
+                                <iconize:IconImage Icon="fas-user-tie" Style="{StaticResource DetailsIconMedium}"/>
+                                <Label Text="{Binding Route.Carrier.Name, StringFormat='Carrier: {0}'}"
                                  FontSize="Medium"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                           <iconize:IconImage Icon="fas-hand-paper" Style="{StaticResource DetailsIconMedium}"/>
+                          <Label Text="{Binding Route.BusStops.Count, StringFormat='Number of bus stops: {0}'}"/>
                         </StackLayout>
                         <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-retweet"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0}'}"
-                                 FontSize="Medium"/>
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-hand-paper"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.BusStops.Count, StringFormat='Number of bus stops: {0}'}"
-                                 FontSize="Medium"/>
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-angle-double-right"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
+                          <iconize:IconImage Icon="fas-angle-double-right" Style="{StaticResource DetailsIconNormal}"/>
                           <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0:N}'}"/>
                         </StackLayout>
                         <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-percentage"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
-                          <Label Text="{Binding Route.PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
+                          <iconize:IconImage Icon="fas-percentage" Style="{StaticResource DetailsIconNormal}"/>
+                          <Label Text="Punctuality percentage:"/>
+                          <Label Text="{Binding Route.PunctualityPercentage}">
+                            <Label.Triggers>
+                                  <DataTrigger TargetType="{x:Type Label}" Binding="{Binding Route.PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="False">
+                                      <Setter Property="Label.TextColor" Value="Red"/>
+                                  </DataTrigger>
+                                  <DataTrigger TargetType="{x:Type Label}" Binding="{Binding Route.PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="True">
+                                      <Setter Property="Label.TextColor" Value="ForestGreen"/>
+                                  </DataTrigger>
+                              </Label.Triggers>
+                            </Label>
                         </StackLayout>
                         <StackLayout Orientation="Horizontal">
-                          <iconize:IconImage Icon="fas-clock"
-                                             HorizontalOptions="Start"
-                                             IconSize="20"/>
+                          <iconize:IconImage Icon="fas-clock" Style="{StaticResource DetailsIconNormal}"/>
                           <StackLayout Orientation="Horizontal">
                             <Label Text="{Binding Route.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
                                    TextColor="ForestGreen"/>
@@ -94,13 +88,18 @@
                                    TextColor="DarkRed"/>
                           </StackLayout>
                         </StackLayout>
-                        <Label Text="{Binding CurrentLatency, StringFormat='Current latency: {0}'}"
-                               IsVisible="{Binding CurrentLatencyIsVisible}"/>
-                        <Label Text="{Binding RecentBusStop.Address, StringFormat= 'Recent bus stop: {0}'}"/>
+                        <StackLayout Orientation="Horizontal" IsVisible="{Binding CurrentLatencyIsVisible}">
+                            <iconize:IconImage Icon="fas-user-clock" Style="{StaticResource DetailsIconNormal}"/>
+                            <Label Text="{Binding CurrentLatency, StringFormat='Current latency: {0}'}"/>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" IsVisible="{Binding CurrentLatencyIsVisible}">
+                            <iconize:IconImage Icon="fas-backward" Style="{StaticResource DetailsIconNormal}"/>
+                            <Label Text="{Binding RecentBusStop.Address, StringFormat= 'Recent bus stop: {0}'}"/>
+                        </StackLayout>
                         <Button Text="Track"
-                                FontSize="Large"
-                                Command="{Binding TrackButtonCommand}"
-                                HorizontalOptions="Center"/>
+                            FontSize="Large"
+                            Command="{Binding TrackButtonCommand}"
+                            HorizontalOptions="Center"/>
                       </StackLayout>
                   </pullToRefresh:PullToRefreshLayout>
                     

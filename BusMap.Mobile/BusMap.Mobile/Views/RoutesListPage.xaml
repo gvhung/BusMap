@@ -57,34 +57,40 @@
                                         </BoxView.Triggers>
                                     </BoxView>
                                     <StackLayout Padding="10">
-                                        <Label Text="{Binding Name, StringFormat='Route name: {0}'}"
-                                               FontSize="Medium"/>
+                                        <Label Text="{Binding Name, StringFormat='Name: {0}'}"
+                                               FontSize="Medium"
+                                               TextColor="Black"/>
                                         <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"/>
-                                        <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}">
-                                            <Label.Style>
-                                                <Style TargetType="{x:Type Label}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger TargetType="{x:Type Label}" Binding="{Binding PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="False">
-                                                            <Setter Property="Label.TextColor" Value="DarkRed"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger TargetType="{x:Type Label}" Binding="{Binding PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="True">
-                                                            <Setter Property="Label.TextColor" Value="ForestGreen"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Label.Style>
-                                        </Label>
-                                        <Label Text="{Binding BusStops.Count, StringFormat='Number of stops: {0}'}"
-                                               TextColor="Blue">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding LabelCommand}"></TapGestureRecognizer>
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                        <Label Text="{Binding BusStopsString}"
+
+
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding BusStops.Count, StringFormat='Number of stops: {0}'}"
+                                                   TextColor="Blue">
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding LabelCommand}"></TapGestureRecognizer>
+                                                    </Label.GestureRecognizers>
+                                                </Label>
+                                                <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}"
+                                                   HorizontalOptions="EndAndExpand">
+                                                    <Label.Style>
+                                                        <Style TargetType="{x:Type Label}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger TargetType="{x:Type Label}" Binding="{Binding PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="False">
+                                                                    <Setter Property="Label.TextColor" Value="DarkRed"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger TargetType="{x:Type Label}" Binding="{Binding PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="True">
+                                                                    <Setter Property="Label.TextColor" Value="ForestGreen"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Label.Style>
+                                                </Label>
+                                            </StackLayout>
+                                            <Label Text="{Binding BusStopsString}"
                                                FontSize="Small"
                                                IsVisible="{Binding BusStopsStringIsVisible}"/>
+                                        </StackLayout>
                                     </StackLayout>
-                                </StackLayout>
                             </Frame>
                         </ViewCell>
                     </DataTemplate>

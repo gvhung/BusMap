@@ -35,7 +35,8 @@
                         SelectedItem="{Binding SelectedDayOfWeek}"                             
                         ItemsSource="{Binding DaysList}"
                         IsEnabled="{Binding IsMultiDaySelectSwitchToggled, Converter={converters:InverseBoolConverter}}"
-                        SelectedIndex="{Binding PickerSelectedIndex}"/>
+                        SelectedIndex="{Binding PickerSelectedIndex}"
+                        HorizontalOptions="Center"/>
                 <StackLayout Orientation="Horizontal">
                     <Switch IsToggled="{Binding IsMultiDaySelectSwitchToggled}"/>
                     <Label Text="Choose multiple days"
