@@ -6,6 +6,6 @@ namespace BusMap.Mobile.Helpers
 {
     public static class StaticVariables
     {
-        public static readonly int Range = 10;
+        public static readonly int Range = 100;
     }
 }
