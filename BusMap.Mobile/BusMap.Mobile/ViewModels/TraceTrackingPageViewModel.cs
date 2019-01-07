@@ -63,15 +63,18 @@ namespace BusMap.Mobile.ViewModels
 
         public ICommand StartTrackingCommand => new DelegateCommand(async () =>
         {
-            if (!IsTrackingStarted)
+            if (IsTrackingStarted)
             {
                 IsTrackingStarted = true;
                 await _geolocationBackgroundService.StartService();
+                IsTrackingStarted = true;
                 CrossGeolocator.Current.PositionChanged += GeolocatorOnPositionChanged;
             }
             else
             {
                 CrossGeolocator.Current.PositionChanged -= GeolocatorOnPositionChanged;
+                await _geolocationBackgroundService.StopServiceAsync();
+                IsTrackingStarted = true;
                 IsTrackingStarted = false;
             }
 

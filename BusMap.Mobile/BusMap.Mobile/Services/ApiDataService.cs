@@ -20,7 +20,8 @@ namespace BusMap.Mobile.Services
 {
     public class ApiDataService : IDataService
     {
-        private const string Uri = "http://192.168.0.129:5003/api/";
+        //private const string Uri = "http://192.168.0.129:5003/api/";
+        private const string Uri = "https://busmapwebapi.azurewebsites.net/api/";
         private readonly IRecentSearchRepository _recentSearchRepository;
 
         public ApiDataService(IRecentSearchRepository recentSearchRepository)

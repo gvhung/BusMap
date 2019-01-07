@@ -41,7 +41,7 @@ namespace BusMap.WebApi
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(Connections.GeDbConnectionString()));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IBusStopRepository, BusStopRepository>();
             services.AddScoped<IRouteRepository, RouteRepository>();
@@ -64,7 +64,7 @@ namespace BusMap.WebApi
             var mapper = config.CreateMapper();
             services.AddSingleton(mapper);
 
-            services.AddHangfire(x => x.UseSqlServerStorage(Connections.GeDbConnectionString()));
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
             
         }
 
