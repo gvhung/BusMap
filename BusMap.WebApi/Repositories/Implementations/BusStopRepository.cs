@@ -61,13 +61,6 @@ namespace BusMap.WebApi.Repositories.Implementations
                 .ThenInclude(r => r.Carrier)
                 .ToListAsync();
 
-        public async Task<int> GetLastBusStopIdAsync()
-        {
-            var busStop = await _context.BusStops
-                .LastOrDefaultAsync();
-
-            return busStop.Id;
-        } 
 
         public async Task AddBusStopAsync(BusStop busStop)
         {

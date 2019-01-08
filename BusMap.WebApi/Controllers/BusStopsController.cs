@@ -80,20 +80,6 @@ namespace BusMap.WebApi.Controllers
             return Ok(busStop);
         }
 
-        [HttpGet("lastId")]
-        public async Task<IActionResult> GetLastBusStopId()
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await _busStopService.GetLastBusStopId();
-            if (result <= 0)
-                return NotFound();
-
-            return Ok(result);
-        }
-
-
         [HttpPost]
         public async Task<IActionResult> PostBusStop([FromBody] BusStop busStop)
         {
