@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
+using BusMap.WebApi.Dto.AzureMaps;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -25,8 +26,8 @@ namespace BusMap.WebApi.Controllers
             var splittedQuery = query.Split(",");
             string latitude = splittedQuery[0],
                 longitude = splittedQuery[1],
-                subscriptionKey = Connections.GetAzureMapsKey(),
-                result;
+                subscriptionKey = Connections.GetAzureMapsKey();
+            var result = new AzureMapsReversedGeocodeDto();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -39,7 +40,8 @@ namespace BusMap.WebApi.Controllers
                 var json = await client.GetStringAsync(requestUri);
 
                 var jo = JObject.Parse(json);
-                result = jo["results"].First["address"]["municipality"].ToString();
+                result.City = jo["results"].First["address"]["municipality"].ToString();
+                result.Street = jo["results"].First["address"]["streetName"].ToString();
             }
 
             return Ok(result);
