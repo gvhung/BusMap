@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Text;
 using BusMap.Mobile.Models;
 
@@ -25,6 +26,9 @@ namespace BusMap.Mobile.Helpers
         public static Xamarin.Forms.Maps.Position ToMapsPosition(this Plugin.Geolocator.Abstractions.Position geolocatorPosition)
             => new Xamarin.Forms.Maps.Position(geolocatorPosition.Latitude, geolocatorPosition.Longitude);
 
+        public static string ToPositionString(this Plugin.Geolocator.Abstractions.Position geolocatorPosition)
+            => $"{geolocatorPosition.Latitude.ToString(CultureInfo.InvariantCulture)}," +
+               $"{geolocatorPosition.Longitude.ToString(CultureInfo.InvariantCulture)}";
 
         public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> collection)
         {

@@ -122,13 +122,11 @@ namespace BusMap.Mobile.Services
 
         public async Task<List<RouteQueued>> GetQueuedRoutesInRange(Position currentPosition, int range)
         {
-            var currentPositionString = $"{currentPosition.Latitude.ToString(CultureInfo.InvariantCulture)}," +
-                                        $"{currentPosition.Longitude.ToString(CultureInfo.InvariantCulture)}";
             var json = "";
             try
             {
                 json = await _httpClient.GetStringAsync(
-                    $"{Uri}queues/routes/range?yourLocation={currentPositionString}&range={range}");
+                    $"{Uri}queues/routes/range?yourLocation={currentPosition.ToPositionString()}&range={range}");
             }
             catch (HttpRequestException ex)
             {
@@ -267,6 +265,13 @@ namespace BusMap.Mobile.Services
             var json = JsonConvert.SerializeObject(routeDelay);
             var result = await _httpClient.PostAsync(Uri + "reports/delay", AddMediaTypeHeaderValueToJson(json));
             return result.StatusCode.Equals(HttpStatusCode.Created);
+        }
+
+        public async Task<ReversedGeocode> GetReversedGeocodeForLatLngAsync(Position position)
+        {
+            var json = await _httpClient.GetStringAsync($"{Uri}azureMaps?query={position.ToPositionString()}");
+            var result = JsonConvert.DeserializeObject<ReversedGeocode>(json);
+            return result;
         }
 
 

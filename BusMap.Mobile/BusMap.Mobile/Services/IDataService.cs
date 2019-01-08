@@ -58,5 +58,6 @@ namespace BusMap.Mobile.Services
 
         Task<List<RouteDelay>> GetRouteDelays(int routeId);
         Task<bool> PostRouteDelay(RouteDelay routeDelay);
+        Task<ReversedGeocode> GetReversedGeocodeForLatLngAsync(Position position);
     }
 }

@@ -18,7 +18,8 @@ namespace BusMap.Mobile.ViewModels
 {
     public class AddNewBusStopViewModel : ViewModelBase
     {
-        private IPageDialogService _pageDialogService;
+        private readonly IPageDialogService _pageDialogService;
+        private readonly IDataService _dataService;
         private Position _geoPosition;
         private string _cityNameEntry;
         private string _stopNameEntry;
@@ -62,10 +63,11 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _positionIsDownloading, value);
         }
 
-        public AddNewBusStopViewModel(INavigationService navigationService, IPageDialogService pageDialogService)
-            : base(navigationService)
+        public AddNewBusStopViewModel(INavigationService navigationService, IPageDialogService pageDialogService,
+            IDataService dataService) : base(navigationService)
         {
             _pageDialogService = pageDialogService;
+            _dataService = dataService;
             Title = "Add new bus stop";
             Time = DateTime.Now.TimeOfDay;
         }
@@ -100,6 +102,7 @@ namespace BusMap.Mobile.ViewModels
             {
                 PositionIsDownloading = true;
                 GeoPosition = await LocalizationHelpers.GetCurrentUserPositionAsync(false);
+                await DownloadAndSetEntryNames();
                 SaveButtonIsEnabled = true;
                 PositionIsDownloading = false;
             }
@@ -113,17 +116,21 @@ namespace BusMap.Mobile.ViewModels
 
         private bool ValidateEntries()
         {
-            if (string.IsNullOrEmpty(CityNameEntry)
-                || CityNameEntry.Length < 3
-                || string.IsNullOrEmpty(StopNameEntry)
-                || StopNameEntry.Length < 3)
+            if (string.IsNullOrEmpty(CityNameEntry) || CityNameEntry.Length < 3)
             {
-                MessagingHelper.Toast("City name and bus stop name must have at least 3 characters.",
+                MessagingHelper.Toast("City name must be entered and have at least 3 characters.",
                     ToastTime.LongTime);
                 return false;
             }
 
             return true;
+        }
+
+        private async Task DownloadAndSetEntryNames()
+        {
+            var reversedGeocode = await _dataService.GetReversedGeocodeForLatLngAsync(GeoPosition);
+            CityNameEntry = reversedGeocode.City;
+            StopNameEntry = reversedGeocode.Street;
         }
 
 
