@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Helpers;
 using BusMap.WebApi.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -104,7 +105,7 @@ namespace BusMap.WebApi.Repositories.Implementations
         public async Task<int> GetRouteCurrentLatencyAsync(int routeId)
         {
             int result = 9999;
-            var currentDate = DateTime.Now;
+            var currentDate = DateAndTime.Now;
             //var currentDate = new DateTime(2018,11,29,10,52,0);
 
             var route = await _context.Routes
@@ -132,7 +133,7 @@ namespace BusMap.WebApi.Repositories.Implementations
         public async Task<BusStop> GetRouteRecentBusStopAsync(int routeId)
         {
             BusStop result = null;
-            var currentDate = DateTime.Now;
+            var currentDate = DateAndTime.Now;
             //var currentDate = new DateTime(2018, 11, 29, 10, 52, 0);
 
             var route = await _context.Routes

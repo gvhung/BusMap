@@ -63,21 +63,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Label = "TestLabel1",
                     Route = routeForTest1,
                     Hour = new TimeSpan(12,0,0),
-                    BusStopTraces = new List<BusStopTrace>  //All traces in time (under 5min)
-                    {
-                        new BusStopTrace
-                        {
-                            Id = 1,
-                            BusStopId = 1,
-                            Hour = new TimeSpan(12,2,0)
-                        },
-                        new BusStopTrace
-                        {
-                            Id = 2,
-                            BusStopId = 1,
-                            Hour = new TimeSpan(12,5,0)
-                        }
-                    }
+                    
                 },
                 new BusStop
                 {
@@ -88,21 +74,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Label = "TestLabel2",
                     Route = routeForTest1,
                     Hour = new TimeSpan(12,30,0),
-                    BusStopTraces = new List<BusStopTrace>
-                    {
-                        new BusStopTrace
-                        {
-                            Id = 3,
-                            BusStopId = 2,
-                            Hour = new TimeSpan(12,35,0)
-                        },
-                        new BusStopTrace
-                        {
-                            Id = 4,
-                            BusStopId = 2,
-                            Hour = new TimeSpan(12,28,0)
-                        }
-                    }
+                    
                 },
                 new BusStop
                 {
@@ -113,21 +85,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Label = "TestLabel3",
                     Route = routeForTest1,
                     Hour = new TimeSpan(13,00,0),
-                    BusStopTraces = new List<BusStopTrace>
-                    {
-                        new BusStopTrace
-                        {
-                            Id = 5,
-                            BusStopId = 3,
-                            Hour = new TimeSpan(13,1,0)
-                        },
-                        new BusStopTrace
-                        {
-                            Id = 6,
-                            BusStopId = 3,
-                            Hour = new TimeSpan(13,2,0)
-                        }
-                    }
+                    
                 },
                 new BusStop //SecondRoute
                 {
@@ -138,21 +96,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Label = "TestLabel4",
                     Route = routeForTest2,
                     Hour = new TimeSpan(16,0,0),
-                    BusStopTraces = new List<BusStopTrace>
-                    {
-                        new BusStopTrace
-                        {
-                            Id = 7,
-                            BusStopId = 4,
-                            Hour = new TimeSpan(16,2,0)
-                        },
-                        new BusStopTrace
-                        {
-                            Id = 8,
-                            BusStopId = 4,
-                            Hour = new TimeSpan(16,10,0)
-                        }
-                    }
+                    
                 },
                 new BusStop
                 {
@@ -163,21 +107,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Label = "TestLabel5",
                     Route = routeForTest2,
                     Hour = new TimeSpan(17,0,0),
-                    BusStopTraces = new List<BusStopTrace>
-                    {
-                        new BusStopTrace
-                        {
-                            Id = 9,
-                            BusStopId = 5,
-                            Hour = new TimeSpan(17,8,0)
-                        },
-                        new BusStopTrace
-                        {
-                            Id = 10,
-                            BusStopId = 5,
-                            Hour = new TimeSpan(17,10,0)
-                        }
-                    }
+                   
                 },
                 new BusStop
                 {
@@ -188,21 +118,7 @@ namespace BusMap.WebApiTests.RepositoriesTests
                     Label = "TestLabel6",
                     Route = routeForTest2,
                     Hour = new TimeSpan(18,0,0),
-                    BusStopTraces = new List<BusStopTrace>
-                    {
-                        new BusStopTrace
-                        {
-                            Id = 11,
-                            BusStopId = 6,
-                            Hour = new TimeSpan(18,4,0)
-                        },
-                        new BusStopTrace
-                        {
-                            Id = 12,
-                            BusStopId = 6,
-                            Hour = new TimeSpan(18,2,0)
-                        }
-                    }
+                    
                 }
             });
 

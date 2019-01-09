@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Helpers;
 using NUnit.Framework;
 
 namespace BusMap.WebApiTests.RepositoriesTests
@@ -74,20 +75,6 @@ namespace BusMap.WebApiTests.RepositoriesTests
             var result = await routeRepository.GetAllRoutesAsync();
 
             Assert.AreEqual(nOfRoutesFromContext, result.ToList().Count);
-        }
-
-        [Test]
-        public async Task GetRouteIncludeAllAsync_WhenTracesExist_Returning6Traces()
-        {
-            var route = await routeRepository.GetRouteIncludeAllAsync(1);
-            var result = new List<BusStopTrace>();
-
-            foreach (var busStop in route.BusStops)
-            {
-                result.AddRange(busStop.BusStopTraces);
-            }
-
-            Assert.AreEqual(6, result.Count);
         }
 
         #endregion
@@ -245,6 +232,157 @@ namespace BusMap.WebApiTests.RepositoriesTests
         }
 
         #endregion
+
+        #region RouteLatency_RouteRecentBusStop
+
+        [Test]
+        public async Task GetRouteCurrentLatencyAsync_WhenTraceExistAndIsLate_ReturnsInt()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 1, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 35, 0)
+            });
+            await context.SaveChangesAsync();
+
+            //Bus was on second stop with 5 minutes delay
+            var result = await routeRepository.GetRouteCurrentLatencyAsync(1);
+            Assert.AreEqual(5, result);
+        }
+
+        [Test]
+        public async Task GetRouteCurrentLatencyAsync_WhenTraceExistAndIsBeforeTime_ReturnsNegativeInt()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 1, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 25, 0)
+            });
+            await context.SaveChangesAsync();
+
+            //Bus was on second stop with 5 minutes delay
+            var result = await routeRepository.GetRouteCurrentLatencyAsync(1);
+            Assert.AreEqual(-5, result);
+        }
+
+        [Test]
+        public async Task GetRouteCurrentLatencyAsync_WhenTraceExistFromYesterday_Returns9999()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 2, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 25, 0)
+            });
+            await context.SaveChangesAsync();
+
+            //Bus was on second stop with 5 minutes delay
+            var result = await routeRepository.GetRouteCurrentLatencyAsync(1);
+            Assert.AreEqual(9999, result);
+        }
+
+        [Test]
+        public async Task GetRouteCurrentLatencyAsync_WhenRouteHaventEverAnyTraces_Returns9999()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 2, 12, 40, 0);
+
+            var result = await routeRepository.GetRouteCurrentLatencyAsync(1);
+            Assert.AreEqual(9999, result);
+        }
+
+
+
+
+        [Test]
+        public async Task GetRouteRecentBusStopAsync_WhenTraceExistAndIsLate_ReturnsBusStop()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 1, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 35, 0)
+            });
+            await context.SaveChangesAsync();
+
+            var result = await routeRepository.GetRouteRecentBusStopAsync(1);
+            Assert.IsInstanceOf<BusStop>(result);
+            Assert.AreEqual(2, result.Id);
+        }
+
+        [Test]
+        public async Task GetRouteRecentBusStopAsync_WhenTraceExistFromYesterday_ReturnsNull()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 2, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 35, 0)
+            });
+            await context.SaveChangesAsync();
+
+            var result = await routeRepository.GetRouteRecentBusStopAsync(1);
+            Assert.IsNull(result);
+        }
+
+        #endregion
+
+        #region FindRoutes
+
+        [Test]
+        public async Task FindRoutesAsync_UsingOnlyCities_ReturnsRoutes()
+        {
+
+        }
+
+        #endregion
+
 
     }
 }
