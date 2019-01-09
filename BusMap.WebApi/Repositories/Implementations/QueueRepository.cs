@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
@@ -108,7 +109,7 @@ namespace BusMap.WebApi.Repositories.Implementations
                 .Include(r => r.CarrierQueued)
                 .Where(r => r.VotingStartedDatetime != null)
                 .Where(r => r.VotingEndedDateTime.Value.Date == DateTime.Now.Date)
-                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / (r.NegativeVotes + r.PositiveVotes)) >= 75)
+                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / (r.NegativeVotes + r.PositiveVotes), CultureInfo.InvariantCulture) >= 75)
                 .ToListAsync();
 
             MoveRouteQueuedToMainTable(queuedRoutesToReplace);
@@ -121,7 +122,7 @@ namespace BusMap.WebApi.Repositories.Implementations
                 .Include(r => r.CarrierQueued)
                 .Where(r => r.VotingStartedDatetime != null)
                 .Where(r => r.VotingEndedDateTime.Value.Date == DateTime.Now.Date)
-                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / (r.NegativeVotes + r.PositiveVotes)) < 75)
+                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / (r.NegativeVotes + r.PositiveVotes), CultureInfo.InvariantCulture) < 75)
                 .ToListAsync();
 
             _context.RoutesQueued.RemoveRange(routesToRemove);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,8 +21,8 @@ namespace BusMap.WebApi.Models
         public GeoPosition(string positionString)
         {
             string[] stringArray = positionString.Split(",");
-            Latitude = Convert.ToDouble(stringArray[0]);
-            Longitude = Convert.ToDouble(stringArray[1]);
+            Latitude = Convert.ToDouble(stringArray[0], CultureInfo.InvariantCulture);
+            Longitude = Convert.ToDouble(stringArray[1], CultureInfo.InvariantCulture);
         }
 
     }

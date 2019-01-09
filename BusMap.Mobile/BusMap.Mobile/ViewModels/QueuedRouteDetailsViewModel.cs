@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -201,13 +202,13 @@ namespace BusMap.Mobile.ViewModels
 
             try
             {
-                var routeDouble = Convert.ToDouble(RouteQueued.PositiveVotes * 100 / nOfVotesRoute);
+                var routeDouble = Convert.ToDouble(RouteQueued.PositiveVotes * 100 / nOfVotesRoute, CultureInfo.InvariantCulture);
                 RoutePositiveVotesPercentage = $"{routeDouble}%";
 
                 if (carrierQueued != null)
                 {
                     var nOfVotesCarrier = carrierQueued.PositiveVotes + carrierQueued.NegativeVotes;
-                    var carrierDouble = Convert.ToDouble(carrierQueued.PositiveVotes * 100 / nOfVotesCarrier);
+                    var carrierDouble = Convert.ToDouble(carrierQueued.PositiveVotes * 100 / nOfVotesCarrier, CultureInfo.InvariantCulture);
                     CarrierPositiveVotesPercentage = $"{carrierDouble}%";
                 }
             }
