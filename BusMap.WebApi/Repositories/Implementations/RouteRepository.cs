@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
@@ -182,7 +183,7 @@ namespace BusMap.WebApi.Repositories.Implementations
 
             foundedRoutes = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
 
-            if (!date.ToString().Equals("1/1/0001 12:00:00 AM") && !days.Equals("1,2,3,4,5,6,0"))
+            if (!date.ToString(CultureInfo.InvariantCulture).Equals("01.01.0001 00:00:00") && !days.Equals("1,2,3,4,5,6,0") && date != default(DateTime))
             {
                 foundedRoutes = RemoveRoutesFromWrongDays(foundedRoutes, ((int)dayOfTheWeek).ToString());
             }
