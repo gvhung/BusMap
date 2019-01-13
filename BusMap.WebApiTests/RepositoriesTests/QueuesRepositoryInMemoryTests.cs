@@ -321,6 +321,104 @@ namespace BusMap.WebApiTests.RepositoriesTests
             Assert.IsTrue(result.Count() == 0);
         }
 
+        [Test]
+        public async Task AddRouteToQueueAsync_WhenBusStopsHoursAreInOrder_AddingBusStopsInGoodOrder()
+        {
+            var timeSpanList = new List<TimeSpan>
+            {
+                new TimeSpan(12, 0, 0),
+                new TimeSpan(12, 5, 0),
+                new TimeSpan(12, 25, 0),
+                new TimeSpan(12, 40, 0)
+            };
+            var routeToAdd = new RouteQueued
+            {
+                Id = 1034,
+                Name = "Name",
+                CarrierQueuedId = 5,
+                BusStopsQueued = new List<BusStopQueued>
+                {
+                    new BusStopQueued
+                    {
+                        Id = 2001,
+                        Hour = timeSpanList[0]
+                    },
+                    new BusStopQueued
+                    {
+                        Id = 2002,
+                        Hour = timeSpanList[1]
+                    },
+                    new BusStopQueued 
+                    {
+                        Id = 2003,
+                        Hour = timeSpanList[2]
+                    },
+                    new BusStopQueued 
+                    {
+                        Id = 2004,
+                        Hour = timeSpanList[3]
+                    },
+                }
+            };
+            
+            await _queueRepository.AddRouteToQueueAsync(routeToAdd);
+            var result = await _context.RoutesQueued.ToListAsync();
+
+            Assert.AreEqual(timeSpanList, result.Last().BusStopsQueued.Select(b => b.Hour).ToList());
+        }
+
+        [Test]
+        public async Task AddRouteToQueueAsync_WhenBusStopsHoursAreNotInOrder_AddingBusStopsAnywayInGoodOrder()
+        {
+            var timeSpanList = new List<TimeSpan>
+            {
+                new TimeSpan(12, 0, 0),
+                new TimeSpan(12, 5, 0),
+                new TimeSpan(12, 25, 0),
+                new TimeSpan(12, 40, 0)
+            };
+            var routeToAdd = new RouteQueued
+            {
+                Id = 1034,
+                Name = "Name",
+                CarrierQueuedId = 5,
+                BusStopsQueued = new List<BusStopQueued>
+                {
+                    new BusStopQueued
+                    {
+                        Id = 2001,
+                        Hour = timeSpanList[2]
+                    },
+                    new BusStopQueued
+                    {
+                        Id = 2002,
+                        Hour = timeSpanList[0]
+                    },
+                    new BusStopQueued
+                    {
+                        Id = 2003,
+                        Hour = timeSpanList[3]
+                    },
+                    new BusStopQueued
+                    {
+                        Id = 2004,
+                        Hour = timeSpanList[1]
+                    },
+                }
+            };
+
+            await _queueRepository.AddRouteToQueueAsync(routeToAdd);
+            var result = await _context.RoutesQueued.ToListAsync();
+            var resultHours = result
+                .Last()
+                .BusStopsQueued
+                .Select(b => b.Hour)
+                .ToList();
+
+            Assert.AreEqual(timeSpanList, resultHours);
+        }
+
+
 
 
         [Test]

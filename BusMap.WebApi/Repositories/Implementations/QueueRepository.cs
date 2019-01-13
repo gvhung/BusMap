@@ -42,6 +42,8 @@ namespace BusMap.WebApi.Repositories.Implementations
 
         public async Task AddRouteToQueueAsync(RouteQueued routeQueued)
         {
+            var orderedBusStops = routeQueued.BusStopsQueued.OrderBy(b => b.Hour).ToList();
+            routeQueued.BusStopsQueued = orderedBusStops;
             await _context.RoutesQueued.AddAsync(routeQueued);
             await _context.SaveChangesAsync();
         }
