@@ -71,11 +71,6 @@ namespace BusMap.WebApi.Services.Implementations
             return _mapper.Map<IEnumerable<BusStop>, IEnumerable<BusStopsBusStopDto>>(busStops);
         }
 
-
-
-        public async Task<int> GetLastBusStopId()
-            => await _repository.GetLastBusStopIdAsync();
-
         public async Task AddBusStopAsync(BusStop busStop)
             => await _repository.AddBusStopAsync(busStop);
 

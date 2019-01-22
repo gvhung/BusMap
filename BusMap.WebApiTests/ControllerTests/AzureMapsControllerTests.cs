@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using BusMap.WebApi.Controllers;
+using BusMap.WebApi.Dto.AzureMaps;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
@@ -29,10 +30,11 @@ namespace BusMap.WebApiTests.ControllerTests
         {
             var response = await _controller.GetCityNameForLatLong("50.042131,22.003429");
             var resultObject = response as OkObjectResult;
-            var resultString = resultObject?.Value as string;
+            var result = resultObject?.Value as AzureMapsReversedGeocodeDto;
 
             Assert.IsInstanceOf<OkObjectResult>(response);
-            Assert.AreEqual("Rzeszów", resultString);
+            Assert.AreEqual("Rzeszów", result.City);
+            Assert.AreEqual("Artura Grottgera", result.Street);
         }
 
         [Test]

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Helpers;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
 namespace BusMap.WebApiTests.RepositoriesTests
@@ -11,6 +13,125 @@ namespace BusMap.WebApiTests.RepositoriesTests
     [TestFixture]
     public class RouteRepositoryInMemoryTests : RepositoryTestAbstractClass
     {
+
+        [SetUp]
+        public async Task SetUpFixture()
+        {
+            //Data initialization for Find method tests. Other tests still using base-type setUp data.
+            var routeForFindTest1 = new Route
+            {
+                Id = 100,
+                Name = "Test WWA - Krk",
+                DayOfTheWeek = "1,2,3",
+                Carrier = new Carrier
+                {
+                    Id = 10,
+                    Name = "WaniaTrans"
+                },
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 100,
+                        Address = "Warszawa",
+                        Label = "Wschodnia",
+                        Hour = new TimeSpan(12, 0, 0),
+                        Latitude = 1,
+                        Longitude = 2
+                    },
+                    new BusStop
+                    {
+                        Id = 101,
+                        Address = "Krakow",
+                        Label = "Wawel",
+                        Hour = new TimeSpan(15, 0, 0),
+                        Latitude = 3,
+                        Longitude = 4
+                    }
+                }
+            };
+
+            var routeForFindTest2 = new Route
+            {
+                Id = 101,
+                Name = "Test WWA - Kato",
+                DayOfTheWeek = "1,3,4",
+                Carrier = new Carrier
+                {
+                    Id = 11,
+                    Name = "LeszkoTrans"
+                },
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 102,
+                        Address = "Warszawa",
+                        Label = "Zachodnia",
+                        Hour = new TimeSpan(12, 0, 0),
+                        Latitude = 1,
+                        Longitude = 2
+                    },
+                    new BusStop
+                    {
+                        Id = 103,
+                        Address = "Krakow",
+                        Label = "Wawel",
+                        Hour = new TimeSpan(15, 0, 0),
+                        Latitude = 3,
+                        Longitude = 4
+                    },
+                    new BusStop
+                    {
+                        Id = 104,
+                        Address = "Katowice",
+                        Label = "Spodek",
+                        Hour = new TimeSpan(17, 0, 0),
+                        Latitude = 3,
+                        Longitude = 4
+                    },
+                }
+            };
+
+            var routeForFindTest3 = new Route
+            {
+                Id = 102,
+                Name = "Test Gdynia - Warszwawa",
+                DayOfTheWeek = "1,2,3",
+                Carrier = new Carrier
+                {
+                    Id = 12,
+                    Name = "MieszkoTrans"
+                },
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 105,
+                        Address = "Gdynia",
+                        Label = "Centralna",
+                        Hour = new TimeSpan(8, 0, 0),
+                        Latitude = 1,
+                        Longitude = 2
+                    },
+                    new BusStop
+                    {
+                        Id = 106,
+                        Address = "Warszawa",
+                        Label = "Zlote tarasy",
+                        Hour = new TimeSpan(14, 0, 0),
+                        Latitude = 3,
+                        Longitude = 4
+                    }
+                }
+            };
+
+            await context.Routes.AddAsync(routeForFindTest1);
+            await context.Routes.AddAsync(routeForFindTest2);
+            await context.Routes.AddAsync(routeForFindTest3);
+            await context.SaveChangesAsync();
+        }
+
         #region GetRouteTests   
         [Test]
         public async Task GetRoute_WhenIdExists_ReturnsRoute()
@@ -74,20 +195,6 @@ namespace BusMap.WebApiTests.RepositoriesTests
             var result = await routeRepository.GetAllRoutesAsync();
 
             Assert.AreEqual(nOfRoutesFromContext, result.ToList().Count);
-        }
-
-        [Test]
-        public async Task GetRouteIncludeAllAsync_WhenTracesExist_Returning6Traces()
-        {
-            var route = await routeRepository.GetRouteIncludeAllAsync(1);
-            var result = new List<BusStopTrace>();
-
-            foreach (var busStop in route.BusStops)
-            {
-                result.AddRange(busStop.BusStopTraces);
-            }
-
-            Assert.AreEqual(6, result.Count);
         }
 
         #endregion
@@ -245,6 +352,428 @@ namespace BusMap.WebApiTests.RepositoriesTests
         }
 
         #endregion
+
+        #region RouteLatency_RouteRecentBusStop
+
+        [Test]
+        public async Task GetRouteCurrentLatencyAsync_WhenTraceExistAndIsLate_ReturnsInt()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 1, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 35, 0)
+            });
+            await context.SaveChangesAsync();
+
+            //Bus was on second stop with 5 minutes delay
+            var result = await routeRepository.GetRouteCurrentLatencyAsync(1);
+            Assert.AreEqual(5, result);
+        }
+
+        [Test]
+        public async Task GetRouteCurrentLatencyAsync_WhenTraceExistAndIsBeforeTime_ReturnsNegativeInt()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 1, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 25, 0)
+            });
+            await context.SaveChangesAsync();
+
+            //Bus was on second stop with 5 minutes delay
+            var result = await routeRepository.GetRouteCurrentLatencyAsync(1);
+            Assert.AreEqual(-5, result);
+        }
+
+        [Test]
+        public async Task GetRouteCurrentLatencyAsync_WhenTraceExistFromYesterday_Returns9999()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 2, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 25, 0)
+            });
+            await context.SaveChangesAsync();
+
+            //Bus was on second stop with 5 minutes delay
+            var result = await routeRepository.GetRouteCurrentLatencyAsync(1);
+            Assert.AreEqual(9999, result);
+        }
+
+        [Test]
+        public async Task GetRouteCurrentLatencyAsync_WhenRouteHaventEverAnyTraces_Returns9999()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 2, 12, 40, 0);
+
+            var result = await routeRepository.GetRouteCurrentLatencyAsync(1);
+            Assert.AreEqual(9999, result);
+        }
+
+
+
+
+        [Test]
+        public async Task GetRouteRecentBusStopAsync_WhenTraceExistAndIsLate_ReturnsBusStop()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 1, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 35, 0)
+            });
+            await context.SaveChangesAsync();
+
+            var result = await routeRepository.GetRouteRecentBusStopAsync(1);
+            Assert.IsInstanceOf<BusStop>(result);
+            Assert.AreEqual(2, result.Id);
+        }
+
+        [Test]
+        public async Task GetRouteRecentBusStopAsync_WhenTraceExistFromYesterday_ReturnsNull()
+        {
+            var dateTime = DateAndTime.NowImpl = () => new DateTime(1980, 1, 2, 12, 40, 0);
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 1,
+                BusStopId = 1,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 10, 0)
+            });
+            await context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 2,
+                BusStopId = 2,
+                Date = new DateTime(1980, 1, 1),
+                Hour = new TimeSpan(12, 35, 0)
+            });
+            await context.SaveChangesAsync();
+
+            var result = await routeRepository.GetRouteRecentBusStopAsync(1);
+            Assert.IsNull(result);
+        }
+
+        #endregion
+
+        #region FindRoutes
+
+        [Test]
+        public async Task FindRoutesAsync_UsingOnlyCities_ReturnsRoutes()
+        {
+            var result = await routeRepository.FindRoutesAsync("War", "Krak");
+
+            Assert.AreEqual(2, result.Count());
+            Assert.IsTrue(!result.Any(r => r.Name == "Test Gdynia - Warszwawa"));
+        }
+
+        [Test]
+        public async Task FindRoutesAsync_WhenRouteNotFound_ReturnsEmptyList()
+        {
+            var result = await routeRepository.FindRoutesAsync("Raw", "Kark");
+
+            Assert.IsInstanceOf<IEnumerable<Route>>(result);
+            Assert.AreEqual(0, result.Count());
+        }
+
+        [Test]
+        public async Task FindRoutesAsync_TwoRoutesWithReversedOrder_ReturnsOnly1Route()
+        {
+            var route1ReversedOrder = new Route
+            {
+                Id = 110,
+                Name = "Test KrK - WWA",
+                DayOfTheWeek = "1,2,3",
+                CarrierId = 10,
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 107,
+                        Address = "Krakow",
+                        Label = "Wawel",
+                        Hour = new TimeSpan(12, 0, 0),
+                        Latitude = 3,
+                        Longitude = 4
+                    },
+                    new BusStop
+                    {
+                        Id = 108,
+                        Address = "Warszawa",
+                        Label = "Wschodnia",
+                        Hour = new TimeSpan(15, 0, 0),
+                        Latitude = 1,
+                        Longitude = 2
+                    }
+                }
+
+            };
+            await context.Routes.AddAsync(route1ReversedOrder);
+            await context.SaveChangesAsync();
+
+
+            var result = await routeRepository.FindRoutesAsync("Krak", "War");
+
+            Assert.AreEqual(1, result.Count());
+            Assert.IsTrue(!result.Any(r => r.Name == "Test WWA - Krk"));
+            Assert.AreEqual(route1ReversedOrder.Name, result.First().Name);
+        }
+
+        [Test]
+        public async Task FindRoutesAsync_UsingCitiesDays_Returns2Routes()
+        {
+            var result = await routeRepository.FindRoutesAsync("War", "Krak", "1,3");
+
+            Assert.AreEqual(2, result.Count());
+        }
+
+        [Test]
+        public async Task FindRoutesAsync_UsingCitiesDays_Returns1Routes()
+        {
+            var result = await routeRepository.FindRoutesAsync("War", "Krak", "2");
+
+            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual("Test WWA - Krk", result.First().Name);
+        }
+
+        [Test]
+        public async Task FindRoutesAsync_UsingCitiesDaysHoursFromTo_ReturnsRoutesInRange()
+        {
+            var routeDifferentHours = new Route
+            {
+                Id = 110,
+                Name = "WWA - Krk 2 diff hrs",
+                DayOfTheWeek = "1,2,3",
+                CarrierId = 10,
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 107,
+                        Address = "Warszawa",
+                        Label = "Wschodnia",
+                        Hour = new TimeSpan(10, 0, 0),
+                        Latitude = 1,
+                        Longitude = 2
+                    },
+                    new BusStop
+                    {
+                        Id = 108,
+                        Address = "Krakow",
+                        Label = "Wawel",
+                        Hour = new TimeSpan(13, 0, 0),
+                        Latitude = 3,
+                        Longitude = 4
+                    }
+                }
+
+            };
+            await context.Routes.AddAsync(routeDifferentHours);
+            await context.SaveChangesAsync();
+
+            var resultRoutes = await routeRepository.FindRoutesAsync("Warsz", "Krak", "1,2,3",
+                new TimeSpan(9, 0, 0), new TimeSpan(11, 30, 0));
+
+            Assert.AreEqual(1, resultRoutes.Count());
+            Assert.AreEqual(routeDifferentHours.Name, resultRoutes.First().Name);
+        }
+
+        [Test]
+        public async Task FindRoutesAsync_UsingCitiesDaysHoursFromTo_Returns3RoutesInRange()
+        {
+            var routeDifferentHours = new Route
+            {
+                Id = 110,
+                Name = "WWA - Krk 2 diff hrs",
+                DayOfTheWeek = "1,2,3",
+                CarrierId = 10,
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 107,
+                        Address = "Warszawa",
+                        Label = "Wschodnia",
+                        Hour = new TimeSpan(10, 0, 0),
+                        Latitude = 1,
+                        Longitude = 2
+                    },
+                    new BusStop
+                    {
+                        Id = 108,
+                        Address = "Krakow",
+                        Label = "Wawel",
+                        Hour = new TimeSpan(13, 0, 0),
+                        Latitude = 3,
+                        Longitude = 4
+                    }
+                }
+
+            };
+            await context.Routes.AddAsync(routeDifferentHours);
+            await context.SaveChangesAsync();
+
+            var resultRoutes = await routeRepository.FindRoutesAsync("Warsz", "Krak", "1,2,3",
+                new TimeSpan(9, 0, 0), new TimeSpan(13, 30, 0));
+
+            Assert.AreEqual(3, resultRoutes.Count());
+        }
+
+        [Test]
+        public async Task FindRoutesAsync_UsingCitiesDate_ReturnsRoutesAtSpecificDate()
+        {
+            DateAndTime.NowImpl = () => new DateTime(1980, 1, 1);
+            var routeAtSunday = new Route //Only this route will course in sunday (0)
+            {
+                Id = 110,
+                Name = "Lublin Poznan Test Route",
+                DayOfTheWeek = "0",
+                CarrierId = 10,
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 107,
+                        Address = "Lublin",
+                        Label = "Dworzec",
+                        Hour = new TimeSpan(10, 0, 0),
+                        Latitude = 1,
+                        Longitude = 2
+                    },
+                    new BusStop
+                    {
+                        Id = 108,
+                        Address = "Poznan",
+                        Label = "Dworzec",
+                        Hour = new TimeSpan(13, 0, 0),
+                        Latitude = 3,
+                        Longitude = 4
+                    }
+                }
+
+            };
+            await context.Routes.AddAsync(routeAtSunday);
+            await context.SaveChangesAsync();
+
+            var resultRoutes = await routeRepository.FindRoutesAsync("Lublin", "Poznan",
+                date: new DateTime(1980, 2, 3));
+
+            Assert.AreEqual(1, resultRoutes.Count());
+            Assert.AreEqual(routeAtSunday.Name, resultRoutes.First().Name);
+        }
+
+        [Test]
+        public async Task FindRoutesAsync_WhenFromAndToCitiesAreSame_ReturnsRoutesInThisCity()
+        {
+            var carrier = new Carrier
+            {
+                Id = 60,
+                Name = "TestTrans"
+            };
+            var route1= new Route
+            {
+                Id = 1040,
+                Name = "Rzeszow - Rzeszow",
+                DayOfTheWeek = "1,3,4",
+                Carrier = carrier,
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 151,
+                        Address = "Rzeszow",
+                        Label = "One",
+                    },
+                    new BusStop
+                    {
+                        Id = 152,
+                        Address = "Rzeszow",
+                        Label = "Two",
+                    },
+                    new BusStop
+                    {
+                        Id = 153,
+                        Address = "Rzeszow",
+                        Label = "Three",
+                    }
+                }
+            };
+            var route2 = new Route
+            {
+                Id = 1041,
+                Name = "Rzeszow - Rzeszow",
+                DayOfTheWeek = "1,3,4",
+                Carrier = carrier,
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 154,
+                        Address = "Rzeszow",
+                        Label = "Three",
+                    },
+                    new BusStop
+                    {
+                        Id = 155,
+                        Address = "Rzeszow",
+                        Label = "Two",
+                    },
+                    new BusStop
+                    {
+                        Id = 156,
+                        Address = "Rzeszow",
+                        Label = "One",
+                    }                   
+                }
+            };
+
+            await context.Routes.AddRangeAsync(new []{route1, route2});
+            await context.SaveChangesAsync();
+            var test = await context.Routes.ToListAsync();
+            var result = await routeRepository.FindRoutesAsync("Rzeszow", "Rzeszow");
+
+            Assert.AreEqual(2, result.ToList().Count);
+        }
+
+        #endregion
+
 
     }
 }

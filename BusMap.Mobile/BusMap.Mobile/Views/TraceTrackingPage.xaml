@@ -4,6 +4,7 @@
              x:Class="BusMap.Mobile.Views.TraceTrackingPage"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
+             xmlns:eventArgsConverters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
              prism:ViewModelLocator.AutowireViewModel="True"
              Title="{Binding Title}">
     
@@ -11,17 +12,26 @@
         <viewModels:TrackTrackingPageViewModel/>
     </ContentPage.BindingContext>-->
 
+    <ContentPage.Resources>
+      <ResourceDictionary>
+          <eventArgsConverters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+      </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <StackLayout>
             <Button Text="Start tracking"
-                    Command="{Binding StartTrackingCommand}"/>
+                    Command="{Binding StartTrackingCommand}"
+                    IsEnabled="{Binding IsTrackingEnabled}"/>
             <Label Text="{Binding TestLabelText}"/>
             <Label Text="Tracking"
                    TextColor="DarkRed"
                    HorizontalOptions="Center"
                    VerticalOptions="End"
-                   IsVisible="{Binding IsTrackingStarted}"
-                   />
+                   IsVisible="{Binding IsTrackingStarted}"/>
+            <Label Text="Tracking is not available now."
+                   IsVisible="{Binding IsTrackingEnabled, Converter = {StaticResource InverseBoolConverter}}"
+                   HorizontalOptions="Center"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

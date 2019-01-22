@@ -20,5 +20,6 @@ namespace BusMap.WebApi.Services.Abstract
 
         Task<IEnumerable<QueuesRouteDto>> GetRoutesInRangeAsync(string yourLocation, int range);
         Task MoveQueuedRoutesToMainTableAsync();
+        Task RemoveRejectedQueuedRoutesAsync();
     }
 }

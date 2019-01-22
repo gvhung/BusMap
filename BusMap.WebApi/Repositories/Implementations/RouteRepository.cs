@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Helpers;
 using BusMap.WebApi.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -104,7 +106,7 @@ namespace BusMap.WebApi.Repositories.Implementations
         public async Task<int> GetRouteCurrentLatencyAsync(int routeId)
         {
             int result = 9999;
-            var currentDate = DateTime.Now;
+            var currentDate = DateAndTime.Now;
             //var currentDate = new DateTime(2018,11,29,10,52,0);
 
             var route = await _context.Routes
@@ -132,7 +134,7 @@ namespace BusMap.WebApi.Repositories.Implementations
         public async Task<BusStop> GetRouteRecentBusStopAsync(int routeId)
         {
             BusStop result = null;
-            var currentDate = DateTime.Now;
+            var currentDate = DateAndTime.Now;
             //var currentDate = new DateTime(2018, 11, 29, 10, 52, 0);
 
             var route = await _context.Routes
@@ -181,7 +183,7 @@ namespace BusMap.WebApi.Repositories.Implementations
 
             foundedRoutes = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
 
-            if (!date.ToString().Equals("1/1/0001 12:00:00 AM") && !days.Equals("1,2,3,4,5,6,0"))
+            if (!date.ToString(CultureInfo.InvariantCulture).Equals("01.01.0001 00:00:00") && !days.Equals("1,2,3,4,5,6,0") && date != default(DateTime))
             {
                 foundedRoutes = RemoveRoutesFromWrongDays(foundedRoutes, ((int)dayOfTheWeek).ToString());
             }
@@ -207,6 +209,8 @@ namespace BusMap.WebApi.Repositories.Implementations
                     .Contains(destinationCity.ToLowerInvariant()));
 
                 if (start.Id < dest.Id)
+                    result.Add(route);
+                else if (start.Address.Equals(dest.Address) && dest.Address.Equals(start.Address))
                     result.Add(route);
             }
 

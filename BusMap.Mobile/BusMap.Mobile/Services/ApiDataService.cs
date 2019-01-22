@@ -46,52 +46,12 @@ namespace BusMap.Mobile.Services
             return busStops;
         }
 
-        public async Task<int> GetBusStopLastIdAsync()
-        {
-            var json = await _httpClient.GetStringAsync(Uri + "/busStops/lastId");
-            int lastId = JsonConvert.DeserializeObject<int>(json);
-
-            return lastId;
-        }
-
-        public async Task PostBusStop(BusStop busStop)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<BusStop>> GetBusStopsForRoute(int routeId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<Route>> GetRoutes()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<Route> GetRouteAsync(int routeId)
         {
             var json = await _httpClient.GetStringAsync($"{Uri}routes/{routeId}/all");
             var route = JsonConvert.DeserializeObject<Route>(json);
 
             return route;
-        }
-
-        public async Task<bool> PostRouteAsync(Route route)
-        {
-            var json = JsonConvert.SerializeObject(route);
-            var stringContent = new StringContent(json);
-
-            var result = await _httpClient.PostAsync(Uri + "/routes", AddMediaTypeHeaderValueToJson(json));
-            return result.IsSuccessStatusCode;
-        }
-
-        public async Task<bool> CheckIfCarrierExistAsync(string name)
-        {
-            var json = await _httpClient.GetStringAsync($"{Uri}carriers/carrierExist?name={name}");
-            var result = JsonConvert.DeserializeObject<bool>(json);
-
-            return result;
         }
 
         public async Task<List<Carrier>> GetAllCarriersAsync()
@@ -101,34 +61,13 @@ namespace BusMap.Mobile.Services
             return result;
         }
 
-        public async Task<Carrier> PostCarrierAsync(Carrier carrier)
-        {
-            var json = JsonConvert.SerializeObject(carrier);
-            var stringContent = new StringContent(json);
-
-            var result = await _httpClient.PostAsync(Uri + "carriers", AddMediaTypeHeaderValueToJson(json));
-            var resultObject = await result.Content.ReadAsStringAsync();
-            var resultResponse = JsonConvert.DeserializeObject<Carrier>(resultObject);
-
-            return resultResponse;
-        }
-
-        public async Task<IEnumerable<RouteQueued>> GetQueuedRoutesAsync()
-        {
-            var json = await _httpClient.GetStringAsync(Uri + "queues/routes/");
-            var queuedRoutes = JsonConvert.DeserializeObject<IEnumerable<RouteQueued>>(json);
-            return queuedRoutes;
-        }
-
         public async Task<List<RouteQueued>> GetQueuedRoutesInRange(Position currentPosition, int range)
         {
-            var currentPositionString = $"{currentPosition.Latitude.ToString(CultureInfo.InvariantCulture)}," +
-                                        $"{currentPosition.Longitude.ToString(CultureInfo.InvariantCulture)}";
             var json = "";
             try
             {
                 json = await _httpClient.GetStringAsync(
-                    $"{Uri}queues/routes/range?yourLocation={currentPositionString}&range={range}");
+                    $"{Uri}queues/routes/range?yourLocation={currentPosition.ToPositionString()}&range={range}");
             }
             catch (HttpRequestException ex)
             {
@@ -137,13 +76,6 @@ namespace BusMap.Mobile.Services
 
             var queuedRoutesInRange = JsonConvert.DeserializeObject<List<RouteQueued>>(json);
             return queuedRoutesInRange;
-        }
-
-        public async Task<int> GetNumberOfQueuedRoutesAsync()
-        {
-            var json = await _httpClient.GetStringAsync(Uri + "queues/routes/count");
-            var nOfQueuedRoutes = JsonConvert.DeserializeObject<int>(json);
-            return nOfQueuedRoutes;
         }
 
         public async Task<int> GetNumberOfQueuedRoutesInRangeAsync(Position currentPosition, int range)
@@ -160,17 +92,6 @@ namespace BusMap.Mobile.Services
 
             var result = await _httpClient.PostAsync(Uri + "/queues/routes", AddMediaTypeHeaderValueToJson(json));
             return result.IsSuccessStatusCode;
-        }
-
-        public async Task<CarrierQueued> PostCarrierQueuedAsync(CarrierQueued carrierQueued)
-        {
-            var json = JsonConvert.SerializeObject(carrierQueued);
-
-            var result = await _httpClient.PostAsync(Uri + "/queues/carriers", AddMediaTypeHeaderValueToJson(json));
-            var resultJson = await result.Content.ReadAsStringAsync();
-            var resultObject = JsonConvert.DeserializeObject<CarrierQueued>(resultJson);
-
-            return resultObject;
         }
 
         public async Task<bool> UpdateQueuedRoute(int id, RouteQueued updatedRouteQueued)
@@ -267,6 +188,13 @@ namespace BusMap.Mobile.Services
             var json = JsonConvert.SerializeObject(routeDelay);
             var result = await _httpClient.PostAsync(Uri + "reports/delay", AddMediaTypeHeaderValueToJson(json));
             return result.StatusCode.Equals(HttpStatusCode.Created);
+        }
+
+        public async Task<ReversedGeocode> GetReversedGeocodeForLatLngAsync(Position position)
+        {
+            var json = await _httpClient.GetStringAsync($"{Uri}azureMaps?query={position.ToPositionString()}");
+            var result = JsonConvert.DeserializeObject<ReversedGeocode>(json);
+            return result;
         }
 
 

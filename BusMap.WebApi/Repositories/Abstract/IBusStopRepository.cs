@@ -18,8 +18,6 @@ namespace BusMap.WebApi.Repositories.Abstract
         Task<IEnumerable<BusStop>> GetAllBusStopsIncludeRouteCarrierAsync();
         Task<IEnumerable<BusStop>> GetAllBusStopsIncludeAllAsync();
 
-        Task<int> GetLastBusStopIdAsync();
-
         Task AddBusStopAsync(BusStop busStop);
         Task AddBusStopsRangeAsync(IEnumerable<BusStop> busStops);
 

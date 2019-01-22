@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -126,7 +127,7 @@ namespace BusMap.WebApi.Helpers
 
             if (nOfMatchingTraces > 0)
             {
-                result = Convert.ToDouble((nOfMatchingTraces * 100) / busStop.BusStopTraces.Count);
+                result = Convert.ToDouble((nOfMatchingTraces * 100) / busStop.BusStopTraces.Count, CultureInfo.InvariantCulture);
             }
 
             return result;

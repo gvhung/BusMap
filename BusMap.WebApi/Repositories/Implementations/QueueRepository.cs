@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
@@ -41,6 +42,8 @@ namespace BusMap.WebApi.Repositories.Implementations
 
         public async Task AddRouteToQueueAsync(RouteQueued routeQueued)
         {
+            var orderedBusStops = routeQueued.BusStopsQueued.OrderBy(b => b.Hour).ToList();
+            routeQueued.BusStopsQueued = orderedBusStops;
             await _context.RoutesQueued.AddAsync(routeQueued);
             await _context.SaveChangesAsync();
         }
@@ -101,18 +104,33 @@ namespace BusMap.WebApi.Repositories.Implementations
 
         public async Task MoveQueuedRoutesToMainTableAsync()
         {
-            var test = await GetRoutesQueueAsync();
-
             var queuedRoutesToReplace = await _context.RoutesQueued
                 .Include(r => r.BusStopsQueued)
                 .Include(r => r.CarrierQueued)
                 .Where(r => r.VotingStartedDatetime != null)
-                .Where(r => r.VotingEndedDateTime.Value.Date == DateTime.Now.Date)
-                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / (r.NegativeVotes + r.PositiveVotes)) > 75)
+                .Where(r => r.PositiveVotes > 0 || r.NegativeVotes > 0)
+                .Where(r => r.VotingEndedDateTime.Value.Date <= DateAndTime.Now.Date)
+                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / (r.NegativeVotes + r.PositiveVotes), CultureInfo.InvariantCulture) >= 75)
                 .ToListAsync();
 
             MoveRouteQueuedToMainTable(queuedRoutesToReplace);
         }
+
+        public async Task RemoveRejectedQueuedRoutesAsync()
+        {
+            var routesToRemove = await _context.RoutesQueued
+                .Include(r => r.BusStopsQueued)
+                .Include(r => r.CarrierQueued)
+                .Where(r => r.VotingStartedDatetime != null)
+                .Where(r => r.VotingEndedDateTime.Value.Date <= DateAndTime.Now.Date)
+                .Where(r => Convert.ToDouble(r.PositiveVotes * 100 / (r.NegativeVotes + r.PositiveVotes), CultureInfo.InvariantCulture) < 75)
+                .ToListAsync();
+
+            _context.RoutesQueued.RemoveRange(routesToRemove);
+            await _context.SaveChangesAsync();
+        }
+
+
 
         private void MoveRouteQueuedToMainTable(List<RouteQueued> queuedRoutesToReplace)
         {

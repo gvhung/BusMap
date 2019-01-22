@@ -6,9 +6,7 @@
     <MasterDetailPage.Master>
         <ContentPage Title="BusMap menu">
             <StackLayout>
-                <Label Text="BusMap"
-                       FontSize="Large"
-                       HorizontalOptions="Center"/>
+                <Image Source="masterDetailPageImage.jpg"/>
                 <Button Text="Home page"
                         Command="{Binding NavigateToMainPageCommand}"/>
                 <Button Text="Nearest stops"

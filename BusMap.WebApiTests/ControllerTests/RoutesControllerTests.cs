@@ -7,6 +7,7 @@ using BusMap.WebApi.Controllers;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Dto.Routes;
+using BusMap.WebApi.Helpers;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Repositories.Implementations;
 using BusMap.WebApi.Services.Implementations;
@@ -211,6 +212,32 @@ namespace BusMap.WebApiTests.ControllerTests
 
         #endregion
 
+        #region RouteLatency_RouteRecentBusStop
+
+        [Test]
+        public async Task GetRouteCurrentLatency_WhenTracesExistAndAreBefore_ReturnsOkObjectResult()
+        {
+            DateAndTime.NowImpl = () => new DateTime(1980, 1, 1, 12, 15, 0);
+
+            await Context.BusStopTraces.AddAsync(new BusStopTrace
+            {
+                Id = 100,
+                Date = DateAndTime.Now.Date,
+                Hour = new TimeSpan(12,10, 0),
+                BusStopId = 1
+            });
+            await Context.SaveChangesAsync();
+
+            var response = await _routesController.GetRouteCurrentLatency(1);
+            var resultObject = response as OkObjectResult;
+            var result = (int) resultObject.Value;
+
+            Assert.IsInstanceOf<OkObjectResult>(response);
+            Assert.AreEqual(10, result);
+        }
+
+
+        #endregion
 
     }
 }

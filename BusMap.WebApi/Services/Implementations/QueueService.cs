@@ -62,5 +62,8 @@ namespace BusMap.WebApi.Services.Implementations
 
         public async Task MoveQueuedRoutesToMainTableAsync()
             => await _repository.MoveQueuedRoutesToMainTableAsync();
+
+        public async Task RemoveRejectedQueuedRoutesAsync()
+            => await _repository.RemoveRejectedQueuedRoutesAsync();
     }
 }
