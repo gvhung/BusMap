@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.RouteDelayReportPage"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <StackLayout>
+            <Entry Text="{Binding RouteDelay.Title}"
+                   Placeholder="Enter delay title"/>
+            <Editor Text="{Binding RouteDelay.Description}"
+                    Placeholder="Enter delay description"
+                    VerticalOptions="Center"
+                    AutoSize="TextChanges"/>
+            <Label Text="{Binding RouteDelay.DateTime, StringFormat='Date and time: {0:MMMM d, HH:mm}'}"
+                   FontSize="Medium"/>
+            <Button Text="Report delay" 
+                    HorizontalOptions="Center"
+                    Command="{Binding ReportDelayButtonCommand}"
+                    Margin="0,10,0,0"/>
+            
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.AboutPage"
+             Title="About BusMap">
+    <ContentPage.Content>
+        <StackLayout>
+            <Image Source="aboutPicture.jpg" IsOpaque="True"/>
+            <Grid HorizontalOptions="Center" VerticalOptions="Center"
+                  Margin="15">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="7*"/>
+                </Grid.ColumnDefinitions>
+                <Label Text="Author: Szymon P"
+                       FontSize="Medium"
+                       Margin="0,0,0,10"
+                       Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
+
+                <Label Text="Copyright content used:"
+                       FontSize="Medium"
+                       FontAttributes="Bold"
+                       Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
+
+                <Label Text="Application icon:"
+                       Grid.Row="2" Grid.Column="0"/>
+                <Label Text="Icon made by Freepik from www.flaticon.com "
+                       Grid.Row="2" Grid.Column="1"/>
+
+                <Label Text="BusStop icon"
+                       Grid.Row="3" Grid.Column="0"/>
+                <Label Text="Icon made by Freepik from www.flaticon.com"
+                       Grid.Row="3" Grid.Column="1"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

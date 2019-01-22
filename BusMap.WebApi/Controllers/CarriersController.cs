@@ -39,12 +39,12 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = await getAllCarriersFunc();
+            var carriers = await getAllCarriersFunc();
 
-            if (route == null)
+            if (carriers == null || carriers.Count() < 1)
                 return NotFound();
 
-            return Ok(route);
+            return Ok(carriers);
         }
 
 
@@ -66,14 +66,24 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = await getCarrierFunc(id);
+            var carrier = await getCarrierFunc(id);
 
-            if (route == null)
+            if (carrier == null)
                 return NotFound();
 
-            return Ok(route);
+            return Ok(carrier);
         }
 
+        [HttpGet("carrierExist")]
+        public async Task<IActionResult> CheckIfCarrierExist([FromQuery] string name)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var containsCarrier = await _carrierService.CheckIfCarrierExistAsync(name);
+
+            return Ok(containsCarrier);
+        }
 
 
         [HttpPost]

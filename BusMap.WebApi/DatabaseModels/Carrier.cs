@@ -6,14 +6,8 @@ using System.Threading.Tasks;
 
 namespace BusMap.WebApi.DatabaseModels
 {
-    public class Carrier
+    public class Carrier : CarrierBase
     {
-        public int Id { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string Name { get; set; }
-
         public ICollection<Route> Routes { get; set; }
     }
 }

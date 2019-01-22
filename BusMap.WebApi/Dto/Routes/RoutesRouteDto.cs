@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
-using BusMap.WebApi.Models;
 
 namespace BusMap.WebApi.Dto.Routes
 {
@@ -11,9 +10,13 @@ namespace BusMap.WebApi.Dto.Routes
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string DayOfTheWeek { get; set; }
         public RoutesCarrierDto Carrier { get; set; }
-        public ICollection<BusStopModel> BusStops { get; set; }
+        public ICollection<RoutesBusStopDto> BusStops { get; set; }
 
+        public string PunctualityPercentage { get; set; }
+        public string PunctualityAvgBeforeTime { get; set; }
+        public string PunctualityAvgAfterTime { get; set; }
 
     }
 }

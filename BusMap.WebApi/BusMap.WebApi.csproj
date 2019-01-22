@@ -2,7 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>28f0f4bd-adce-42dd-9783-b9877d450cbd</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20181105103412_traces.cs" />
+    <Compile Remove="Migrations\20181105103412_traces.Designer.cs" />
+    <Compile Remove="Migrations\20181122203411_DateInRouteReport.cs" />
+    <Compile Remove="Migrations\20181122203411_DateInRouteReport.Designer.cs" />
+    <Compile Remove="Migrations\20181128205749_GetDateFormatInModelBuilder.cs" />
+    <Compile Remove="Migrations\20181128205749_GetDateFormatInModelBuilder.Designer.cs" />
+    <Compile Remove="Migrations\20181222153801_RouteQueuedCarrierCascadeDelete.cs" />
+    <Compile Remove="Migrations\20181222153801_RouteQueuedCarrierCascadeDelete.Designer.cs" />
+    <Compile Remove="Migrations\20181222155351_RouteQueuedCarrierCascade.cs" />
+    <Compile Remove="Migrations\20181222155351_RouteQueuedCarrierCascade.Designer.cs" />
+    <Compile Remove="Migrations\20181222155730_RouteQueuedCarrierCascade.cs" />
+    <Compile Remove="Migrations\20181222155730_RouteQueuedCarrierCascade.Designer.cs" />
+    <Compile Remove="Migrations\20181222160245_CarrierQueuedCascadeDelete.cs" />
+    <Compile Remove="Migrations\20181222160245_CarrierQueuedCascadeDelete.Designer.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
@@ -10,6 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="Hangfire" Version="1.6.21" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>

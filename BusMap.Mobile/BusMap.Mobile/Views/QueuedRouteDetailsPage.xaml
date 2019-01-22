@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<iconize:IconTabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.QueuedRouteDetailsPage"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             Title="Vote route">
+
+    <!--<ContentPage.BindingContext>
+        <viewModels:QueuedRouteDetailsViewModel
+    </ContentPage.BindingContext>-->
+
+  <iconize:IconTabbedPage.ToolbarItems>
+        <iconize:IconToolbarItem Command="{Binding RoutePlusClickedCommand}"
+                                 Text="Accept"
+                                 Icon="fas-check"
+                                 IconColor="White"
+                                 IsEnabled="{Binding RouteVotingButtonsEnabled}"/>
+        <iconize:IconToolbarItem Command="{Binding RouteMinusClickedCommand}"
+                                 Icon="fas-times"
+                                 IconColor="WhiteSmoke"
+                                 IsEnabled="{Binding RouteVotingButtonsEnabled}"/>
+    </iconize:IconTabbedPage.ToolbarItems>
+
+  <iconize:IconTabbedPage.Children>
+    <!--1. Details page-->
+    <ContentPage Title="Details" Icon="fas-info">
+      <ContentPage.Content>
+        <StackLayout Grid.Row="0" Grid.Column="0" Margin="5">
+            <StackLayout Orientation="Horizontal">
+                        <iconize:IconImage Icon="fas-route" Style="{StaticResource DetailsIconMedium}"/>
+                        <Label Text="{Binding RouteQueued.Name, StringFormat='Route name: {0}'}"
+                               FontSize="Medium"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" IsVisible="{Binding RouteHaveCarrierQueued}">
+                <iconize:IconImage Icon="fas-user" Style="{StaticResource DetailsIconMedium}"/>
+                <Label Text="{Binding RouteQueued.CarrierQueued.Name, StringFormat='Carrier name: {0}'}"
+               FontSize="Medium"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <iconize:IconImage Icon="fas-angle-double-right" Style="{StaticResource DetailsIconMedium}"/>
+                <Label Text="{Binding DaysOfTheWeekText, StringFormat='Coursing in: {0}'}"
+                       FontSize="Medium"/>
+            </StackLayout>
+         <Grid Margin="20,0,20,0">
+            <Grid.RowDefinitions>
+              <RowDefinition/>
+              <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition/>
+              <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Text="Route votes"
+                   FontSize="Large"
+                   Grid.Row="0" Grid.Column="0"
+                   Margin="10,0,0,0"
+                   VerticalOptions="End"/>
+            <StackLayout Grid.Row="1" Grid.Column="0"
+                         HorizontalOptions="Center">
+              <Label Text="{Binding RouteQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"
+                     TextColor="Green"/>
+              <Label Text="{Binding RouteQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"
+                     TextColor="Red"/>
+              <Label Text="{Binding RoutePositiveVotesPercentage, StringFormat='Percentage: {0}'}"/>
+            </StackLayout>
+            <Label Text="Carrier votes"
+                   FontSize="Large"
+                   Grid.Row="0" Grid.Column="1"
+                   Margin="10,0,0,0"
+                   VerticalOptions="End"
+                   IsVisible="{Binding RouteHaveCarrierQueued}"/>
+             <StackLayout Grid.Row="1" Grid.Column="1"
+                          HorizontalOptions="Center">
+              <Label Text="{Binding RouteQueued.CarrierQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
+              <Label Text="{Binding RouteQueued.CarrierQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
+              <Label Text="{Binding CarrierPositiveVotesPercentage, StringFormat='Percentage: {0}'}"
+                     IsVisible="{Binding RouteHaveCarrierQueued}"/>
+            </StackLayout>
+          </Grid>
+        </StackLayout>
+      </ContentPage.Content>
+    </ContentPage>
+
+    <!--2. BusStops-->
+    <ContentPage Title="Bus stops" Icon="fas-bus-alt">
+      <ContentPage.Content>
+        <ListView ItemsSource="{Binding RouteQueued.BusStopsQueued}"
+                  HasUnevenRows="True"
+                  RowHeight="75"
+                  SeparatorVisibility="None"
+                  ItemSelected="ListView_OnItemSelected">
+            <ListView.Header>
+                <StackLayout Padding="20,10,0,30">
+                    <Label Text="Route Schedule" 
+                           TextColor="Black"
+                           FontSize="30"/>
+                    <Label Text="{Binding RouteQueued.Name}" 
+                           TextColor="Gray"
+                           FontSize="18"/>
+                        </StackLayout>
+            </ListView.Header>
+                
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                                          <Grid.RowDefinitions>
+                                              <RowDefinition Height="Auto"/>
+                                              <RowDefinition Height="*"/>
+                                          </Grid.RowDefinitions>
+                            <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"
+                                   TextColor="#A64C79"
+                                   FontSize="20"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="{Binding Address}"
+                                   FontSize="Medium"
+                                   Grid.Column="2"
+                                   Margin="20,0"/>
+                                    <Label Text="{Binding Label}"
+                                FontSize="Medium" 
+                                Grid.Row="1" Grid.Column="2"
+                                Margin="20,0,5,20"/>
+                            <Image Grid.Column="1"
+                                   Source="listViewSquare.png" WidthRequest="18" HeightRequest="18"/>
+                            <BoxView Grid.Column="1" Grid.RowSpan="2"
+                                     BackgroundColor="DodgerBlue"
+                                     HorizontalOptions="Center"
+                                     IsVisible="True"
+                                     VerticalOptions="Fill"
+                                     WidthRequest="3"/>
+                                </Grid>
+                    </ViewCell>
+                </DataTemplate>
+          </ListView.ItemTemplate>
+        </ListView>
+      </ContentPage.Content>
+    </ContentPage>
+
+    <!--3. MapPage-->
+    <ContentPage Title="Map" Icon="fas-map-marked-alt">
+      <ContentPage.Content>
+        <googleMaps:Map MapType="Street"
+                        MyLocationEnabled="True"
+                        Margin="10,0,10,0">
+          <googleMaps:Map.Behaviors>
+            <googleMapsBindings:BindingPinsBehavior Value="{Binding Pins}"/>
+            <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+          </googleMaps:Map.Behaviors>
+        </googleMaps:Map>
+      </ContentPage.Content>
+    </ContentPage>
+    </iconize:IconTabbedPage.Children>
+    
+</iconize:IconTabbedPage>

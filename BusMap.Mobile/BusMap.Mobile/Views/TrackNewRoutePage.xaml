@@ -1,52 +1,137 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<iconize:IconTabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:customControls="clr-namespace:BusMap.Mobile.CustomControls;assembly=BusMap.Mobile"
              x:Class="BusMap.Mobile.Views.TrackNewRoutePage"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:converters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
-             prism:ViewModelLocator.AutowireViewModel="True">
+             xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
+            xmlns:suggestBox="clr-namespace:dotMorten.Xamarin.Forms;assembly=dotMorten.Xamarin.Forms.AutoSuggestBox"
+            xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+            prism:ViewModelLocator.AutowireViewModel="True"
+             Title="{Binding Title}">
 
-    <ContentPage.Content>
-        <ScrollView>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="8*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+    <!--AddingPage-->
+    <ContentPage Title="Add bus stops" Icon="fas-plus-circle">
+        <ContentPage.Content>
+            <StackLayout Margin="5">
                 <StackLayout Orientation="Horizontal"
-                             HorizontalOptions="Center"
-                             Grid.Row="0"
-                             Grid.Column="0">
-                    <Button Text="Add bus stop"/>
-                    <Button Text="Save route"/>
+                             HorizontalOptions="Center">
+                    <Button Text="Add bus stop"
+                            Command="{Binding PopupCommand}"/>
+                    <Button Text="Choose days"
+                            Command="{Binding ChooseDaysCommand}"/>
                 </StackLayout>
-                <Label Text="Carrier: CarrierName"
-                       HorizontalOptions="Center"
-                       Grid.Row="1"
-                       Grid.Column="0"/> 
+                <suggestBox:AutoSuggestBox x:Name="SuggestBox"
+                                           PlaceholderText="Enter carrier name"
+                                           ItemsSource="{Binding CarrierSuggestions}"
+                                           Text="{Binding AutoSuggestText}"
+                                           TextChanged="AutoSuggestBox_OnTextChanged"
+                                           SuggestionChosen="AutoSuggestBox_OnSuggestionChosen"
+                                           HorizontalOptions="Center"/>
+                <Label Text="{Binding Carrier.Name, StringFormat='Existing carrier: {0}'}"
+                       HorizontalOptions="Center"/>
+                <StackLayout Orientation="Horizontal">
+                    <iconize:IconImage Icon="fas-angle-double-right" Style="{StaticResource DetailsIconMedium}"/>
+                    <Label Text="Selected days of the week:"
+                           FontSize="Medium"
+                           FontAttributes="Bold"/>
+                </StackLayout>
+                <Label Text="{Binding WeekDaysString}"
+                       FontSize="Medium"
+                       Margin="0,0,0,20"/>
+
+                <StackLayout Orientation="Horizontal">
+                    <iconize:IconImage Icon="fas-bus" Style="{StaticResource DetailsIconMedium}"/>
+                    <Label Text="Added bus stops"
+                           FontSize="Medium"
+                           FontAttributes="Bold"/>
+                </StackLayout>
                 <ListView ItemsSource="{Binding BusStops}"
-                          Grid.Row="2"
-                          Grid.Column="0">
+                          SeparatorVisibility="None"
+                          HasUnevenRows="True"
+                          RowHeight="75">
+                    <ListView.Behaviors>
+                        <b:EventToCommandBehavior EventName="ItemTapped"
+                                                  Command="{Binding EditBusStopCommand}"
+                                                  EventArgsConverter="{converters:ItemTappedEventArgsConverter}"/>
+                    </ListView.Behaviors>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <ViewCell.ContextActions>
-                                    <MenuItem Text="Edit" Clicked="EditMenuItem_OnClicked"/>
-                                    <MenuItem Text="Delete"/>
-                                </ViewCell.ContextActions>
-                                <StackLayout>
-                                    <Label Text="{Binding Address}"/>
-                                    <Label Text="{Binding Label}"/>
-                                </StackLayout>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"
+                                           TextColor="#A64C79"
+                                           FontSize="20"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Address}"
+                                           FontSize="Medium"
+                                           Grid.Column="2"
+                                           Margin="20,0"/>
+                                    <Label Text="{Binding Label}"
+                                           FontSize="Medium"
+                                           Grid.Row="1" Grid.Column="2"
+                                           Margin="20,0,5,10"/>
+                                    <Image Grid.Column="1"
+                                           Source="listViewSquare.png" WidthRequest="18" HeightRequest="18"/>
+                                    <BoxView Grid.Column="1" Grid.RowSpan="2"
+                                             BackgroundColor="DodgerBlue"
+                                             HorizontalOptions="Center"
+                                             IsVisible="True"
+                                             VerticalOptions="Fill"
+                                             WidthRequest="3"/>
+                                </Grid>
+                                
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-            </Grid>
-        </ScrollView>
-    </ContentPage.Content>
-</ContentPage>
+                <Button Text="Save route"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="End"
+                        IsVisible="{Binding SaveButtonEnabled}"
+                        Command="{Binding SaveButtonCommand}"/>
+            </StackLayout>
+        </ContentPage.Content>
+    </ContentPage>
+
+    <!--MapPage-->
+    <ContentPage Title="MapPage" Icon="fas-map-marked-alt">
+        <ContentPage.Behaviors>
+            <b:EventToCommandBehavior EventName="Appearing"
+                                      Command="{Binding MapAppearingCommand}"
+                                      EventArgsConverter="ContentPageApearingConverter"/>
+        </ContentPage.Behaviors>
+        <StackLayout>
+            <googleMaps:Map MyLocationEnabled="True">
+                <googleMaps:Map.Behaviors>
+                    <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                    <googleMapsBindings:BindingPinsBehavior Value="{Binding MapPins}"/>
+                    <googleMapsBindings:PinClickedToCommandBehavior Command="{Binding PinClickedCommand}"/>
+                </googleMaps:Map.Behaviors>
+            </googleMaps:Map>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center"
+                         Spacing="20">
+                <Label Text="{Binding BusStopQueuedClickedOnMap.Hour, StringFormat='{0:hh\\:mm}'}"
+                       FontSize="Medium"
+                       TextColor="Black"/>
+                <Label Text="{Binding BusStopQueuedClickedOnMap.Latitude, StringFormat='Latitude: {0:0.##}'}"
+                       FontSize="Medium"/>
+                <Label Text="{Binding BusStopQueuedClickedOnMap.Longitude, StringFormat='Longitude: {0:0.##}'}"
+                       FontSize="Medium"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage>
+
+</iconize:IconTabbedPage>

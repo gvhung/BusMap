@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<iconize:IconTabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.RouteDetailsPage"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
+             xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
+             xmlns:eventArgsConverters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:pullToRefresh="clr-namespace:Refractored.XamForms.PullToRefresh;assembly=Refractored.XamForms.PullToRefresh"
+             xmlns:contextMenu="clr-namespace:ContextMenu;assembly=ContextMenu"
+             Title="{Binding Title}">
+    
+    <!--<TabbedPage.BindingContext>
+        <viewModels:RouteDetailsPageViewModel/>
+    </TabbedPage.BindingContext>-->
+
+    <iconize:IconTabbedPage.Resources>
+        <eventArgsConverters:PunctualityPercentageConverter x:Key="PercentageConverter"/>
+    </iconize:IconTabbedPage.Resources>
+
+  <iconize:IconTabbedPage.ToolbarItems>
+        <iconize:IconToolbarItem Command="{Binding ReportDelayCommand}" 
+                                 Icon="fas-clock"
+                                 IconColor="White"/>
+        <iconize:IconToolbarItem Command="{Binding ReportButtonCommand}"
+                                 Icon="fas-exclamation-circle"
+                                 IconColor="White"/>
+        <iconize:IconToolbarItem Command="{Binding FavoritesButtonCommand}"
+                                 Icon="fas-star"
+                                 IconColor="{Binding FavoriteStarColor}"
+                                 IsEnabled="{Binding BoolTest}"/>
+    </iconize:IconTabbedPage.ToolbarItems>
+
+  <iconize:IconTabbedPage.Children>
+            <!--Details page - first page-->
+        <ContentPage Title="Details" Icon="fas-info">
+            <ContentPage.Content>
+                <StackLayout Margin="20,10,20,0">
+                  <pullToRefresh:PullToRefreshLayout IsPullToRefreshEnabled="True"
+                                                     RefreshCommand="{Binding RouteDetailsRefreshCommand}"
+                                                     IsRefreshing="{Binding IsBusy}"
+                                                     RefreshColor="CornflowerBlue">
+                      <StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                          <iconize:IconImage Icon="fas-bus" Style="{StaticResource DetailsIconMedium}"/>
+                          <Label Text="{Binding Route.Name, StringFormat='Name: {0}'}"
+                                 FontSize="Medium"
+                                 FontAttributes="Bold"/>
+                        </StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                                <iconize:IconImage Icon="fas-user-tie" Style="{StaticResource DetailsIconMedium}"/>
+                                <Label Text="{Binding Route.Carrier.Name, StringFormat='Carrier: {0}'}"
+                                 FontSize="Medium"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                           <iconize:IconImage Icon="fas-hand-paper" Style="{StaticResource DetailsIconMedium}"/>
+                          <Label Text="{Binding Route.BusStops.Count, StringFormat='Number of bus stops: {0}'}"/>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                          <iconize:IconImage Icon="fas-angle-double-right" Style="{StaticResource DetailsIconNormal}"/>
+                          <Label Text="{Binding Route.DayOfTheWeek, StringFormat='Coursing in: {0:N}'}"/>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                          <iconize:IconImage Icon="fas-percentage" Style="{StaticResource DetailsIconNormal}"/>
+                          <Label Text="Punctuality percentage:"/>
+                          <Label Text="{Binding Route.PunctualityPercentage}">
+                            <Label.Triggers>
+                                  <DataTrigger TargetType="{x:Type Label}" Binding="{Binding Route.PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="False">
+                                      <Setter Property="Label.TextColor" Value="Red"/>
+                                  </DataTrigger>
+                                  <DataTrigger TargetType="{x:Type Label}" Binding="{Binding Route.PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="True">
+                                      <Setter Property="Label.TextColor" Value="ForestGreen"/>
+                                  </DataTrigger>
+                              </Label.Triggers>
+                            </Label>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                          <iconize:IconImage Icon="fas-clock" Style="{StaticResource DetailsIconNormal}"/>
+                          <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Route.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
+                                   TextColor="ForestGreen"/>
+                            <Label Text=":"/>
+                            <Label Text="{Binding Route.PunctualityAvgAfterTime, StringFormat='{0} After'}"
+                                   TextColor="DarkRed"/>
+                          </StackLayout>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" IsVisible="{Binding CurrentLatencyIsVisible}">
+                            <iconize:IconImage Icon="fas-user-clock" Style="{StaticResource DetailsIconNormal}"/>
+                            <Label Text="{Binding CurrentLatency, StringFormat='Current latency: {0}'}"/>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" IsVisible="{Binding CurrentLatencyIsVisible}">
+                            <iconize:IconImage Icon="fas-backward" Style="{StaticResource DetailsIconNormal}"/>
+                            <Label Text="{Binding RecentBusStop.Address, StringFormat= 'Recent bus stop: {0}'}"/>
+                        </StackLayout>
+                        <Button Text="Track"
+                            FontSize="Large"
+                            Command="{Binding TrackButtonCommand}"
+                            HorizontalOptions="Center"/>
+                      </StackLayout>
+                  </pullToRefresh:PullToRefreshLayout>
+                    
+                    <StackLayout IsVisible="{Binding IsRouteDelayed}">
+                        <Label Text="{Binding CurrentRouteDelay, StringFormat='Current delay: {0:hh\\hmm\\m}'}"/>
+                        <Label Text="Latest route delay reports"
+                               FontSize="Medium"
+                               FontAttributes="Bold"/>
+                        <ListView ItemsSource="{Binding RouteDelays}"
+                                  HasUnevenRows="True"
+                                  ItemSelected="RouteDelaysListView_OnItemSelected"
+                                  SelectionMode="None"
+                                  SeparatorVisibility="None">
+                          <ListView.ItemTemplate>
+                              <DataTemplate>
+                                  <ViewCell>
+                                      <StackLayout>
+                                          <Label Text="{Binding Title}"/>
+                                          <Label Text="{Binding Description}"/>
+                                          <Label Text="{Binding DateTime, StringFormat='Date and time: {0:MMMM d, HH:mm}'}"/>
+                                      </StackLayout>
+                                  </ViewCell>
+                              </DataTemplate>
+                          </ListView.ItemTemplate>
+                      </ListView>
+                    </StackLayout>
+                
+                </StackLayout>
+            </ContentPage.Content>
+        </ContentPage>
+
+        <!--BusStops page - second page-->
+        <ContentPage Title="Bus stops" Icon="fas-bus-alt">
+            <ContentPage.Content>
+                <ListView ItemsSource="{Binding Route.BusStops}"
+                          HasUnevenRows="True"
+                          x:Name="BusStopList"
+                          RowHeight="75"
+                          SeparatorVisibility="None"
+                          ItemSelected="RouteDelaysListView_OnItemSelected">
+
+                        <ListView.Header>
+                            <StackLayout Padding="20,10,0,30">
+                                <Label Text="Route Schedule" 
+                                       TextColor="Black"
+                                       FontSize="30"/>
+                                <Label Text="{Binding Route.Name}" 
+                                       TextColor="Gray"
+                                       FontSize="18"/>
+                            </StackLayout>
+                        </ListView.Header>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Text="{Binding Hour, StringFormat='{0:hh\\:mm}'}"
+                                           TextColor="#A64C79"
+                                           FontSize="20"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding PunctualityMode}"
+                                           TextColor="Gray"
+                                           HorizontalOptions="Center"
+                                           Grid.Row="1"/>
+                                    <StackLayout Margin="20, 0, 5, 20"
+                                                 Grid.Column="2" Grid.RowSpan="2">
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Address, StringFormat='{0}, '}"
+                                                       FontSize="Medium"/>
+                                            <Label Text="{Binding Label}"
+                                                       FontSize="Medium"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
+                                                       TextColor="ForestGreen"/>
+                                            <Label Text=":"/>
+                                            <Label Text="{Binding PunctualityAvgAfterTime, StringFormat='{0} After'}"
+                                                       TextColor="DarkRed"/>
+                                        </StackLayout>
+                                        <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}"/>
+                                    </StackLayout>
+
+                                    
+                                    <BoxView Grid.Column="1" Grid.RowSpan="2"
+                                             BackgroundColor="DodgerBlue"
+                                             HorizontalOptions="Center"
+                                             IsVisible="True"
+                                             VerticalOptions="Fill"
+                                             WidthRequest="3"/>
+                                    <Image Grid.Column="1"
+                                           Source="listViewSquare.png" WidthRequest="18" HeightRequest="18">
+                                        <Image.Triggers>
+                                            <DataTrigger TargetType="{x:Type Image}" Binding="{Binding IsRecentBusStop}" Value="True">
+                                                <Setter Property="Image.Source" Value="listViewSquareEmpty.png"/>
+                                            </DataTrigger>
+                                        </Image.Triggers>
+                                    </Image>
+                                </Grid>
+                            </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+            </ContentPage.Content>
+        </ContentPage>
+
+
+        <!--Map page - third page-->
+        <ContentPage Title="Map" Icon="fas-map-marked-alt">
+            <ContentPage.Behaviors>
+                <b:EventToCommandBehavior EventName="Appearing"
+                                          Command="{Binding MapAppearingCommand}"
+                                          EventArgsConverter="ContentPageApearingConverter"/>
+            </ContentPage.Behaviors>
+            <ContentPage.Content>
+                <StackLayout>
+                    <googleMaps:Map>
+                        <googleMaps:Map.Behaviors>
+                            <googleMapsBindings:BindingPinsBehavior Value="{Binding Pins}"/>
+                            <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                            <googleMapsBindings:PinClickedToCommandBehavior Command="{Binding PinClickedCommand}"/>
+                        </googleMaps:Map.Behaviors>
+                    </googleMaps:Map>
+
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center">
+                        <Label Text="{Binding BusStopClickedOnMap.Address, StringFormat='{0} '}"
+                               FontSize="Medium"/>
+                        <Label Text="{Binding BusStopClickedOnMap.Label}"
+                               FontSize="Medium"/>
+                        <Label Text="{Binding BusStopClickedOnMap.Hour, StringFormat='{0:hh\\:mm}'}"
+                               FontSize="Medium"
+                               HorizontalOptions="End"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center">
+                        <Label Text="{Binding BusStopClickedOnMap.PunctualityPercentage, StringFormat='Puctuality index: {0}'}"
+                               TextColor="Black"/>
+                        <Label Text="{Binding BusStopClickedOnMap.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
+                               TextColor="ForestGreen"/>
+                        <Label Text=":"/>
+                        <Label Text="{Binding BusStopClickedOnMap.PunctualityAvgAfterTime, StringFormat='{0} After'}"
+                               TextColor="DarkRed"/>
+                        <Label Text="{Binding BusStopClickedOnMap.PunctualityMode, StringFormat='Mode: {0}'}"
+                               TextColor="Black"/>
+                    </StackLayout>
+                </StackLayout>
+            </ContentPage.Content>
+        </ContentPage>
+    </iconize:IconTabbedPage.Children>
+
+    
+
+
+</iconize:IconTabbedPage>

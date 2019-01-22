@@ -3,10 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
              xmlns:unity="clr-namespace:Prism.Unity;assembly=Prism.Unity.Forms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
              x:Class="BusMap.Mobile.App">
     <Application.Resources>
         <ResourceDictionary>
             <viewModels:ViewModelLocator x:Key="Locator"/>
+
+            <Style x:Key="DetailsIconMedium" TargetType="iconize:IconImage">
+                <Setter Property="IconColor" Value="DarkSlateGray"/>
+                <Setter Property="IconSize" Value="20"/>
+                <Setter Property="HorizontalOptions" Value="Start"/>
+            </Style>
+
+            <Style x:Key="DetailsIconNormal" TargetType="iconize:IconImage">
+                <Setter Property="IconColor" Value="DarkSlateGray"/>
+                <Setter Property="IconSize" Value="16"/>
+                <Setter Property="HorizontalOptions" Value="Start"/>
+                <Setter Property="Margin" Value="0,0,4,0"/> <!--For display icon in single line-->
+            </Style>
+
+
         </ResourceDictionary>
     </Application.Resources>
 </unity:PrismApplication>

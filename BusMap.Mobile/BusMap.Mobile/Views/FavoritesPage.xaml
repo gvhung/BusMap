@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behaviors="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:eventArgsConverters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
+             x:Class="BusMap.Mobile.Views.FavoritesPage"
+             Title="Favorites">
+
+    <ContentPage.Resources>
+        <eventArgsConverters:PunctualityPercentageConverter x:Key="PercentageConverter"/>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView ItemsSource="{Binding Routes}"
+                      HasUnevenRows="True"
+                      SeparatorVisibility="None">
+                <ListView.Behaviors>
+                    <behaviors:EventToCommandBehavior EventName="ItemTapped"
+                                              Command="{Binding SelectedRouteCommand}"
+                                              EventArgsConverter="{eventArgsConverters:ItemTappedEventArgsConverter}"/>
+                </ListView.Behaviors>
+                <ListView.Header>
+                    <Label Margin="20,10,0,30"
+                           Text="Favorite routes"
+                           TextColor="Black"
+                           FontSize="30"/>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame Padding="0" 
+                                   Margin="5" 
+                                   HasShadow="True" 
+                                   CornerRadius="5">
+                                <StackLayout Orientation="Horizontal">
+                                    <BoxView Color="DodgerBlue" 
+                                             WidthRequest="6">
+                                        <BoxView.Triggers>
+                                            <DataTrigger TargetType="{x:Type BoxView}" Binding="{Binding PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="False">
+                                                <Setter Property="BoxView.Color" Value="Red"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="{x:Type BoxView}" Binding="{Binding PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="True">
+                                                <Setter Property="BoxView.Color" Value="ForestGreen"/>
+                                            </DataTrigger>
+                                        </BoxView.Triggers>
+                                    </BoxView>
+                                    <StackLayout Padding="10">
+                                        <Label Text="{Binding Name, StringFormat='Route name: {0}'}"
+                                               FontSize="Medium"/>
+                                        <Label Text="{Binding Carrier.Name, StringFormat='Carrier: {0}'}"/>
+                                        <Label Text="{Binding PunctualityPercentage, StringFormat='Punctuality index: {0}'}">
+                                            <Label.Style>
+                                                <Style TargetType="{x:Type Label}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger TargetType="{x:Type Label}" Binding="{Binding PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="False">
+                                                            <Setter Property="Label.TextColor" Value="DarkRed"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="{x:Type Label}" Binding="{Binding PunctualityPercentage, Converter={StaticResource PercentageConverter}}" Value="True">
+                                                            <Setter Property="Label.TextColor" Value="ForestGreen"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
+                                        <Label Text="{Binding BusStops.Count, StringFormat='Number of stops: {0}'}"
+                                               TextColor="Blue">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding LabelCommand}"></TapGestureRecognizer>
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                        <Label Text="{Binding BusStopsString}"
+                                               FontSize="Small"
+                                               IsVisible="{Binding BusStopsStringIsVisible}"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

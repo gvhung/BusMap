@@ -22,9 +22,16 @@ namespace BusMap.Mobile.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public Carrier Carrier { get; set; }
+        public int CarrierId { get; set; }
         public List<BusStop> BusStops { get; set; }
         public BusStop StartingBusStop => BusStops.First();
         public BusStop DestinationBusStop => BusStops.Last();
+        public string DayOfTheWeek { get; set; }
+
+        public string PunctualityPercentage { get; set; }
+        public string PunctualityAvgBeforeTime { get; set; }
+        public string PunctualityAvgAfterTime { get; set; }
+
 
         public string BusStopsString => ToString();
 

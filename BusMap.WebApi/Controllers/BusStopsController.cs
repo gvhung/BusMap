@@ -40,12 +40,12 @@ namespace BusMap.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = await getAllBusStopsFunc();
+            var busStops = await getAllBusStopsFunc();
 
-            if (route == null)
+            if (busStops == null || busStops.Count() < 1)
                 return NotFound();
 
-            return Ok(route);
+            return Ok(busStops);
         }
 
 
@@ -62,21 +62,23 @@ namespace BusMap.WebApi.Controllers
         public async Task<IActionResult> GetBusStopIncludeRouteCarrier([FromRoute] int id)
             => await GetBusStopFunc(id, async x => await _busStopService.GetBusStopIncludeRouteCarrierAsync(id));
 
+        [HttpGet("{id:int}/all")]
+        public async Task<IActionResult> GetBusStopIncludeAll(int id)
+            => await GetBusStopFunc(id, async x => await _busStopService.GetBusStopIncludeAllAsync(id));
+
 
         public async Task<IActionResult> GetBusStopFunc(int id, Func<int, Task<BusStopsBusStopDto>> getBusStopsFunc)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var route = await getBusStopsFunc(id);
+            var busStop = await getBusStopsFunc(id);
 
-            if (route == null)
+            if (busStop == null)
                 return NotFound();
 
-            return Ok(route);
+            return Ok(busStop);
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> PostBusStop([FromBody] BusStop busStop)
@@ -92,8 +94,8 @@ namespace BusMap.WebApi.Controllers
             {
                 return BadRequest("BusStop object is incomplete or contains wrong data.");
             };
-            
-            return CreatedAtAction("GetBusStop", new {id = busStop.Id}, busStop);
+
+            return CreatedAtAction("GetBusStop", new { id = busStop.Id }, busStop);
         }
 
         [HttpDelete("{id}")]

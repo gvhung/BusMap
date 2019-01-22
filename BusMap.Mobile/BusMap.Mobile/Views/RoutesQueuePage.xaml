@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.RoutesQueuePage"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:converters="clr-namespace:BusMap.Mobile.EventArgsConverters;assembly=BusMap.Mobile"
+             xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Title="{Binding Title}">
+
+    <!--<ContentPage.BindingContext>
+        <viewModels:RoutesQueueViewModel
+    </ContentPage.BindingContext>-->
+
+    <ContentPage.Content>
+        <StackLayout>
+            <ActivityIndicator IsRunning="{Binding DownloadingRoutes}"
+                               Color="DodgerBlue"
+                               IsVisible="{Binding DownloadingRoutes}"/>
+            <ListView ItemsSource="{Binding RouteQueue}"
+                      VerticalOptions="StartAndExpand"
+                      SeparatorVisibility="None"
+                      HasUnevenRows="True">
+                <ListView.Behaviors>
+                    <b:EventToCommandBehavior EventName="ItemTapped"
+                                              Command="{Binding SelectedRouteCommand}"
+                                              EventArgsConverter="{converters:ItemTappedEventArgsConverter}"/>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame Padding="0" 
+                                   Margin="5" 
+                                   HasShadow="True" 
+                                   CornerRadius="5">
+                                <Grid Padding="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding Name, StringFormat='Name: {0}'}"
+                                           TextColor="Black"
+                                           Grid.Row="0" Grid.Column="0"/>
+                                    <Label Text="{Binding CarrierQueued.Name, StringFormat='Carrier: {0}'}"
+                                           Grid.Row="1" Grid.Column="0"/>
+                                    <Label Grid.Row="0" Grid.Column="1" 
+                                           Text="{Binding CreatedDatetime.Date, StringFormat='Created: {0:dd.MM.yyyy}'}"/>
+                                    <StackLayout Grid.Row="1" Grid.Column="1"
+                                                 Orientation="Horizontal">
+                                        <Label Text="{Binding PositiveVotes, StringFormat='Positive: {0} '}"
+                                               TextColor="Green"/>
+                                        <Label Text="{Binding NegativeVotes, StringFormat='Negative: {0}'}"
+                                               TextColor="Red"/>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

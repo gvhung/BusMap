@@ -3,10 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:BusMap.Mobile"
              xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
              x:Class="BusMap.Mobile.Views.MainPage"
-             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
-             prism:ViewModelLocator.AutowireViewModel="True">
+             Title="BusMap">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="About"
+                     Command="{Binding NavigateToAboutPageCommand}"/>
+    </ContentPage.ToolbarItems>
 
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness">
@@ -23,29 +27,30 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="15*"/>
+                    <ColumnDefinition Width="70*"/>
+                    <ColumnDefinition Width="15*"/>
                 </Grid.ColumnDefinitions>
                 <Label Text="From:"
-                               Grid.Row="0"
-                               Grid.Column="0"
+                               Grid.Row="0" Grid.Column="0"
                                VerticalTextAlignment="Center"
                                HorizontalTextAlignment="Center"/>
                 <Entry x:Name="FromEntry"
-                               Grid.Row="0"
-                               Grid.Column="1"
+                               Grid.Row="0" Grid.Column="1"
                                AutomationId="MainPage_FromEntry"
                                Text="{Binding StartBusStopName}"/>
                 <Label Text="To:"
-                               Grid.Row="1"
-                               Grid.Column="0"
+                               Grid.Row="1"  Grid.Column="0"
                                VerticalTextAlignment="Center"
                                HorizontalTextAlignment="Center"/>
                 <Entry x:Name="ToEntry"
-                               Grid.Row="1"
-                               Grid.Column="1"
+                               Grid.Row="1" Grid.Column="1"
                                AutomationId="MainPage_ToEntry"
                                Text="{Binding DestinationBusStopName}"/>
+                <iconize:IconButton Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" 
+                                    Text="fas-exchange-alt"
+                                    FontSize="Large"
+                                    Command="{Binding SwapCitiesButtonCommand}"/>
             </Grid>
             <ActivityIndicator x:Name="ActivityIndicator"
                                IsRunning="{Binding IsBusy}"
@@ -65,6 +70,11 @@
                     AutomationId="MainPage_NearestStopsButton"/>
             <Button Text="Track new route"
                     Command="{Binding NavigateToTrackNewRouteCommand}"/>
+            <Button Text="{Binding QueueButtonText}"
+                    Command="{Binding NavigateToQueueCommand}"
+                    IsEnabled="{Binding QueuedRoutesButtonIsVisible}"/>
+            <Button Text="Favorite routes"
+                    Command="{Binding NavigateToFavoritePage}"/>
         </StackLayout>
     </ContentPage.Content>
 

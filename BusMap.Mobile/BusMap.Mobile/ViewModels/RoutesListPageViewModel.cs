@@ -10,6 +10,7 @@ using BusMap.Mobile.Annotations;
 using BusMap.Mobile.Helpers;
 using BusMap.Mobile.Models;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.Views;
 using Prism.Commands;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -20,7 +21,12 @@ namespace BusMap.Mobile.ViewModels
     {
         private IDataService _dataService;
         private List<Route> _routes;
+        private string _searchRoutesQueryString;
+
+
         private bool _isRefreshing;
+        private string _searchParametersString;
+        private bool _areFiltersStringsEnabled;
 
         public string StartPoint { get; set; }
         public string DestinationPoint { get; set; }
@@ -37,6 +43,21 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _isRefreshing, value);
         }
 
+        public string SearchParametersString
+        {
+            get => _searchParametersString;
+            set => SetProperty(ref _searchParametersString, value);
+        }
+
+        public bool AreFiltersStringsEnabled
+        {
+            get => _areFiltersStringsEnabled;
+            set => SetProperty(ref _areFiltersStringsEnabled, value);
+        }
+
+        
+
+
         public RoutesListPageViewModel(IDataService dataService, INavigationService navigationService)
             : base(navigationService)
         {
@@ -46,15 +67,19 @@ namespace BusMap.Mobile.ViewModels
 
         public ICommand RefreshCommand => new DelegateCommand(async () =>
         {
-            await GetRoutes();
+            IsRefreshing = true;
+            var routes = await _dataService.GetObjectFromQueryStringAsync<IEnumerable<Route>>(_searchRoutesQueryString);
+            Routes = routes?.ToList();
+            IsRefreshing = false;
         });
 
         public ICommand SelectedRouteCommand => new DelegateCommand<Route>(async route =>
         {
             var parameters = new NavigationParameters();
-            parameters.Add("route", route);
-
-            await NavigationService.NavigateAsync("BusStopsMapPage", parameters);
+            var routeToSend = await _dataService.GetRouteAsync(route.Id);
+            parameters.Add("route", routeToSend);
+            await NavigationService.NavigateAsync(nameof(RouteDetailsPage), parameters);
+            //TODO: Add activity indicator at the middle
         });
 
         public ICommand SelectedRouteCommand2 => new DelegateCommand<Route>(async route =>
@@ -64,21 +89,16 @@ namespace BusMap.Mobile.ViewModels
 
 
 
-        private async Task GetRoutes()
-        {
-            IsRefreshing = true;
-            Routes = await _dataService.GetRoutes();
-            IsRefreshing = false;
-        }
-
-
-
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
             Routes = parameters["foundedRoutes"] as List<Route>;
             var startName = parameters["startBusStopName"] as string;
             var destName = parameters["destinationBusStopName"] as string;
+            SearchParametersString = parameters["searchParametersString"] as string;
+            _searchRoutesQueryString = parameters["searchRoutesQueryString"] as string;
             Title = $"{startName} - {destName}";
+
+            AreFiltersStringsEnabled = SearchParametersString?.Length > 0;
         }
 
 

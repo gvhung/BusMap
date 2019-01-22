@@ -1,13 +1,13 @@
-﻿using BusMap.Mobile.Views;
-using System;
+﻿using BusMap.Mobile.CustomControls;
+using BusMap.Mobile.Views;
 using BusMap.Mobile.Services;
+using BusMap.Mobile.SQLite;
+using BusMap.Mobile.SQLite.Repositories;
 using BusMap.Mobile.ViewModels;
-using CommonServiceLocator;
+using Plugin.Iconize;
 using Prism;
 using Prism.Ioc;
 using Prism.Unity;
-using Unity;
-using Unity.ServiceLocation;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,10 +17,14 @@ namespace BusMap.Mobile
     public partial class App : PrismApplication
     {
 
-        public App() : this(null) { }
+        public App() : this(null)
+        {
+
+        }
 
         public App(IPlatformInitializer initializer) : base(initializer)
         {
+
         }
 
 
@@ -28,19 +32,38 @@ namespace BusMap.Mobile
         {
             InitializeComponent();
 
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            await NavigationService.NavigateAsync("MainMasterDetailPage/CustomNavigationPage/MainPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<NavigationPage>();  //v
-            containerRegistry.RegisterForNavigation<MainPage>();    //v
-            containerRegistry.RegisterForNavigation<NearestStopsMapPage>();  //v
-            containerRegistry.RegisterForNavigation<RoutesListPage>();  //v
-            containerRegistry.RegisterForNavigation<BusStopsMapPage>(); //v
-            containerRegistry.RegisterForNavigation<TrackNewRoutePage>();
+            containerRegistry.RegisterForNavigation<MainMasterDetailPage, MainMasterDetailPageViewModel>();
+            containerRegistry.RegisterForNavigation<CustomNavigationPage>(nameof(CustomNavigationPage));           
+            //containerRegistry.RegisterForNavigation<IconTabbedPage>(nameof(IconTabbedPage));
 
-            containerRegistry.Register<IDataService, ApiDataService>();
+            containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();   
+            containerRegistry.RegisterForNavigation<NearestStopsMapPage>();
+            containerRegistry.RegisterForNavigation<RoutesListPage>(); 
+            containerRegistry.RegisterForNavigation<BusStopsMapPage>();
+            containerRegistry.RegisterForNavigation<TrackNewRoutePage, TrackNewRouteViewModel>();
+            containerRegistry.RegisterForNavigation<AddNewBusStopPage, AddNewBusStopViewModel>();
+            containerRegistry.RegisterForNavigation<EditBusStopPage, EditBusStopPageViewModel>();
+            containerRegistry.RegisterForNavigation<RoutesQueuePage, RoutesQueueViewModel>();
+            containerRegistry.RegisterForNavigation<QueuedRouteDetailsPage, QueuedRouteDetailsViewModel>();
+            containerRegistry.RegisterForNavigation<RouteDetailsPage, RouteDetailsPageViewModel>();
+            containerRegistry.RegisterForNavigation<TraceTrackingPage, TraceTrackingPageViewModel>();
+            containerRegistry.RegisterForNavigation<RouteReportPage, RouteReportViewModel>();
+            containerRegistry.RegisterForNavigation<FavoritesPage, FavoritesPageViewModel>();
+            containerRegistry.RegisterForNavigation<WeekDaySelectionPage, WeekDaySelectionPageViewModel>();
+            containerRegistry.RegisterForNavigation<AdvancedSearchPage, AdvancedSearchPageViewModel>();
+            containerRegistry.RegisterForNavigation<RouteDelayReportPage, RouteDelayReportPageViewModel>();
+            containerRegistry.RegisterForNavigation<AboutPage, AboutPageViewModel>();
+
+            containerRegistry.Register<IDataService, ApiDataService>();           
+            containerRegistry.Register<ILocalDatabase, LocalDatabase>();
+            containerRegistry.Register<IFavoriteRoutesRepository, FavoriteRoutesRepository>();
+            containerRegistry.RegisterSingleton<IRecentSearchRepository, RecentSearchRepository>();
+            containerRegistry.Register<IVotedQueuedRoutesRepository, VotedQueuedRoutesRepository>();
         }
 
     }

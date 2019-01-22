@@ -8,4 +8,6 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:tabIndicatorColor="@android:color/white"
     app:tabGravity="fill"
+	app:tabTextColor="@color/accent_material_dark"
+	app:tabSelectedTextColor="@android:color/white"
     app:tabMode="fixed" />

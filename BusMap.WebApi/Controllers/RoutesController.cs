@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Dto.Routes;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,12 @@ namespace BusMap.WebApi.Controllers
     public class RoutesController : ControllerBase
     {
         private readonly IRouteService _routeService;
+        private IMapper _mapper;
 
-        public RoutesController(IRouteService routeService)
+        public RoutesController(IRouteService routeService, IMapper mapper)
         {
             _routeService = routeService;
+            _mapper = mapper;
         }
 
 
@@ -39,6 +42,24 @@ namespace BusMap.WebApi.Controllers
         [HttpGet("carrierBusStops")]
         public async Task<IActionResult> GetAllRoutesIncludeBusStopsCarrier()
             => await GetAllRoutesFunc(async () => await _routeService.GetAllRoutesIncludeBusStopsCarrierAsync());
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllRoutesIncludeAll()
+            => await GetAllRoutesFunc(async () => await _routeService.GetAllRoutesIncludeAllAsync());
+
+        [HttpGet("favorites")]
+        public async Task<IActionResult> GetFavoriteRoutes(int[] id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var favoriteRoutes = await _routeService.GetAllFavoriteRoutesAsync(id);
+
+            if (favoriteRoutes == null || favoriteRoutes.ToList().Count == 0)
+                return NotFound();
+
+            return Ok(favoriteRoutes);
+        }
 
 
         public async Task<IActionResult> GetAllRoutesFunc(Func<Task<IEnumerable<RoutesRouteDto>>> getAllRoutesFunc)
@@ -73,6 +94,9 @@ namespace BusMap.WebApi.Controllers
         public async Task<IActionResult> GetRouteIncludeBusStopsCarriers([FromRoute] int id)
             => await GetRouteFunc(id, async x => await _routeService.GetRouteIncludeBusStopsCarrierAsync(id));
 
+        [HttpGet("{id:int}/all")]
+        public async Task<IActionResult> GetRouteIncludeAll(int id)
+            => await GetRouteFunc(id, async x => await _routeService.GetRouteIncludeAllAsync(id));
 
         public async Task<IActionResult> GetRouteFunc(int id, Func<int, Task<RoutesRouteDto>> getRouteFunc)
         {
@@ -87,6 +111,33 @@ namespace BusMap.WebApi.Controllers
             return Ok(route);
         }
 
+        [HttpGet("{id:int}/currentLatency")]
+        public async Task<IActionResult> GetRouteCurrentLatency(int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var latency = await _routeService.GetRouteCurrentLatencyAsync(id);
+
+            if (latency == 9999)
+                return NotFound("Latency not found.");
+
+            return Ok(latency);
+        }
+
+        [HttpGet("{id:int}/recentBusStop")]
+        public async Task<IActionResult> GetRouteRecentBusStop(int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var currentBusStop = await _routeService.GetRouteRecentBusStopAsync(id);
+
+            if (currentBusStop == null)
+                return NotFound("Recent bus stop not found.");
+
+            return Ok(currentBusStop);
+        }
         
 
         [HttpPost]
@@ -103,8 +154,9 @@ namespace BusMap.WebApi.Controllers
             {
                 return BadRequest("Route object is incomplete or contains wrong data.");
             }
-            
-            return CreatedAtAction("GetRoute", new {id = route.Id}, route);
+
+            var routeDto = _mapper.Map<Route, RoutesRouteDto>(route);
+            return CreatedAtAction("GetRoute", new {id = routeDto.Id}, routeDto);
         }
 
         [HttpDelete("{id}")]
@@ -119,6 +171,22 @@ namespace BusMap.WebApi.Controllers
 
             await _routeService.RemoveRouteAsync(routeToRemove);
             return Ok();
+        }
+
+        [HttpGet("Find")]
+        public async Task<IActionResult> FindRoute(string startCity, string destinationCity,
+            TimeSpan hourFrom, TimeSpan hourTo, string days, DateTime date)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _routeService.FindRoutesAsync(startCity, destinationCity, 
+                days, hourFrom, hourTo, date);
+
+            if (!result.Any())
+                return NotFound("No routes found.");
+
+            return Ok(result);
         }
 
     }

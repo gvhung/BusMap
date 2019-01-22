@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.MainMasterDetailPage">
+
+    <MasterDetailPage.Master>
+        <ContentPage Title="BusMap menu">
+            <StackLayout>
+                <Image Source="masterDetailPageImage.jpg"/>
+                <Button Text="Home page"
+                        Command="{Binding NavigateToMainPageCommand}"/>
+                <Button Text="Nearest stops"
+                        Command="{Binding NavigateToNearestStopsCommand}"/>
+                <Button Text="Track new route"
+                        Command="{Binding NavigateToTrackNewRouteCommand}"/>
+                <Button Text="Favorite routes"
+                        Command="{Binding NavigateToFavoriteRoutesCommand}"/>
+
+                <Label Text="Recent searches"
+                       FontSize="Medium"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+                <ListView ItemsSource="{Binding RecentSearch}"
+                          HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" 
+                                             HorizontalOptions="Center">
+                                    <Label Text="{Binding Start}"
+                                           FontSize="Medium"/>
+                                    <Label Text=">>"
+                                           FontSize="Medium"/>
+                                    <Label Text="{Binding Destination}"
+                                           FontSize="Medium"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </ContentPage>
+    </MasterDetailPage.Master>
+</MasterDetailPage>

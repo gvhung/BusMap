@@ -1,22 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:customControls="clr-namespace:BusMap.Mobile.CustomControls;assembly=BusMap.Mobile"
-             xmlns:viewModels="clr-namespace:BusMap.Mobile.ViewModels;assembly=BusMap.Mobile"
              x:Class="BusMap.Mobile.Views.NearestStopsMapPage"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:googleMapsBindings="clr-namespace:Xamarin.Forms.GoogleMaps.Bindings;assembly=Xamarin.Forms.GoogleMaps.Bindings"
              prism:ViewModelLocator.AutowireViewModel="True"
              Title="Nearest stops">
 
-
     <ContentPage.Content>
         <StackLayout>
-            <customControls:BindableMap
+            <googleMaps:Map
                 x:Name="MyMap"
-                IsShowingUser="True"
-                MapPosition="{Binding UserPosition}"
-                MapPins="{Binding Pins}"
-                AutomationId="NearestStopsMapPage_Map"/>
+                MyLocationEnabled="True"
+                MapType="Street">
+                <googleMaps:Map.Behaviors>
+                    <googleMapsBindings:BindingPinsBehavior Value="{Binding Pins}"/>
+                    <googleMapsBindings:UpdateRegionBehavior Region="{Binding MapPosition}"/>
+                </googleMaps:Map.Behaviors>
+            </googleMaps:Map>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

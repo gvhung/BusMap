@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BusMap.Mobile.Views.AddNewBusStopPage"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Title="{Binding Title}">
+
+    <ContentPage.Content>
+        <StackLayout Margin="20,0,20,0">
+            <Entry Placeholder="City name"
+                   Text="{Binding CityNameEntry}"/>
+            <Entry Placeholder="Bus stop name"
+                   Text="{Binding StopNameEntry}"/>
+            <TimePicker Time="{Binding Time}"
+                        Format="HH:mm"
+                        HorizontalOptions="Center"/>
+            <Label Text="{Binding GeoPosition.Latitude, StringFormat='Latitude: {0}'}"
+                   FontSize="Medium"/>
+            <Label Text="{Binding GeoPosition.Longitude, StringFormat='Longitude: {0}'}"
+                   FontSize="Medium"/>
+            <Button Text="Save Bus Stop"
+                    HorizontalOptions="Center"
+                    Command="{Binding SaveButtonCommand}"
+                    IsEnabled="{Binding SaveButtonIsEnabled}"/>
+            <StackLayout Orientation="Horizontal"
+                         HorizontalOptions="Center"
+                         VerticalOptions="EndAndExpand">
+                <ActivityIndicator IsRunning="{Binding PositionIsDownloading}"
+                                   IsVisible="True"
+                                   Color="DodgerBlue"
+                                   HorizontalOptions="Start"
+                                   VerticalOptions="Center"/>
+                <Label Text="Downloading your position..."
+                       IsVisible="{Binding PositionIsDownloading}"
+                       HorizontalOptions="StartAndExpand"
+                       VerticalOptions="Center"/>
+            </StackLayout>
+            
+            
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

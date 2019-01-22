@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Dto.BusStops;
+using BusMap.WebApi.Helpers;
 using BusMap.WebApi.Repositories.Abstract;
 using BusMap.WebApi.Services.Abstract;
 
@@ -38,6 +39,18 @@ namespace BusMap.WebApi.Services.Implementations
         {
             var busStop = await _repository.GetBusStopIncludeRouteCarrierAsync(id);
             return _mapper.Map<BusStop, BusStopsBusStopDto>(busStop);
+        }
+
+        public async Task<BusStopsBusStopDto> GetBusStopIncludeAllAsync(int id)
+        {
+            var busStop = await _repository.GetBusStopIncludeAllAsync(id);
+            var punctualityPercentage = PunctualityConverter.BusStopPunctualityPercentage(busStop);
+            var busStopDto = new BusStopsBusStopDto()
+            {
+                PunctualityPercentage = punctualityPercentage
+            };
+
+            return _mapper.Map<BusStop, BusStopsBusStopDto>(busStop, busStopDto);
         }
 
         public async Task<IEnumerable<BusStopsBusStopDto>> GetAllBusStopsAsync()

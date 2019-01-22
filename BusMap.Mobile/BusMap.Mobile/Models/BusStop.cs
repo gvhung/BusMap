@@ -2,20 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Prism.Mvvm;
 using Xamarin.Forms.Maps;
 
 namespace BusMap.Mobile.Models
 {
-    public class BusStop
+    public class BusStop : BindableBase
     {
+        private bool _isRecentBusStop;
         public int Id { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string Address { get; set; }
         public string Label { get; set; }
+        public TimeSpan Hour { get; set; }
 
 
         public Route Route { get; set; }
+
+        public string PunctualityPercentage { get; set; }
+        public string PunctualityMode { get; set; }
+        public string PunctualityAvgBeforeTime { get; set; }
+        public string PunctualityAvgAfterTime { get; set; }
+
+        public bool IsRecentBusStop
+        {
+            get => _isRecentBusStop;
+            set => SetProperty(ref _isRecentBusStop, value);
+        }
 
         //[Obsolete("Don't use this", true)]
         //public new Position Position { get; set; }
@@ -35,8 +49,6 @@ namespace BusMap.Mobile.Models
 
             return result;
         }
-
-
 
     }
 }

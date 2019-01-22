@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BusMap.WebApi.Data;
 using BusMap.WebApi.DatabaseModels;
+using BusMap.WebApi.Helpers;
 using BusMap.WebApi.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BusMap.WebApi.Repositories.Implementations
 {
@@ -40,6 +43,14 @@ namespace BusMap.WebApi.Repositories.Implementations
                 .Include(r => r.Carrier)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
+        public async Task<Route> GetRouteIncludeAllAsync(int id)
+            => await _context.Routes
+                .Include(r => r.Carrier)
+                .Include(r => r.BusStops)
+                .ThenInclude(b => b.BusStopTraces)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+
         public async Task<IEnumerable<Route>> GetAllRoutesAsync()
             => await _context.Routes.ToListAsync();
 
@@ -59,6 +70,21 @@ namespace BusMap.WebApi.Repositories.Implementations
                 .Include(r => r.Carrier)
                 .ToListAsync();
 
+        public async Task<IEnumerable<Route>> GetAllRoutesIncludeAllAsync()
+            => await _context.Routes
+                .Include(r => r.Carrier)
+                .Include(r => r.BusStops)
+                .ThenInclude(b => b.BusStopTraces)
+                .ToListAsync();
+
+        public async Task<IEnumerable<Route>> GetAllFavoriteRoutesAsync(IEnumerable<int> routesIds)
+            => await _context.Routes
+                .Include(r => r.Carrier)
+                .Include(r => r.BusStops)
+                .ThenInclude(b => b.BusStopTraces)
+                .Where(r => routesIds.Contains(r.Id))
+                .ToListAsync();
+
         public async Task AddRouteAsync(Route route)
         {
             await _context.Routes.AddAsync(route);
@@ -75,6 +101,134 @@ namespace BusMap.WebApi.Repositories.Implementations
         {
             _context.Routes.Remove(route);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetRouteCurrentLatencyAsync(int routeId)
+        {
+            int result = 9999;
+            var currentDate = DateAndTime.Now;
+            //var currentDate = new DateTime(2018,11,29,10,52,0);
+
+            var route = await _context.Routes
+                .Include(r => r.BusStops)
+                .FirstOrDefaultAsync(r => r.Id == routeId);
+            var lastTrace = await _context.BusStopTraces
+                .Include(t => t.BusStop)
+                .Where(t => t.Date.Equals(currentDate.Date) 
+                            && t.Hour > route.BusStops
+                                .First()
+                                .Hour
+                                .Subtract(new TimeSpan(0, 10, 0)) 
+                            && t.Hour >= currentDate.TimeOfDay.Subtract(new TimeSpan(1, 0, 0)))
+                .LastOrDefaultAsync(t => t.BusStop.RouteId == routeId);
+
+
+            if (lastTrace != null)
+            {
+                result = (lastTrace.Hour - lastTrace.BusStop.Hour).Minutes;
+            }
+                
+            return result;
+        }
+
+        public async Task<BusStop> GetRouteRecentBusStopAsync(int routeId)
+        {
+            BusStop result = null;
+            var currentDate = DateAndTime.Now;
+            //var currentDate = new DateTime(2018, 11, 29, 10, 52, 0);
+
+            var route = await _context.Routes
+                .Include(r => r.BusStops)
+                .FirstOrDefaultAsync(r => r.Id == routeId);
+            var lastTrace = await _context.BusStopTraces
+                .Include(t => t.BusStop)
+                .Where(t => t.Date.Equals(currentDate.Date)
+                            && t.Hour > route.BusStops
+                                .First()
+                                .Hour
+                                .Subtract(new TimeSpan(0, 10, 0))
+                            && t.Hour >= currentDate.TimeOfDay.Subtract(new TimeSpan(1, 0, 0)))
+                .LastOrDefaultAsync(t => t.BusStop.RouteId == routeId);
+
+            if (lastTrace != null)
+            {
+                result = lastTrace.BusStop;
+            }
+
+            return result;
+        }
+
+        public async Task<IEnumerable<Route>> FindRoutesAsync(string startCity, string destinationCity, 
+            string days = "1,2,3,4,5,6,0", TimeSpan hourFrom = default(TimeSpan), 
+            TimeSpan hourTo = default(TimeSpan), DateTime date = default(DateTime))
+        {
+            var dayOfTheWeek = date.DayOfWeek;
+            if (hourTo == default(TimeSpan))
+                hourTo = new TimeSpan(23,59,0);
+            if (string.IsNullOrEmpty(days))
+                days = "1,2,3,4,5,6,0";
+
+            List<Route> foundedRoutes = await _context.Routes
+                .Include(r => r.Carrier)
+                .Include(r => r.BusStops)
+                .ThenInclude(b => b.BusStopTraces)
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant())))
+                .Where(r => r.BusStops.Any(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant())))
+                .Where(r => r.BusStops.Any(b => b.Hour >= hourFrom && b.Hour <= hourTo))
+                .ToListAsync();
+
+            foundedRoutes = GetRoutesForGoodDirection(foundedRoutes, startCity, destinationCity);
+
+            if (!date.ToString(CultureInfo.InvariantCulture).Equals("01.01.0001 00:00:00") && !days.Equals("1,2,3,4,5,6,0") && date != default(DateTime))
+            {
+                foundedRoutes = RemoveRoutesFromWrongDays(foundedRoutes, ((int)dayOfTheWeek).ToString());
+            }
+            else
+            {
+                if (!days.Equals("1,2,3,4,5,6,0"))
+                    foundedRoutes = RemoveRoutesFromWrongDays(foundedRoutes, days);
+            }
+            return foundedRoutes;
+        }
+
+
+        private List<Route> GetRoutesForGoodDirection(List<Route> routes, string startCity, string destinationCity)
+        {
+            var result = new List<Route>();
+            foreach (var route in routes)
+            {
+                var start = route.BusStops.First(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(startCity.ToLowerInvariant()));
+                var dest = route.BusStops.First(b => b.Address
+                    .ToLowerInvariant()
+                    .Contains(destinationCity.ToLowerInvariant()));
+
+                if (start.Id < dest.Id)
+                    result.Add(route);
+                else if (start.Address.Equals(dest.Address) && dest.Address.Equals(start.Address))
+                    result.Add(route);
+            }
+
+            return result;
+        }
+
+        private List<Route> RemoveRoutesFromWrongDays(List<Route> routes, string days)
+        {
+            var result = new List<Route>(routes);
+            var daysArray = days.Split(',');
+
+            foreach (var route in routes)
+            {
+                if (route.DayOfTheWeek.Split(',').Intersect(daysArray).ToArray().Length == 0)
+                    result.Remove(route);
+            }
+
+            return result;
         }
     }
 }
