@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BusMap.WebApi.DatabaseModels;
 using BusMap.WebApi.Helpers;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
 namespace BusMap.WebApiTests.RepositoriesTests
@@ -696,6 +697,79 @@ namespace BusMap.WebApiTests.RepositoriesTests
 
             Assert.AreEqual(1, resultRoutes.Count());
             Assert.AreEqual(routeAtSunday.Name, resultRoutes.First().Name);
+        }
+
+        [Test]
+        public async Task FindRoutesAsync_WhenFromAndToCitiesAreSame_ReturnsRoutesInThisCity()
+        {
+            var carrier = new Carrier
+            {
+                Id = 60,
+                Name = "TestTrans"
+            };
+            var route1= new Route
+            {
+                Id = 1040,
+                Name = "Rzeszow - Rzeszow",
+                DayOfTheWeek = "1,3,4",
+                Carrier = carrier,
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 151,
+                        Address = "Rzeszow",
+                        Label = "One",
+                    },
+                    new BusStop
+                    {
+                        Id = 152,
+                        Address = "Rzeszow",
+                        Label = "Two",
+                    },
+                    new BusStop
+                    {
+                        Id = 153,
+                        Address = "Rzeszow",
+                        Label = "Three",
+                    }
+                }
+            };
+            var route2 = new Route
+            {
+                Id = 1041,
+                Name = "Rzeszow - Rzeszow",
+                DayOfTheWeek = "1,3,4",
+                Carrier = carrier,
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 154,
+                        Address = "Rzeszow",
+                        Label = "Three",
+                    },
+                    new BusStop
+                    {
+                        Id = 155,
+                        Address = "Rzeszow",
+                        Label = "Two",
+                    },
+                    new BusStop
+                    {
+                        Id = 156,
+                        Address = "Rzeszow",
+                        Label = "One",
+                    }                   
+                }
+            };
+
+            await context.Routes.AddRangeAsync(new []{route1, route2});
+            await context.SaveChangesAsync();
+            var test = await context.Routes.ToListAsync();
+            var result = await routeRepository.FindRoutesAsync("Rzeszow", "Rzeszow");
+
+            Assert.AreEqual(2, result.ToList().Count);
         }
 
         #endregion
