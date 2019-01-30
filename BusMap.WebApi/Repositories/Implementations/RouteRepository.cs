@@ -210,7 +210,7 @@ namespace BusMap.WebApi.Repositories.Implementations
 
                 if (start.Id < dest.Id)
                     result.Add(route);
-                else if (start.Address.Equals(dest.Address) && dest.Address.Equals(start.Address))
+                else if (start.Id == dest.Id && route.BusStops.First().Address.Equals(route.BusStops.Last().Address))
                     result.Add(route);
             }
 

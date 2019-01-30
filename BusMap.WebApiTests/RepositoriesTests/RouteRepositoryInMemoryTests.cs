@@ -772,6 +772,98 @@ namespace BusMap.WebApiTests.RepositoriesTests
             Assert.AreEqual(2, result.ToList().Count);
         }
 
+        [Test]
+        public async Task FindRoutes_WhenStartAndEndPointAreSame_ReturnsSingleRoute()
+        {
+            var carrier = new Carrier
+            {
+                Id = 60,
+                Name = "TestTrans"
+            };
+            var route1 = new Route
+            {
+                Id = 121,
+                Carrier = carrier,
+                DayOfTheWeek = "1,2,3,4,5,6,0",
+                Name = "Rzeszow - Warszawa",
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 1030,
+                        Address = "Rzeszow",
+                        Label = "DA",
+                        Hour = new TimeSpan(10,0,0),
+                        Latitude = 1,
+                        Longitude = 1
+                    },
+                    new BusStop
+                    {
+                        Id = 1031,
+                        Address = "Lodz",
+                        Label = "Glowna",
+                        Hour = new TimeSpan(13,0,0),
+                        Latitude = 2,
+                        Longitude = 2
+                    },
+                    new BusStop
+                    {
+                        Id = 1032,
+                        Address = "Warszawa",
+                        Label = "Dworzec glowny",
+                        Hour = new TimeSpan(16,0,0),
+                        Latitude = 3,
+                        Longitude = 3
+                    }
+                }
+            };
+            var route2 = new Route
+            {
+                Id = 122,
+                Carrier = carrier,
+                DayOfTheWeek = "1,2,3,4,5,6,0",
+                Name = "Rzeszow - Rzeszow",
+                BusStops = new List<BusStop>
+                {
+                    new BusStop
+                    {
+                        Id = 1035,
+                        Address = "Rzeszow",
+                        Label = "DA",
+                        Hour = new TimeSpan(10,0,0),
+                        Latitude = 1,
+                        Longitude = 1
+                    },
+                    new BusStop
+                    {
+                        Id = 1036,
+                        Address = "Rzeszow",
+                        Label = "Dabrowskiego",
+                        Hour = new TimeSpan(10,30,0),
+                        Latitude = 2,
+                        Longitude = 2
+                    },
+                    new BusStop
+                    {
+                        Id = 1037,
+                        Address = "Rzeszow",
+                        Label = "Lisa Kuli",
+                        Hour = new TimeSpan(11,0,0),
+                        Latitude = 3,
+                        Longitude = 3
+                    }
+                }
+            };
+
+            await context.Routes.AddRangeAsync(new[] {route1, route2});
+            await context.SaveChangesAsync();
+
+            var result = await routeRepository.FindRoutesAsync("Rzeszow", "Rzeszow");
+
+            Assert.AreEqual(1, result.Count());
+            //Assert.IsFalse(result.Any(r => r.Name.Equals(route1.Name)));
+        }
+
         #endregion
 
 
