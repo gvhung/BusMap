@@ -94,7 +94,7 @@
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" IsVisible="{Binding CurrentLatencyIsVisible}">
                             <iconize:IconImage Icon="fas-backward" Style="{StaticResource DetailsIconNormal}"/>
-                            <Label Text="{Binding RecentBusStop.Address, StringFormat= 'Recent bus stop: {0}'}"/>
+                            <Label Text="{Binding RecentBusStop, StringFormat= 'Recent bus stop: {0}'}"/>
                         </StackLayout>
                         <Button Text="Track"
                             FontSize="Large"
