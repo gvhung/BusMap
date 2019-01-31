@@ -19,8 +19,8 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout>
-            <Button Text="Start tracking"
+        <StackLayout Margin="10">
+            <Button Text="{Binding ButtonText}"
                     Command="{Binding StartTrackingCommand}"
                     IsEnabled="{Binding IsTrackingEnabled}"/>
             <Label Text="{Binding TestLabelText}"/>
@@ -28,10 +28,17 @@
                    TextColor="DarkRed"
                    HorizontalOptions="Center"
                    VerticalOptions="End"
-                   IsVisible="{Binding IsTrackingStarted}"/>
+                   IsVisible="{Binding IsTrackingStarted}"
+                   x:Name="TrackingLabel"/>
             <Label Text="Tracking is not available now."
                    IsVisible="{Binding IsTrackingEnabled, Converter = {StaticResource InverseBoolConverter}}"
                    HorizontalOptions="Center"/>
+            <Label Text="{Binding LastVisitedBusStop, StringFormat='Last visited: {0}'}"
+                   FontSize="Medium"
+                   IsVisible="{Binding IsTrackingEnabled}"/>
+            <Label Text="{Binding NextBusStop, StringFormat='Next: {0}'}"
+                   FontSize="Medium"
+                   IsVisible="{Binding IsTrackingEnabled}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

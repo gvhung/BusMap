@@ -12,8 +12,10 @@ using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 using Prism.Commands;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
+using DependencyService = Xamarin.Forms.DependencyService;
 
 namespace BusMap.Mobile.ViewModels
 {
@@ -21,6 +23,7 @@ namespace BusMap.Mobile.ViewModels
     {
         private readonly IDataService _dataService;
         private readonly IGeolocationBackgroundService _geolocationBackgroundService;
+        private readonly IPageDialogService _pageDialogService;
 
         private int _lastBusStopId;
 
@@ -30,6 +33,9 @@ namespace BusMap.Mobile.ViewModels
 
         private List<BusStop> _busStops;
         private bool _isTrackingEnabled = true;
+        private BusStop _lastVisitedBusStop;
+        private BusStop _nextBusStop;
+        private string _buttonText = "Start tracking";
 
         public Route Route
         {
@@ -45,7 +51,17 @@ namespace BusMap.Mobile.ViewModels
         public bool IsTrackingStarted
         {
             get => _isTrackingStarted;
-            set => SetProperty(ref _isTrackingStarted, value);
+            set
+            {
+                SetProperty(ref _isTrackingStarted, value);
+                ButtonText = IsTrackingStarted ? "Stop tracking" : "Start tracking";
+            }
+        }
+
+        public string ButtonText
+        {
+            get => _buttonText;
+            set => SetProperty(ref _buttonText, value);
         }
 
         public string TestLabelText
@@ -60,13 +76,39 @@ namespace BusMap.Mobile.ViewModels
             set => SetProperty(ref _isTrackingEnabled, value);
         }
 
+        public BusStop LastVisitedBusStop
+        {
+            get => _lastVisitedBusStop;
+            set
+            {
+                SetProperty(ref _lastVisitedBusStop, value);
+                if (!string.IsNullOrEmpty(LastVisitedBusStop.Address) && _lastBusStopId != LastVisitedBusStop.Id)
+                {
+                    NextBusStop = Route.BusStops.First(b => b.Id == LastVisitedBusStop.Id + 1);
+                }
+                else
+                {
+                    NextBusStop = new BusStop {Address = "-"};
+                }
+            }
+        }
 
-        public TraceTrackingPageViewModel(INavigationService navigationService, IDataService dataService) 
-            : base(navigationService)
+        public BusStop NextBusStop
+        {
+            get => _nextBusStop;
+            set => SetProperty(ref _nextBusStop, value);
+        }
+
+
+        public TraceTrackingPageViewModel(INavigationService navigationService, IDataService dataService, 
+            IPageDialogService pageDialogService) : base(navigationService)
         {
             _dataService = dataService;
             _geolocationBackgroundService = DependencyService.Get<IGeolocationBackgroundService>();
+            _pageDialogService = pageDialogService;
             _busStops = new List<BusStop>();
+            LastVisitedBusStop = new BusStop{Address = "-"};
+            
 
             MessagingCenter.Subscribe<Application>(this, "STOP_TRACKING", a => IsTrackingStarted = false);
         }
@@ -114,13 +156,14 @@ namespace BusMap.Mobile.ViewModels
                     if (distance < 0.05)
                     {
                         TestLabelText = $"{busStop.Address}, {busStop.Label}";
-                        _busStops.Remove(busStop);
+                        _busStops.RemoveAll(b => b.Id <= busStop.Id);
                         var currentHour = DateTime.Now;
                         _dataService.PostBusStopTraceAsync(new BusStopTrace
                         {
                             BusStopId = busStop.Id,
                             Hour = new TimeSpan(currentHour.Hour, currentHour.Minute, 0)
                         });
+                        LastVisitedBusStop = Route.BusStops.First(b => b.Id == busStop.Id);
                         MessagingHelper.Toast($"Trace added: {busStop.Address}, {busStop.Label}", ToastTime.LongTime);
 
                         if (busStop.Id == _lastBusStopId)
@@ -128,7 +171,9 @@ namespace BusMap.Mobile.ViewModels
                             CrossGeolocator.Current.PositionChanged -= GeolocatorOnPositionChanged;
                             _geolocationBackgroundService.StopServiceAsync().Wait();
                             IsTrackingStarted = false;
-                            MessagingHelper.Toast($"Last bus stop arrived. Tracking ended.", ToastTime.LongTime);
+                            _pageDialogService.DisplayAlertAsync("Information",
+                                "You arrived last bus stop in route. Tracking Ended.", "Ok");
+                            NavigationService.GoBackToRootAsync();
                         }
 
                         return;
@@ -157,7 +202,6 @@ namespace BusMap.Mobile.ViewModels
             {
                 IsTrackingEnabled = false;
             }
-                
         }
 
         public override async void OnNavigatedFrom(NavigationParameters parameters)

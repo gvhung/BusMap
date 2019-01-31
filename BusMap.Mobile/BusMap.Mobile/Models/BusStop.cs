@@ -50,5 +50,14 @@ namespace BusMap.Mobile.Models
             return result;
         }
 
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(Label))
+            {
+                return Address;
+            }
+
+            return $"{Address}, {Label}";
+        }
     }
 }
