@@ -164,7 +164,7 @@ namespace BusMap.Mobile.ViewModels
                             Hour = new TimeSpan(currentHour.Hour, currentHour.Minute, 0)
                         });
                         LastVisitedBusStop = Route.BusStops.First(b => b.Id == busStop.Id);
-                        MessagingHelper.Toast($"Trace added: {busStop.Address}, {busStop.Label}", ToastTime.LongTime);
+                        MessagingHelper.Toast($"Trace added: {busStop}", ToastTime.LongTime);
 
                         if (busStop.Id == _lastBusStopId)
                         {
@@ -200,7 +200,7 @@ namespace BusMap.Mobile.ViewModels
             if (currentTime < routeStartingTime.Subtract(new TimeSpan(1, 0, 0))
                 || currentTime > routeEndingTime.Add(new TimeSpan(1, 0, 0)))
             {
-                IsTrackingEnabled = false;
+                //IsTrackingEnabled = false;
             }
         }
 

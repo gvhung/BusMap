@@ -76,8 +76,10 @@
                    IsVisible="{Binding RouteHaveCarrierQueued}"/>
              <StackLayout Grid.Row="1" Grid.Column="1"
                           HorizontalOptions="Center">
-              <Label Text="{Binding RouteQueued.CarrierQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"/>
-              <Label Text="{Binding RouteQueued.CarrierQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"/>
+              <Label Text="{Binding RouteQueued.CarrierQueued.PositiveVotes, StringFormat='Positive votes: {0}'}"
+                     TextColor="Green"/>
+              <Label Text="{Binding RouteQueued.CarrierQueued.NegativeVotes, StringFormat='Negative votes: {0}'}"
+                     TextColor="Red"/>
               <Label Text="{Binding CarrierPositiveVotesPercentage, StringFormat='Percentage: {0}'}"
                      IsVisible="{Binding RouteHaveCarrierQueued}"/>
             </StackLayout>
