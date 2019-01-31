@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -128,9 +129,18 @@ namespace BusMap.Mobile.ViewModels
 
         private async Task DownloadAndSetEntryNames()
         {
-            var reversedGeocode = await _dataService.GetReversedGeocodeForLatLngAsync(GeoPosition);
-            CityNameEntry = reversedGeocode.City;
-            StopNameEntry = reversedGeocode.Street;
+            try
+            {
+                var reversedGeocode = await _dataService.GetReversedGeocodeForLatLngAsync(GeoPosition);
+                CityNameEntry = reversedGeocode.City;
+                StopNameEntry = reversedGeocode.Street;
+            }
+            catch (HttpRequestException)
+            {
+                MessagingHelper.Toast("Could not obtain your position", ToastTime.LongTime);
+                await NavigationService.GoBackAsync();
+            }
+            
         }
 
 
