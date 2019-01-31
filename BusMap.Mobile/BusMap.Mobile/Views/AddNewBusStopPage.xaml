@@ -22,7 +22,8 @@
             <Button Text="Save Bus Stop"
                     HorizontalOptions="Center"
                     Command="{Binding SaveButtonCommand}"
-                    IsEnabled="{Binding SaveButtonIsEnabled}"/>
+                    IsEnabled="{Binding SaveButtonIsEnabled}"
+                    Style="{StaticResource GreenRoundedButton}"/>
             <StackLayout Orientation="Horizontal"
                          HorizontalOptions="Center"
                          VerticalOptions="EndAndExpand">

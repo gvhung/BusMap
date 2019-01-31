@@ -50,7 +50,10 @@
                 <iconize:IconButton Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" 
                                     Text="fas-exchange-alt"
                                     FontSize="Large"
-                                    Command="{Binding SwapCitiesButtonCommand}"/>
+                                    Command="{Binding SwapCitiesButtonCommand}"
+                                    VerticalOptions="Center"
+                                    CornerRadius="90"
+                                    Style="{StaticResource Button}"/>
             </Grid>
             <ActivityIndicator x:Name="ActivityIndicator"
                                IsRunning="{Binding IsBusy}"
@@ -60,21 +63,35 @@
             <Label Text="Downloading results"
                    HorizontalOptions="Center"
                    IsVisible="{Binding IsBusy}"/>
-            <Button Text="Search"
-                    Command="{Binding SearchAndNavigateToRoutesListPageCommand}"
-                    AutomationId="SearchButton"/>
-            <Button Text="Advanced"
-                    Command="{Binding AdvancedButtonCommand}"/>
+            
+            <Grid Margin="5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Text="Search"
+                        Command="{Binding SearchAndNavigateToRoutesListPageCommand}"
+                        AutomationId="SearchButton" Grid.Column="0"
+                        Style="{StaticResource GreenRoundedButton}"/>
+                <Button Text="Advanced search"
+                        Command="{Binding AdvancedButtonCommand}" Grid.Column="1"
+                        Style="{StaticResource GreenBorderRoundedButton}"/>
+            </Grid>
+            
             <Button Text="Nearest stops"
                     Command="{Binding NavigateToNearestStopsPageCommand}"
-                    AutomationId="MainPage_NearestStopsButton"/>
+                    AutomationId="MainPage_NearestStopsButton"
+                    Style="{StaticResource Button}"/>
             <Button Text="Track new route"
-                    Command="{Binding NavigateToTrackNewRouteCommand}"/>
+                    Command="{Binding NavigateToTrackNewRouteCommand}"
+                    Style="{StaticResource Button}"/>
             <Button Text="{Binding QueueButtonText}"
                     Command="{Binding NavigateToQueueCommand}"
-                    IsEnabled="{Binding QueuedRoutesButtonIsVisible}"/>
+                    IsEnabled="{Binding QueuedRoutesButtonIsVisible}"
+                    Style="{StaticResource Button}"/>
             <Button Text="Favorite routes"
-                    Command="{Binding NavigateToFavoritePage}"/>
+                    Command="{Binding NavigateToFavoritePage}"
+                    Style="{StaticResource Button}"/>
         </StackLayout>
     </ContentPage.Content>
 

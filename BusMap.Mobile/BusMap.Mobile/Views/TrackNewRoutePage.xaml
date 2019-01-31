@@ -19,9 +19,11 @@
                 <StackLayout Orientation="Horizontal"
                              HorizontalOptions="Center">
                     <Button Text="Add bus stop"
-                            Command="{Binding PopupCommand}"/>
+                            Command="{Binding PopupCommand}"
+                            Style="{StaticResource GreenRoundedButton}"/>
                     <Button Text="Choose days"
-                            Command="{Binding ChooseDaysCommand}"/>
+                            Command="{Binding ChooseDaysCommand}"
+                            Style="{StaticResource GreenBorderRoundedButton}"/>
                 </StackLayout>
                 <suggestBox:AutoSuggestBox x:Name="SuggestBox"
                                            PlaceholderText="Enter carrier name"
@@ -100,7 +102,8 @@
                         HorizontalOptions="CenterAndExpand"
                         VerticalOptions="End"
                         IsVisible="{Binding SaveButtonEnabled}"
-                        Command="{Binding SaveButtonCommand}"/>
+                        Command="{Binding SaveButtonCommand}"
+                        Style="{StaticResource Button}"/>
             </StackLayout>
         </ContentPage.Content>
     </ContentPage>

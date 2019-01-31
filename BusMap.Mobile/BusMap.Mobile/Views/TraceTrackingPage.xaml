@@ -22,7 +22,8 @@
         <StackLayout Margin="10">
             <Button Text="{Binding ButtonText}"
                     Command="{Binding StartTrackingCommand}"
-                    IsEnabled="{Binding IsTrackingEnabled}"/>
+                    IsEnabled="{Binding IsTrackingEnabled}"
+                    Style="{StaticResource GreenRoundedButton}"/>
             <Label Text="{Binding TestLabelText}"/>
             <Label Text="Tracking"
                    TextColor="DarkRed"

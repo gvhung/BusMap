@@ -26,7 +26,10 @@
                     <iconize:IconButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
                            Text="fas-exchange-alt"
                            FontSize="Large"
-                           Command="{Binding SwapCitiesButtonCommand}"/>
+                           Command="{Binding SwapCitiesButtonCommand}"
+                           VerticalOptions="Center"
+                           CornerRadius="90"
+                           Style="{StaticResource Button}"/>
                 </Grid>
 
 
@@ -125,7 +128,8 @@
                 <Button Text="Search"
                     HorizontalOptions="Center"
                     VerticalOptions="CenterAndExpand"
-                    Command="{Binding SearchButtonCommand}"/>
+                    Command="{Binding SearchButtonCommand}"
+                    Style="{StaticResource GreenRoundedButton}"/>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

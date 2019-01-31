@@ -22,6 +22,34 @@
                 <Setter Property="Margin" Value="0,0,4,0"/> <!--For display icon in single line-->
             </Style>
 
+            <Style x:Key="GreenRoundedButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#009688"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="CornerRadius" Value="30"/>
+            </Style>
+
+            <Style x:Key="GreenBorderRoundedButton" TargetType="Button">
+                <Setter Property="BorderColor" Value="#009688"/>
+                <Setter Property="CornerRadius" Value="30"/>
+                <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
+                <Setter Property="TextColor" Value="#009688"/>
+                <Setter Property="BorderWidth" Value="3"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+            </Style>
+
+            <Style x:Key="Button" TargetType="Button">
+                <Setter Property="BorderColor" Value="#009688"/>
+                <Setter Property="BorderWidth" Value="2"/>
+                <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
+                <Setter Property="CornerRadius" Value="10"/>
+            </Style>
+
+            <Style x:Key="MasterDetailButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#009688"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="Medium"/>
+            </Style>
+
 
         </ResourceDictionary>
     </Application.Resources>

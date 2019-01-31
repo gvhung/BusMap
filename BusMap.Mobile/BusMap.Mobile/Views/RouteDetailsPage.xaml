@@ -99,7 +99,8 @@
                         <Button Text="Track"
                             FontSize="Large"
                             Command="{Binding TrackButtonCommand}"
-                            HorizontalOptions="Center"/>
+                            HorizontalOptions="Center"
+                            Style="{StaticResource GreenRoundedButton}"/>
                       </StackLayout>
                   </pullToRefresh:PullToRefreshLayout>
                     
