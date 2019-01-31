@@ -56,11 +56,11 @@
                 </Grid.RowDefinitions>
                 <Label Text="Planned time" FontSize="Medium" TextColor="Black"
                        HorizontalOptions="Center"/>
-                <Label Text="{Binding LastVisitedBusStop.Hour, StringFormat='{0:hh\\:mm}'}"
+                <Label Text="{Binding NextBusStop.Hour, StringFormat='{0:hh\\:mm}'}"
                        FontSize="Large" TextColor="#A64C79"
                        Grid.Row="1" Grid.Column="0"
                        HorizontalOptions="Center"/>
-                <Label Text="{Binding LastVisitedBusStop.PunctualityMode}"
+                <Label Text="{Binding NextBusStop.PunctualityMode}"
                        Grid.Row="2" Grid.Column="0"
                        FontSize="Large"
                        HorizontalOptions="Center"/>
@@ -68,13 +68,13 @@
                        Grid.Row="0" Grid.Column="1"
                        HorizontalOptions="Center"/>
                 <StackLayout Orientation="Horizontal" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center">
-                    <Label Text="{Binding LastVisitedBusStop.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
+                    <Label Text="{Binding NextBusStop.PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
                            TextColor="ForestGreen" FontSize="Medium"/>
                     <Label Text=":"/>
-                    <Label Text="{Binding LastVisitedBusStop.PunctualityAvgAfterTime, StringFormat='{0} After'}"
+                    <Label Text="{Binding NextBusStop.PunctualityAvgAfterTime, StringFormat='{0} After'}"
                            TextColor="DarkRed" FontSize="Medium"/>
                 </StackLayout>
-                <Label Text="{Binding LastVisitedBusStop.PunctualityPercentage, StringFormat='Punctuality index: {0}'}"
+                <Label Text="{Binding NextBusStop.PunctualityPercentage, StringFormat='Punctuality index: {0}'}"
                        FontSize="Medium" TextColor="Black"
                        Grid.Row="2" Grid.Column="1"
                        HorizontalOptions="Center"/>

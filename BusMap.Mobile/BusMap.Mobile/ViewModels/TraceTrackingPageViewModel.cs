@@ -200,7 +200,7 @@ namespace BusMap.Mobile.ViewModels
             if (currentTime < routeStartingTime.Subtract(new TimeSpan(1, 0, 0))
                 || currentTime > routeEndingTime.Add(new TimeSpan(1, 0, 0)))
             {
-                //IsTrackingEnabled = false;
+                IsTrackingEnabled = false;
             }
         }
 
