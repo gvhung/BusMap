@@ -52,7 +52,7 @@ namespace BusMap.Mobile.Models
 
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(Label))
+            if (string.IsNullOrWhiteSpace(Label))
             {
                 return Address;
             }

@@ -175,13 +175,9 @@
                                            Grid.Row="1"/>
                                     <StackLayout Margin="20, 0, 5, 20"
                                                  Grid.Column="2" Grid.RowSpan="2">
-                                        <StackLayout Orientation="Horizontal">
-                                            <Label Text="{Binding Address, StringFormat='{0}, '}"
+                                        <Label Text="{Binding ., StringFormat='{0}'}"
                                                        FontSize="Medium"/>
-                                            <Label Text="{Binding Label}"
-                                                       FontSize="Medium"/>
-                                        </StackLayout>
-                                        <StackLayout Orientation="Horizontal">
+                                            <StackLayout Orientation="Horizontal">
                                             <Label Text="{Binding PunctualityAvgBeforeTime, StringFormat='Before {0}'}"
                                                        TextColor="ForestGreen"/>
                                             <Label Text=":"/>
