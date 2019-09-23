@@ -5,6 +5,14 @@ Community application and platform for monitoring public transport.
 The purpose of this project was to design and create a platform for
 public transport monitoring, allowing users to add and monitor local bus connections.
 It is composed of a mobile application for Android mobile phones and REST API.
+###### Application Use Case Diagram
+![UseCaseDiagram](./OtherFiles/UseCaseDiagram.jpg "Application Use Case Diagram")
+
+###### Application Class Diagram
+![](./OtherFiles/ClassDiagram.png)
+
+###### Application Database Diagram
+![](./OtherFiles/DatabaseDiagram.png)
 
 ## Technologies and libraries
 - Xamarin.Forms
@@ -14,6 +22,7 @@ It is composed of a mobile application for Android mobile phones and REST API.
 - Xamarin.Forms.GoogleMaps
 - Xam.Plugin.Geolocator
 - Newtonsoft.Json  
+
 
 ## Description of how the application works
 
@@ -58,3 +67,19 @@ This information is used for:
 | Searching - result view  | ![ss4](./OtherFiles/ss4.png "Routes list, result of searching")    |
 | Searching - stop details | ![ss5](./OtherFiles/ss5.png "Route page, route details, list of bus stops") |
 | Road tracking  | ![ss6](./OtherFiles/ss6.png "Route tracking page")  |
+
+
+## How to run project locally
+1. Web API:
+    - Setup data in Connections.cs file: database connection string and AzureMaps Key
+    - Update database
+    - Use [SharpProxy](https://github.com/jocull/SharpProxy "SharpProxy") for share web application in your local network (recommended)
+    - Alternatively deploy WEB API to your local IIS server
+2. Mobile application:
+    - Change HttpClient API address in ApiDataService.cs
+    - Set startup project as Andorid, run virtual device (or connect real one) and select it as startup target  
+    - Click RMB on solution, then properties and select startup multiple projects: Web API and Android
+        ![properties](./OtherFiles/properties.png "Setting multiple start projects")
+    - Run projects
+    
+
